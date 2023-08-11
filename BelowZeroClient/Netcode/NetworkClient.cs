@@ -3,6 +3,7 @@ using ICSharpCode.SharpZipLib.Zip;
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Net;
 using System.Text;
 using System.Threading.Tasks;
 using UnityEngine;
@@ -18,8 +19,8 @@ namespace BelowZeroClient
         public Action OnConnected;
         public Action OnFailedToConnect;
 
-        private TCP m_tcp;
-        private UDP m_udp;
+        public TCP m_tcp;
+        public UDP m_udp;
 
         public int m_clientId;
         private bool m_isConnected = false;
@@ -29,10 +30,12 @@ namespace BelowZeroClient
 
         void Awake() 
         {
+            ErrorMessage.AddMessage("[NetworkClient] Awake Called!");
             if (Instance == null)
             {
                 Instance = this;
                 DontDestroyOnLoad(gameObject);
+                InitPacketHandlers();
             }
             else
             {
@@ -92,6 +95,11 @@ namespace BelowZeroClient
                 }
                 catch { }
             }
+        }
+
+        public void StartUDPConnection()
+        {
+            m_udp.Connect(((IPEndPoint)m_tcp.m_tcpClient.Client.LocalEndPoint).Port);
         }
 
         public Dictionary<int, PacketHandler> GetPacketHandlers()

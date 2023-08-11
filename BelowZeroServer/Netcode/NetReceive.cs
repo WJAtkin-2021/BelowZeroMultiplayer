@@ -10,7 +10,7 @@ namespace BelowZeroServer
     {
         public static void ConnectedReceived(int _fromClient, Packet _packet)
         {
-
+            Logger.Log($"Got packet: ConnectedReceived from client: {_fromClient}");
         }
     }
 }

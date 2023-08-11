@@ -12,7 +12,7 @@ namespace BelowZeroServer
 {
     public class Server
     {
-        private const int MAX_PLAYERS = 8;
+        public const int MAX_PLAYERS = 8;
 
         private int m_port;
         private bool m_isShuttingDown = false;

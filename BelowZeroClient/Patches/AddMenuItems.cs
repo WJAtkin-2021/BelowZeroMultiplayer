@@ -25,6 +25,7 @@ namespace BelowZeroClient.Patches
                     // Create the network client
                     GameObject networkClientGO = new GameObject("NetworkClient");
                     NetworkClient networkClient = networkClientGO.AddComponent<NetworkClient>();
+                    ThreadManager threadManager = networkClientGO.AddComponent<ThreadManager>();
 
                     if (target == "SavedGames")
                     {
@@ -52,7 +53,7 @@ namespace BelowZeroClient.Patches
                             GameObject.Find("Menu canvas/Panel/MainMenu/RightSide/MultiplayerMenu/SubscriptionInProgress").SetActive(true);
                             try
                             {
-                                networkClient.AttemptServerConnection(gameObject.FindChild("InputField").GetComponent<TMP_InputField>().text);
+                                NetworkClient.Instance.AttemptServerConnection(gameObject.FindChild("InputField").GetComponent<TMP_InputField>().text);
                                 //test.start(gameObject.FindChild("InputField").GetComponent<TMP_InputField>().text);
                                 GameObject.Find("Menu canvas/Panel/MainMenu/RightSide/MultiplayerMenu/SubscriptionInProgress").SetActive(false);
 

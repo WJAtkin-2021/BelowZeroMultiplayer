@@ -23,7 +23,7 @@ namespace BelowZeroServer
             m_endPoint = _endPoint;
         }
 
-        public void SendData(Packet _packet)
+        public void SendPacket(Packet _packet)
         {
             Server.instance.SendUDPData(m_endPoint, _packet);
         }

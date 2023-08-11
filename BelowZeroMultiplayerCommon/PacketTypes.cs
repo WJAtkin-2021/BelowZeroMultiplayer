@@ -13,6 +13,7 @@ namespace BelowZeroMultiplayerCommon
     {
         Connected = 1,
         PlayerDisconnected = 2,
+        MapDownload = 3,
     }
 
     /// <summary>

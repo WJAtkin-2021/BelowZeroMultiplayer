@@ -1,4 +1,5 @@
-﻿using System;
+﻿using HarmonyLib;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Net.Sockets;
@@ -54,16 +55,23 @@ namespace BelowZeroClient
             {
                 NetworkClient.Instance.OnConnected?.Invoke();
                 ErrorMessage.AddMessage("Connected to server");
+
             });
         }
 
-        public void SendData(Packet _packet)
+        public void SendPacket(Packet _packet)
         {
+            ErrorMessage.AddMessage($"SendPacket called");
             try
             {
                 if (m_tcpClient != null)
                 {
+                    ErrorMessage.AddMessage($"Writing to stream: {_packet.ToArray()}");
                     m_stream.BeginWrite(_packet.ToArray(), 0, _packet.Length(), null, null);
+                }
+                else
+                {
+                    ErrorMessage.AddMessage($"TCP client is null!");
                 }
             }
             catch (Exception ex)

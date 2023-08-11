@@ -1,0 +1,13 @@
+{
+  "Id": "BelowZeroClientMultiplayer",
+  "DisplayName": "BelowZeroClientMultiplayer",
+  "Author": "Will Atkin",
+  "Version": "0.1.0",
+  "Requires": [],
+  "Enable": true,
+  "Game": "BelowZero",
+  "AssemblyName": "BelowZeroClient.dll",
+  "VersionDependencies": {
+  },
+  "Config": {}
+}

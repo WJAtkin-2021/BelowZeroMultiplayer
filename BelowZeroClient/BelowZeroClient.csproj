@@ -84,8 +84,16 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="Main.cs" />
+    <Compile Include="Netcode\NetReceive.cs" />
+    <Compile Include="Netcode\NetSend.cs" />
+    <Compile Include="Netcode\NetworkClient.cs" />
+    <Compile Include="Netcode\Packet.cs" />
+    <Compile Include="Netcode\RemotePlayer.cs" />
+    <Compile Include="Netcode\TCP.cs" />
+    <Compile Include="Netcode\UDP.cs" />
     <Compile Include="Patches\AddMenuItems.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
+    <Compile Include="Utill\ThreadManager.cs" />
   </ItemGroup>
   <ItemGroup>
     <ProjectReference Include="..\BelowZeroMultiplayerCommon\BelowZeroMultiplayerCommon.csproj">
@@ -98,6 +106,7 @@
     <PostBuildEvent>copy /Y "$(SolutionDir)BelowZeroClient\$(OutDir)BelowZeroClient.dll" "$(SubnauticaRootPath)\QMods\BelowZeroMultiplayer\BelowZeroClient.dll"
 copy /Y "$(SolutionDir)Configs\Client\mod.json" "$(SubnauticaRootPath)\QMods\BelowZeroMultiplayer\mod.json"
 
-start "" "$(SubnauticaRootPath)\SubnauticaZero.exe"</PostBuildEvent>
+start "" "$(SubnauticaRootPath)\SubnauticaZero.exe"
+start "" "$(SolutionDir)BelowZeroServer\$(OutDir)BelowZeroServer.exe"</PostBuildEvent>
   </PropertyGroup>
 </Project>

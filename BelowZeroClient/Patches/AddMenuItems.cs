@@ -22,6 +22,10 @@ namespace BelowZeroClient.Patches
             {
                 if (GameObject.Find("Menu canvas/Panel/MainMenu/RightSide/MultiplayerMenu") == null)
                 {
+                    // Create the network client
+                    GameObject networkClientGO = new GameObject("NetworkClient");
+                    NetworkClient networkClient = networkClientGO.AddComponent<NetworkClient>();
+
                     if (target == "SavedGames")
                     {
                         GameObject gameObject = GameObject.Instantiate(GameObject.Find("Menu canvas/Panel/MainMenu/RightSide/Home/EmailBox"));
@@ -45,10 +49,10 @@ namespace BelowZeroClient.Patches
 
                         gameObject.FindChild("Subscribe").GetComponent<Button>().onClick.AddListener(() =>
                         {
-                            //GameObject.Find("Menu canvas/Panel/MainMenu/RightSide/MultiplayerMenu/SubscriptionInProgress").SetActive(true);
-                            //InitializeConnection test = new InitializeConnection();
+                            GameObject.Find("Menu canvas/Panel/MainMenu/RightSide/MultiplayerMenu/SubscriptionInProgress").SetActive(true);
                             try
                             {
+                                networkClient.AttemptServerConnection(gameObject.FindChild("InputField").GetComponent<TMP_InputField>().text);
                                 //test.start(gameObject.FindChild("InputField").GetComponent<TMP_InputField>().text);
                                 GameObject.Find("Menu canvas/Panel/MainMenu/RightSide/MultiplayerMenu/SubscriptionInProgress").SetActive(false);
 

@@ -37,7 +37,9 @@ namespace BelowZeroClient
             // debug print to log file
             ErrorMessage.AddMessage($"Got map with total bytes: {mapData.Length}");
 
+            string mapLocation = MapDataUtils.SaveMapData(mapData);
 
+            ErrorMessage.AddMessage($"Saved map from server to: {mapLocation}");
         }
     }
 }

@@ -43,10 +43,14 @@
       <SpecificVersion>False</SpecificVersion>
       <HintPath>$(SubnauticaRootPath)\SubnauticaZero_Data\Managed\Assembly-CSharp-firstpass.dll</HintPath>
     </Reference>
+    <Reference Include="Newtonsoft.Json, Version=13.0.0.0, Culture=neutral, PublicKeyToken=30ad4fe6b2a6aeed, processorArchitecture=MSIL">
+      <HintPath>..\packages\Newtonsoft.Json.13.0.3\lib\net45\Newtonsoft.Json.dll</HintPath>
+    </Reference>
     <Reference Include="QModInstaller, Version=4.2.1.0, Culture=neutral, processorArchitecture=MSIL">
       <SpecificVersion>False</SpecificVersion>
       <HintPath>$(SubnauticaRootPath)\BepInEx\plugins\QModManager\QModInstaller.dll</HintPath>
     </Reference>
+    <Reference Include="System.IO.Compression.FileSystem" />
     <Reference Include="Unity.TextMeshPro">
       <HintPath>$(SubnauticaRootPath)\SubnauticaZero_Data\Managed\Unity.TextMeshPro.dll</HintPath>
     </Reference>
@@ -83,15 +87,46 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
-    <Compile Include="main.cs" />
+    <Compile Include="ExtensionComponents\ReplicatePlayer.cs" />
+    <Compile Include="Main.cs" />
+    <Compile Include="Netcode\NetReceive.cs" />
+    <Compile Include="Netcode\NetSend.cs" />
+    <Compile Include="Netcode\NetToken.cs" />
+    <Compile Include="Netcode\NetworkClient.cs" />
+    <Compile Include="Netcode\Packet.cs" />
+    <Compile Include="Netcode\RemotePlayer.cs" />
+    <Compile Include="Netcode\TCP.cs" />
+    <Compile Include="Netcode\UDP.cs" />
     <Compile Include="Patches\AddMenuItems.cs" />
+    <Compile Include="Patches\InventoryPatches.cs" />
+    <Compile Include="Patches\OnPickDropZone.cs" />
+    <Compile Include="Patches\PlayerPatches.cs" />
+    <Compile Include="Patches\StopPause.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
+    <Compile Include="Utill\CreateTechTypeAsyc.cs" />
+    <Compile Include="Utill\MapDataUtils.cs" />
+    <Compile Include="Utill\ThreadManager.cs" />
+  </ItemGroup>
+  <ItemGroup>
+    <ProjectReference Include="..\BelowZeroMultiplayerCommon\BelowZeroMultiplayerCommon.csproj">
+      <Project>{dae25969-3e6c-4a5f-9484-465277638a5c}</Project>
+      <Name>BelowZeroMultiplayerCommon</Name>
+    </ProjectReference>
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="app.config" />
+    <None Include="packages.config" />
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <PropertyGroup>
-    <PostBuildEvent>copy /Y "$(SolutionDir)BelowZeroClient\$(OutDir)BelowZeroClient.dll" "$(SubnauticaRootPath)\QMods\BelowZeroMultiplayer\BelowZeroClient.dll"
+    <PostBuildEvent>if not exist "$(SubnauticaRootPath)\QMods\BelowZeroMultiplayer" mkdir "$(SubnauticaRootPath)\QMods\BelowZeroMultiplayer"
+
+copy /Y "$(SolutionDir)BelowZeroClient\$(OutDir)BelowZeroClient.dll" "$(SubnauticaRootPath)\QMods\BelowZeroMultiplayer\BelowZeroClient.dll"
 copy /Y "$(SolutionDir)Configs\Client\mod.json" "$(SubnauticaRootPath)\QMods\BelowZeroMultiplayer\mod.json"
 
 start "" "$(SubnauticaRootPath)\SubnauticaZero.exe"</PostBuildEvent>
+  </PropertyGroup>
+  <PropertyGroup>
+    <PreBuildEvent>if not exist "$(SubnauticaRootPath)\QMods\BelowZeroMultiplayer" mkdir "$(SubnauticaRootPath)\QMods\BelowZeroMultiplayer"</PreBuildEvent>
   </PropertyGroup>
 </Project>

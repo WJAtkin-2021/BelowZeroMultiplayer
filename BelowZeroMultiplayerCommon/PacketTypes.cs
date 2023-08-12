@@ -17,6 +17,8 @@ namespace BelowZeroMultiplayerCommon
         SpawnPlayer = 4,
         SycPlayerList = 5,
         PlayerTransformUpdate = 6,
+        PlayerDroppedItem = 7,
+        PlayerPickedUpItem = 8,
     }
 
     /// <summary>
@@ -27,5 +29,7 @@ namespace BelowZeroMultiplayerCommon
         ConnectedReceived = 1,
         SpawnMe = 2,
         TransformUpdate = 3,
+        DroppedItem = 4,
+        PickupItem = 5,
     }
 }

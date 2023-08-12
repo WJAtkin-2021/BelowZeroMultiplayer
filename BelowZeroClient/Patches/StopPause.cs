@@ -1,7 +1,7 @@
 ﻿using HarmonyLib;
 using UWE;
 
-namespace ClientSubnautica.ClientManager
+namespace BelowZeroClient.Patches
 {
     class DisablePause
     {

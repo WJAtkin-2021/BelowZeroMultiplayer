@@ -49,6 +49,18 @@ namespace BelowZeroServer
                 m_server.StopServer();
                 m_serverClosing = true;
             }
+            else if (cmd == "droptest")
+            {
+                Console.WriteLine("Its raining NutrientBlock");
+
+                for (float x = -315.0f; x < -300.0f; x += 1.0f)
+                {
+                    for (float z = 245.0f; z < 265.0f; z += 1.0f)
+                    {
+                        NetSend.PlayerDroppedItem(0, "NutrientBlock", new Vector3(x, 25.0f, z), Guid.NewGuid().ToString());
+                    }
+                }
+            }
         }
     }
 }

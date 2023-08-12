@@ -92,6 +92,28 @@ namespace BelowZeroServer
             }
         }
 
+        public static void PlayerDroppedItem(int _client, string _techName, Vector3 _pos, string token)
+        {
+            using (Packet packet = new Packet((int)ServerPackets.PlayerDroppedItem))
+            {
+                packet.Write(_techName);
+                packet.Write(_pos);
+                packet.Write(token);
+
+                SendTCPDataToAll(_client, packet);
+            }
+        }
+
+        public static void PlayerPickedUpItem(int _client, string token)
+        {
+            using (Packet packet = new Packet((int)ServerPackets.PlayerPickedUpItem))
+            {
+                packet.Write(token);
+
+                SendTCPDataToAll(_client, packet);
+            }
+        }
+
         private static void SendTCPData(int _toClient, Packet _packet)
         {
             _packet.WriteLength();

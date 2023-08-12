@@ -165,6 +165,8 @@ namespace BelowZeroServer
                 { (int)ClientPackets.ConnectedReceived, NetReceive.ConnectedReceived },
                 { (int)ClientPackets.SpawnMe, NetReceive.HandleClientSpawnMe },
                 { (int)ClientPackets.TransformUpdate, NetReceive.HandleTranformUpdate },
+                { (int)ClientPackets.DroppedItem, NetReceive.HandleDroppedItem },
+                { (int)ClientPackets.PickupItem, NetReceive.HandlePickupItem },
             };
         }
 

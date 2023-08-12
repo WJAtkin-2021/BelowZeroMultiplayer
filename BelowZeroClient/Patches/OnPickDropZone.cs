@@ -1,7 +1,7 @@
 ﻿using System;
 using HarmonyLib;
 
-namespace ClientSubnautica.ClientManager
+namespace BelowZeroClient.Patches
 {
     class OnPickDropZone
     {
@@ -14,6 +14,7 @@ namespace ClientSubnautica.ClientManager
                 SupplyDropZone[] dropZones = __instance.dropZones;
                 Array.Resize<SupplyDropZone>(ref dropZones, 1);
                 __instance.dropZones = dropZones;
+                __instance.selectRandomOrientation = false;
             }
         }
     }

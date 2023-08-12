@@ -3,7 +3,7 @@ using HarmonyLib;
 using System.Net.Sockets;
 using System.Threading;
 
-namespace ClientSubnautica.MultiplayerManager
+namespace BelowZeroClient.Patches
 {
     class PlayerPatches
     {

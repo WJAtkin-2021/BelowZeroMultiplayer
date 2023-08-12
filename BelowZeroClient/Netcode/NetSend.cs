@@ -1,4 +1,5 @@
 ﻿using BelowZeroMultiplayerCommon;
+using Newtonsoft.Json.Linq;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -40,6 +41,28 @@ namespace BelowZeroClient
                 packet.Write(_rot);
 
                 SendUDPData(packet);
+            }
+        }
+
+        public static void DroppedItem(Pickupable dropable, string token)
+        {
+            using (Packet packet = new Packet((int)ClientPackets.DroppedItem))
+            {
+                packet.Write(dropable.GetTechName());
+                packet.Write(dropable.gameObject.transform.position);
+                packet.Write(token);
+
+                SendTCPData(packet);
+            }
+        }
+
+        public static void PickupItem(string token)
+        {
+            using (Packet packet = new Packet((int)ClientPackets.PickupItem))
+            {
+                packet.Write(token);
+
+                SendTCPData(packet);
             }
         }
 

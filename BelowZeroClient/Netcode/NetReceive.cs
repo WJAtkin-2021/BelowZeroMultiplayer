@@ -1,4 +1,5 @@
-﻿using HarmonyLib;
+﻿using BelowZeroClient.Utill;
+using HarmonyLib;
 using Newtonsoft.Json.Linq;
 using System;
 using System.Collections.Generic;
@@ -92,6 +93,33 @@ namespace BelowZeroClient
             CoroutineHost.StartCoroutine(uGUI_MainMenu.main.LoadGameAsync(mapLocation, session, int.Parse(changeSet), gameModelPreset, options, int.Parse(storyVersion)));
 
             ErrorMessage.AddMessage($"Didn't crash :)");
+        }
+
+        public static void handlePlayerDroppedItem(Packet _packet)
+        {
+            string teckName = _packet.ReadString();
+            Vector3 pos = _packet.ReadVector3();
+            string token = _packet.ReadString();
+
+            TechType techType = (TechType)Enum.Parse(typeof(TechType), teckName);
+
+            CoroutineHost.StartCoroutine(CreateTechTypeAsyc.CreateNetworkedTechTypeAsyc(techType, pos, token, null));
+        }
+
+        public static void handlePlayerPickedUpItem(Packet _packet)
+        {
+            string token = _packet.ReadString();
+
+            // TODO: Refactor this so that we store all networked pickupables in a list
+            NetToken[] tokens = GameObject.FindObjectsOfType<NetToken>();
+            foreach (NetToken tok in tokens)
+            {
+                if (tok.guid == token)
+                {
+                    UnityEngine.Object.Destroy(tok.gameObject);
+                    return;
+                }
+            }
         }
     }
 }

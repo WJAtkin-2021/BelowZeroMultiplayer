@@ -126,6 +126,8 @@ namespace BelowZeroClient
                 { (int)ServerPackets.SpawnPlayer, NetReceive.HandleSpawnPlayer },
                 { (int)ServerPackets.SycPlayerList, NetReceive.HandleSycPlayerList },
                 { (int)ServerPackets.PlayerTransformUpdate, NetReceive.HandlePlayerTransformUpdate },
+                { (int)ServerPackets.PlayerDroppedItem, NetReceive.handlePlayerDroppedItem },
+                { (int)ServerPackets.PlayerPickedUpItem, NetReceive.handlePlayerPickedUpItem },
             };
         }
 

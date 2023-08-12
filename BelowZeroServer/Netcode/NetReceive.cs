@@ -45,5 +45,31 @@ namespace BelowZeroServer
 
             NetSend.PlayerTransformUpdate(clientId, position, rotation);
         }
+
+        public static void HandleDroppedItem(int _fromClient, Packet _packet)
+        {
+            // Get the variables of the dropped item
+            string techName = _packet.ReadString();
+            Vector3 position = _packet.ReadVector3();
+            string token = _packet.ReadString();
+
+            // Replicate this
+            NetSend.PlayerDroppedItem(_fromClient, techName, position, token);
+
+            Logger.Log($"Client: {_fromClient} Dropped: {techName} With Token: {token}");
+
+            // TODO: Store this data for late joiners
+
+        }
+
+        public static void HandlePickupItem(int _fromClient, Packet _packet)
+        {
+            string itemToken = _packet.ReadString();
+
+            // Replicate this
+            NetSend.PlayerPickedUpItem(_fromClient, itemToken);
+
+            // TODO: Un-Store this data for late joiners
+        }
     }
 }

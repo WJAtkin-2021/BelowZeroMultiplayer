@@ -13,7 +13,7 @@ namespace BelowZeroClient
     {
         public void Update()
         {
-            NetSend.TranformUpdate(transform.position, transform.rotation);
+            NetSend.TranformUpdate(transform.position, MainCameraControl.main.viewModel.transform.rotation);
         }
     }
 }

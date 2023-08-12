@@ -40,6 +40,58 @@ namespace BelowZeroServer
             }
         }
 
+        public static void PlayerSpawned(int _client)
+        {
+            using (Packet packet = new Packet((int)ServerPackets.SpawnPlayer))
+            {
+                // Write the client ID of the new client
+                packet.Write(_client);
+
+                // TODO: Provide a spawn location for them.
+
+                SendTCPDataToAll(_client, packet);
+            }
+        }
+
+        public static void SycPlayerList(int _client)
+        {
+            using (Packet packet = new Packet((int)ServerPackets.SycPlayerList))
+            {
+                // Generate a list of players currently in
+                List<int> spawnedPlayers = new List<int>();
+                for (int i = 0; i < Server.instance.m_clients.Count; i++)
+                {
+                    if (Server.instance.m_clients[i].m_tcp.m_tcpClient != null && i != _client)
+                    {
+                        spawnedPlayers.Add(i);
+                    }
+                }
+
+                // Write the total number
+                packet.Write(spawnedPlayers.Count);
+                // Write each client ID
+                for (int i = 0; i < spawnedPlayers.Count; i++)
+                {
+                    packet.Write(spawnedPlayers[i]);
+                }
+
+                // Send it
+                SendTCPData(_client, packet);
+            }
+        }
+
+        public static void PlayerTransformUpdate(int _client, Vector3 _pos, Quaternion _rot)
+        {
+            using (Packet packet = new Packet((int)ServerPackets.PlayerTransformUpdate))
+            {
+                packet.Write(_client);
+                packet.Write(_pos);
+                packet.Write(_rot);
+
+                SendTCPDataToAll(_client, packet);
+            }
+        }
+
         private static void SendTCPData(int _toClient, Packet _packet)
         {
             _packet.WriteLength();
@@ -57,7 +109,13 @@ namespace BelowZeroServer
             _packet.WriteLength();
             for (int i = 1; i <= Server.MAX_PLAYERS; i++)
             {
-                Server.instance.m_clients[i].m_tcp.SendPacket(_packet);
+                if (Server.instance.m_clients.ContainsKey(i))
+                {
+                    if (Server.instance.m_clients[i].m_tcp != null)
+                    {
+                        Server.instance.m_clients[i].m_tcp.SendPacket(_packet);
+                    }
+                }
             }
         }
 
@@ -68,7 +126,13 @@ namespace BelowZeroServer
             {
                 if (i != _exceptClient)
                 {
-                    Server.instance.m_clients[i].m_tcp.SendPacket(_packet);
+                    if (Server.instance.m_clients.ContainsKey(i))
+                    {
+                        if (Server.instance.m_clients[i].m_tcp != null)
+                        {
+                            Server.instance.m_clients[i].m_tcp.SendPacket(_packet);
+                        }
+                    }
                 }
             }
         }
@@ -78,7 +142,13 @@ namespace BelowZeroServer
             _packet.WriteLength();
             for (int i = 1; i <= Server.MAX_PLAYERS; i++)
             {
-                Server.instance.m_clients[i].m_udp.SendPacket(_packet);
+                if (Server.instance.m_clients.ContainsKey(i))
+                {
+                    if (Server.instance.m_clients[i].m_udp != null)
+                    {
+                        Server.instance.m_clients[i].m_udp.SendPacket(_packet);
+                    }
+                }
             }
         }
 
@@ -89,7 +159,13 @@ namespace BelowZeroServer
             {
                 if (i != _exceptClient)
                 {
-                    Server.instance.m_clients[i].m_udp.SendPacket(_packet);
+                    if (Server.instance.m_clients.ContainsKey(i))
+                    {
+                        if (Server.instance.m_clients[i].m_udp != null)
+                        {
+                            Server.instance.m_clients[i].m_udp.SendPacket(_packet);
+                        }
+                    }
                 }
             }
         }

@@ -87,6 +87,7 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="ExtensionComponents\ReplicatePlayer.cs" />
     <Compile Include="Main.cs" />
     <Compile Include="Netcode\NetReceive.cs" />
     <Compile Include="Netcode\NetSend.cs" />
@@ -96,6 +97,9 @@
     <Compile Include="Netcode\TCP.cs" />
     <Compile Include="Netcode\UDP.cs" />
     <Compile Include="Patches\AddMenuItems.cs" />
+    <Compile Include="Patches\OnPickDropZone.cs" />
+    <Compile Include="Patches\PlayerPatches.cs" />
+    <Compile Include="Patches\StopPause.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="Utill\MapDataUtils.cs" />
     <Compile Include="Utill\ThreadManager.cs" />

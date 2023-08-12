@@ -14,6 +14,9 @@ namespace BelowZeroMultiplayerCommon
         Connected = 1,
         PlayerDisconnected = 2,
         MapDownload = 3,
+        SpawnPlayer = 4,
+        SycPlayerList = 5,
+        PlayerTransformUpdate = 6,
     }
 
     /// <summary>
@@ -22,5 +25,7 @@ namespace BelowZeroMultiplayerCommon
     public enum ClientPackets
     {
         ConnectedReceived = 1,
+        SpawnMe = 2,
+        TransformUpdate = 3,
     }
 }

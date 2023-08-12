@@ -4,6 +4,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using UnityEngine;
 
 namespace BelowZeroClient
 {
@@ -17,6 +18,28 @@ namespace BelowZeroClient
                 packet.Write(NetworkClient.Instance.m_clientId);
 
                 SendTCPData(packet);
+            }
+        }
+
+        public static void SpawnMe()
+        {
+            using (Packet packet = new Packet((int)ClientPackets.SpawnMe))
+            {
+                packet.Write(NetworkClient.Instance.m_clientId);
+
+                SendTCPData(packet);
+            }
+        }
+
+        public static void TranformUpdate(Vector3 _pos, Quaternion _rot)
+        {
+            using (Packet packet = new Packet((int)ClientPackets.TransformUpdate))
+            {
+                packet.Write(NetworkClient.Instance.m_clientId);
+                packet.Write(_pos);
+                packet.Write(_rot);
+
+                SendUDPData(packet);
             }
         }
 

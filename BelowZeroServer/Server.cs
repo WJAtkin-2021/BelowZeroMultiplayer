@@ -163,6 +163,8 @@ namespace BelowZeroServer
             m_packetHandlers = new Dictionary<int, PacketHandler>()
             {
                 { (int)ClientPackets.ConnectedReceived, NetReceive.ConnectedReceived },
+                { (int)ClientPackets.SpawnMe, NetReceive.HandleClientSpawnMe },
+                { (int)ClientPackets.TransformUpdate, NetReceive.HandleTranformUpdate },
             };
         }
 

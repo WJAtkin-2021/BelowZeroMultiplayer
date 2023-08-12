@@ -16,6 +16,11 @@ namespace BelowZeroServer
             this.x = x;
             this.y = y;
         }
+
+        public override string ToString()
+        {
+            return $"({x}, {y})";
+        }
     }
 
     public class Vector3
@@ -29,6 +34,11 @@ namespace BelowZeroServer
             this.x = x;
             this.y = y;
             this.z = z;
+        }
+
+        public override string ToString()
+        {
+            return $"({x}, {y}, {z})";
         }
     }
 
@@ -45,6 +55,11 @@ namespace BelowZeroServer
             this.y = y;
             this.z = z;
             this.w = w;
+        }
+
+        public override string ToString()
+        {
+            return $"({x}, {y}, {z}, {w})";
         }
     }
 }

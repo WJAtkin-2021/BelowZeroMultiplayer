@@ -5,6 +5,8 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using UnityEngine;
+using UWE;
 
 namespace BelowZeroClient
 {
@@ -17,6 +19,8 @@ namespace BelowZeroClient
 
             ErrorMessage.AddMessage($"Assigned client ID: {newClientId}");
 
+            NetworkClient.Instance.m_clientId = newClientId;
+
             // Tell the server we got it and to start up the UDP connection
             NetSend.ConnectedReceived();
             NetworkClient.Instance.StartUDPConnection();
@@ -27,6 +31,43 @@ namespace BelowZeroClient
 
         }
 
+        public static void HandleSpawnPlayer(Packet _packet)
+        {
+            // Read the ID of the player that spawned
+            int newClientId = _packet.ReadInt();
+
+            if (newClientId != NetworkClient.Instance.m_clientId)
+            {
+                NetworkClient.Instance.AddRemotePlayer(newClientId);
+            }
+        }
+
+        public static void HandleSycPlayerList(Packet _packet)
+        {
+            // Get the list length
+            int numberOfClients = _packet.ReadInt();
+            for (int i = 0; i < numberOfClients; i++)
+            {
+                int clientId = _packet.ReadInt();
+                if (clientId != NetworkClient.Instance.m_clientId)
+                {
+                    NetworkClient.Instance.AddRemotePlayer(clientId);
+                }
+            }
+        }
+
+        public static void HandlePlayerTransformUpdate(Packet _packet)
+        {
+            int clientId = _packet.ReadInt();
+            Vector3 pos = _packet.ReadVector3();
+            Quaternion rot = _packet.ReadQuaternoin();
+
+            if (NetworkClient.Instance.m_remotePlayers.ContainsKey(clientId))
+            {
+                NetworkClient.Instance.m_remotePlayers[clientId].UpdateTransform(pos, rot);
+            }
+        }
+
         public static void HandleMapData(Packet _packet)
         {
             // Grab the length
@@ -34,14 +75,9 @@ namespace BelowZeroClient
 
             // Read the map data
             byte[] mapData = _packet.ReadBytes(length);
-
-            // debug print to log file
-            ErrorMessage.AddMessage($"Got map with total bytes: {mapData.Length}");
-
             string mapLocation = MapDataUtils.SaveMapData(mapData);
 
-            ErrorMessage.AddMessage($"Saved map from server to: {mapLocation}");
-
+            // Read the game info
             JObject mapInfo = MapDataUtils.LoadGameInfoFromSavefile(mapLocation);
 
             string session = mapInfo["session"].ToString();
@@ -49,7 +85,13 @@ namespace BelowZeroClient
             string gameMode = mapInfo["gameMode"].ToString();
             string storyVersion = mapInfo["storyVersion"].ToString();
 
-            ErrorMessage.AddMessage($"{session}:{changeSet}:{gameMode}:{storyVersion}");
+            GameModePresetId gameModelPreset = GameModePresetId.Survival;
+            GameOptions options = new GameOptions();
+
+            // Ask the game to load this file
+            CoroutineHost.StartCoroutine(uGUI_MainMenu.main.LoadGameAsync(mapLocation, session, int.Parse(changeSet), gameModelPreset, options, int.Parse(storyVersion)));
+
+            ErrorMessage.AddMessage($"Didn't crash :)");
         }
     }
 }

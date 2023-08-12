@@ -1,6 +1,7 @@
 ﻿using BelowZeroMultiplayerCommon;
 using ICSharpCode.SharpZipLib.Zip;
 using System;
+using System.Collections;
 using System.Collections.Generic;
 using System.Linq;
 using System.Net;
@@ -28,6 +29,8 @@ namespace BelowZeroClient
         public delegate void PacketHandler(Packet packet);
         private static Dictionary<int, PacketHandler> m_packetHandlers;
 
+        public Dictionary<int,RemotePlayer> m_remotePlayers = new Dictionary<int, RemotePlayer>();
+
         void Awake() 
         {
             if (Instance == null)
@@ -35,6 +38,7 @@ namespace BelowZeroClient
                 Instance = this;
                 DontDestroyOnLoad(gameObject);
                 InitPacketHandlers();
+                StartCoroutine(CheckRemoteViews());
             }
             else
             {
@@ -82,6 +86,12 @@ namespace BelowZeroClient
             m_tcp.Connect(_ip, _port, DATA_BUFF_SIZE);
         }
 
+        public void AddRemotePlayer(int _clientId)
+        {
+            RemotePlayer player = new RemotePlayer(_clientId);
+            m_remotePlayers[_clientId] = player;
+        }
+
         public void Disconnect()
         {
             if (m_isConnected)
@@ -113,12 +123,31 @@ namespace BelowZeroClient
                 { (int)ServerPackets.Connected, NetReceive.Connected },
                 { (int)ServerPackets.PlayerDisconnected, NetReceive.PlayerDisconnected },
                 { (int)ServerPackets.MapDownload, NetReceive.HandleMapData },
+                { (int)ServerPackets.SpawnPlayer, NetReceive.HandleSpawnPlayer },
+                { (int)ServerPackets.SycPlayerList, NetReceive.HandleSycPlayerList },
+                { (int)ServerPackets.PlayerTransformUpdate, NetReceive.HandlePlayerTransformUpdate },
             };
         }
 
         private void OnApplicationQuit()
         {
             Disconnect();
+        }
+
+        private IEnumerator CheckRemoteViews()
+        {
+            yield return new WaitForSeconds(5);
+
+            foreach (KeyValuePair<int, RemotePlayer> entry in m_remotePlayers)
+            {
+                if (!entry.Value.spawnedIn)
+                {
+                    entry.Value.AttemptSpawn();
+                }
+            }
+
+            StartCoroutine(CheckRemoteViews());
+            yield return null;
         }
     }
 }

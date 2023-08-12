@@ -32,12 +32,14 @@ namespace BelowZeroClient
             ZipFile.ExtractToDirectory(outZipPath, outDirectoryPath);
             File.Delete(outZipPath);
 
+            //outDirectoryPath = Path.Combine(outDirectoryPath, "world");
+
             return outDirectoryPath;
         }
 
         public static JObject LoadGameInfoFromSavefile(string saveFolderName)
         {
-            string gameInfoPath = Path.Combine( saveFolderName, "gameinfo.json");
+            string gameInfoPath = Path.Combine(saveFolderName, "gameinfo.json");
             return JObject.Parse(File.ReadAllText(gameInfoPath));
         }
     }

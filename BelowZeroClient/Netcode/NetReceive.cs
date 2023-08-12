@@ -1,4 +1,5 @@
 ﻿using HarmonyLib;
+using Newtonsoft.Json.Linq;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -40,6 +41,15 @@ namespace BelowZeroClient
             string mapLocation = MapDataUtils.SaveMapData(mapData);
 
             ErrorMessage.AddMessage($"Saved map from server to: {mapLocation}");
+
+            JObject mapInfo = MapDataUtils.LoadGameInfoFromSavefile(mapLocation);
+
+            string session = mapInfo["session"].ToString();
+            string changeSet = mapInfo["changeSet"].ToString();
+            string gameMode = mapInfo["gameMode"].ToString();
+            string storyVersion = mapInfo["storyVersion"].ToString();
+
+            ErrorMessage.AddMessage($"{session}:{changeSet}:{gameMode}:{storyVersion}");
         }
     }
 }

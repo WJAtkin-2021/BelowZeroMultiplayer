@@ -37,7 +37,7 @@ namespace BelowZeroClient
 
         public static JObject LoadGameInfoFromSavefile(string saveFolderName)
         {
-            string gameInfoPath = Path.Combine(AppDomain.CurrentDomain.BaseDirectory, saveFolderName, "gameinfo.json");
+            string gameInfoPath = Path.Combine( saveFolderName, "gameinfo.json");
             return JObject.Parse(File.ReadAllText(gameInfoPath));
         }
     }

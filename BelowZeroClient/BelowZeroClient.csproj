@@ -103,10 +103,14 @@
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <PropertyGroup>
-    <PostBuildEvent>copy /Y "$(SolutionDir)BelowZeroClient\$(OutDir)BelowZeroClient.dll" "$(SubnauticaRootPath)\QMods\BelowZeroMultiplayer\BelowZeroClient.dll"
+    <PostBuildEvent>if not exist "$(SubnauticaRootPath)\QMods\BelowZeroMultiplayer" mkdir "$(SubnauticaRootPath)\QMods\BelowZeroMultiplayer"
+
+copy /Y "$(SolutionDir)BelowZeroClient\$(OutDir)BelowZeroClient.dll" "$(SubnauticaRootPath)\QMods\BelowZeroMultiplayer\BelowZeroClient.dll"
 copy /Y "$(SolutionDir)Configs\Client\mod.json" "$(SubnauticaRootPath)\QMods\BelowZeroMultiplayer\mod.json"
 
-start "" "$(SubnauticaRootPath)\SubnauticaZero.exe"
-start "" "$(SolutionDir)BelowZeroServer\$(OutDir)BelowZeroServer.exe"</PostBuildEvent>
+start "" "$(SubnauticaRootPath)\SubnauticaZero.exe"</PostBuildEvent>
+  </PropertyGroup>
+  <PropertyGroup>
+    <PreBuildEvent>if not exist "$(SubnauticaRootPath)\QMods\BelowZeroMultiplayer" mkdir "$(SubnauticaRootPath)\QMods\BelowZeroMultiplayer"</PreBuildEvent>
   </PropertyGroup>
 </Project>

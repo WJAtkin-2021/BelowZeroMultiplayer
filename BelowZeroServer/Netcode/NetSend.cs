@@ -24,6 +24,22 @@ namespace BelowZeroServer
 
         }
 
+        public static void UploadMapToClient(int _client)
+        {
+            using (Packet packet = new Packet((int)ServerPackets.MapDownload))
+            {
+                byte[] mapData = Server.instance.GetMapData();
+
+                // Length
+                packet.Write(mapData.Length);
+
+                // Data
+                packet.Write(mapData);
+
+                SendTCPData(_client, packet);
+            }
+        }
+
         private static void SendTCPData(int _toClient, Packet _packet)
         {
             _packet.WriteLength();

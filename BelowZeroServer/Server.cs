@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections;
 using System.Collections.Generic;
+using System.IO;
 using System.Linq;
 using System.Net;
 using System.Net.Sockets;
@@ -25,9 +26,13 @@ namespace BelowZeroServer
 
         public static Server instance;
 
-        public Server() 
+        private byte[] m_mapData;
+
+        public Server()
         {
             instance = this;
+
+            m_mapData = File.ReadAllBytes("TestMap.zip");
         }
 
         public void StartServer(int _port)
@@ -159,6 +164,11 @@ namespace BelowZeroServer
             {
                 { (int)ClientPackets.ConnectedReceived, NetReceive.ConnectedReceived },
             };
+        }
+
+        public byte[] GetMapData()
+        {
+            return m_mapData;
         }
     }
 }

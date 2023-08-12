@@ -55,18 +55,15 @@ namespace BelowZeroClient
             {
                 NetworkClient.Instance.OnConnected?.Invoke();
                 ErrorMessage.AddMessage("Connected to server");
-
             });
         }
 
         public void SendPacket(Packet _packet)
         {
-            ErrorMessage.AddMessage($"SendPacket called");
             try
             {
                 if (m_tcpClient != null)
                 {
-                    ErrorMessage.AddMessage($"Writing to stream: {_packet.ToArray()}");
                     m_stream.BeginWrite(_packet.ToArray(), 0, _packet.Length(), null, null);
                 }
                 else

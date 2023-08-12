@@ -25,5 +25,19 @@ namespace BelowZeroClient
         {
 
         }
+
+        public static void HandleMapData(Packet _packet)
+        {
+            // Grab the length
+            int length = _packet.ReadInt();
+
+            // Read the map data
+            byte[] mapData = _packet.ReadBytes(length);
+
+            // debug print to log file
+            ErrorMessage.AddMessage($"Got map with total bytes: {mapData.Length}");
+
+
+        }
     }
 }

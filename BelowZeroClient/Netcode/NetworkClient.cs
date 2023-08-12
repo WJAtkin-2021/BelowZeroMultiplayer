@@ -30,7 +30,6 @@ namespace BelowZeroClient
 
         void Awake() 
         {
-            ErrorMessage.AddMessage("[NetworkClient] Awake Called!");
             if (Instance == null)
             {
                 Instance = this;
@@ -113,6 +112,7 @@ namespace BelowZeroClient
             {
                 { (int)ServerPackets.Connected, NetReceive.Connected },
                 { (int)ServerPackets.PlayerDisconnected, NetReceive.PlayerDisconnected },
+                { (int)ServerPackets.MapDownload, NetReceive.HandleMapData },
             };
         }
 

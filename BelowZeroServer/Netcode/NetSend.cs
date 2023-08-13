@@ -88,7 +88,7 @@ namespace BelowZeroServer
                 packet.Write(_pos);
                 packet.Write(_rot);
 
-                SendTCPDataToAll(_client, packet);
+                SendUDPDataToAll(_client, packet);
             }
         }
 

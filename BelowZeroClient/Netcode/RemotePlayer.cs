@@ -25,7 +25,7 @@ namespace BelowZeroClient
             m_clientId = _clientId;
 
             ErrorMessage.AddMessage($"Player {_clientId} is joining...");
-
+            
             AttemptSpawn();
         }
 

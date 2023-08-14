@@ -3,6 +3,7 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Net.Sockets;
+using System.Security.Policy;
 using System.Text;
 using System.Threading.Tasks;
 using TMPro;
@@ -10,7 +11,7 @@ using UnityEngine;
 using UnityEngine.SceneManagement;
 using UnityEngine.UI;
 
-namespace BelowZeroClient.Patches
+namespace BelowZeroClient
 {
     class AddMenuItems
     {
@@ -53,8 +54,11 @@ namespace BelowZeroClient.Patches
                             GameObject.Find("Menu canvas/Panel/MainMenu/RightSide/MultiplayerMenu/SubscriptionInProgress").SetActive(true);
                             try
                             {
-                                NetworkClient.Instance.AttemptServerConnection(gameObject.FindChild("InputField").GetComponent<TMP_InputField>().text);
-                                //test.start(gameObject.FindChild("InputField").GetComponent<TMP_InputField>().text);
+                                // Save the socket info for next session
+                                string enteredSocket = gameObject.FindChild("InputField").GetComponent<TMP_InputField>().text;
+                                ApplicationSettings.SaveSocket(enteredSocket);
+                                NetworkClient.Instance.AttemptServerConnection(enteredSocket);
+
                                 GameObject.Find("Menu canvas/Panel/MainMenu/RightSide/MultiplayerMenu/SubscriptionInProgress").SetActive(false);
 
                                 GameObject.Find("Menu canvas/Panel/MainMenu/RightSide/MultiplayerMenu/SubscriptionSuccess").SetActive(true);
@@ -90,7 +94,10 @@ namespace BelowZeroClient.Patches
 
                         GameObject.Find("Menu canvas/Panel/MainMenu/RightSide/MultiplayerMenu/HeaderText").GetComponent<TextMeshProUGUI>().text = "Join a server";
                         GameObject.Find("Menu canvas/Panel/MainMenu/RightSide/MultiplayerMenu/InputField/Placeholder").GetComponent<TextMeshProUGUI>().text = "Enter the ip adress of the server...";
-                        GameObject.Find("Menu canvas/Panel/MainMenu/RightSide/MultiplayerMenu/InputField").GetComponent<TMP_InputField>().text = "127.0.0.1:5000";
+
+                        string socket = ApplicationSettings.LoadSocket();
+
+                        GameObject.Find("Menu canvas/Panel/MainMenu/RightSide/MultiplayerMenu/InputField").GetComponent<TMP_InputField>().text = socket;
 
                         GameObject.Find("Menu canvas/Panel/MainMenu/RightSide/MultiplayerMenu/ViewPastUpdates/").SetActive(false);
 

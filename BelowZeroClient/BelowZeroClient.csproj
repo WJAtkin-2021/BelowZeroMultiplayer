@@ -87,6 +87,7 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="Utill\ApplicationSettings.cs" />
     <Compile Include="ExtensionComponents\ReplicatePlayer.cs" />
     <Compile Include="Main.cs" />
     <Compile Include="Netcode\NetReceive.cs" />

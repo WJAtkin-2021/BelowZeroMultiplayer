@@ -170,6 +170,11 @@ namespace BelowZeroServer
             };
         }
 
+        public bool IsServerShuttingDown()
+        {
+            return m_isShuttingDown;
+        }
+
         public byte[] GetMapData()
         {
             return m_mapData;

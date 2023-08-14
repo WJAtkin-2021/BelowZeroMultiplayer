@@ -60,6 +60,9 @@ namespace BelowZeroServer
 
         private void ReceiveCallback(IAsyncResult _result)
         {
+            if (Server.instance.IsServerShuttingDown())
+                return;
+
             try
             {
                 int byteLength = m_stream.EndRead(_result);

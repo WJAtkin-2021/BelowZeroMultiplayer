@@ -32,7 +32,7 @@ namespace BelowZeroServer
         {
             instance = this;
 
-            m_mapData = File.ReadAllBytes("TestMap.zip");
+            m_mapData = File.ReadAllBytes("BaseBuildTest.zip");
         }
 
         public void StartServer(int _port)

@@ -83,14 +83,47 @@ namespace BelowZeroClient
 
             string session = mapInfo["session"].ToString();
             string changeSet = mapInfo["changeSet"].ToString();
-            string gameMode = mapInfo["gameMode"].ToString();
+            string gameModeId = mapInfo["gameModePresetId"].ToString();
             string storyVersion = mapInfo["storyVersion"].ToString();
 
-            GameModePresetId gameModelPreset = GameModePresetId.Survival;
+            // We need to figure out what the game mode is as
+            // the number that is saved in gamemode.json does not match the enum
+            GameModePresetId gameModePreset = GameModePresetId.Survival;
+            switch (gameModeId)
+            {
+                case "0":
+                    {
+                            gameModePreset = GameModePresetId.Survival;
+                    }
+                    break;
+                case "1":
+                    {
+                        gameModePreset = GameModePresetId.Freedom;
+                    }
+                    break;
+                case "2":
+                    {
+                        gameModePreset = GameModePresetId.Hardcore;
+                    }
+                    break;
+                case "3":
+                    {
+                        gameModePreset = GameModePresetId.Creative;
+                    }
+                    break;
+                case "100":
+                    {
+                        // TODO: Custom game modes are not yet supported so we set the game to survival for now...
+                        gameModePreset = GameModePresetId.Survival;
+                    }
+                    break;
+            }
+
+            // TODO: Read the options from the file so we can support custom game modes
             GameOptions options = new GameOptions();
 
             // Ask the game to load this file
-            CoroutineHost.StartCoroutine(uGUI_MainMenu.main.LoadGameAsync(mapLocation, session, int.Parse(changeSet), gameModelPreset, options, int.Parse(storyVersion)));
+            CoroutineHost.StartCoroutine(uGUI_MainMenu.main.LoadGameAsync(mapLocation, session, int.Parse(changeSet), gameModePreset, options, int.Parse(storyVersion)));
 
             ErrorMessage.AddMessage($"Didn't crash :)");
         }

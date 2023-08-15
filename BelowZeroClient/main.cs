@@ -11,6 +11,7 @@ namespace BelowZeroClient
         {
             Harmony harmony = new Harmony("BelowZeroMultiplayer");
             harmony.PatchAll();
+            FileLog.Log("Harmony Patched!");
         }
     }
 }

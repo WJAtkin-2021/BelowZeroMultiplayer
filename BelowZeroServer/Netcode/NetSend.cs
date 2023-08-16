@@ -114,6 +114,18 @@ namespace BelowZeroServer
             }
         }
 
+        public static void PlayerUnlockedTechKnowledge(int _toClient, int techType, bool unlockEncyclopedia, bool verbose)
+        {
+            using (Packet packet = new Packet((int)ServerPackets.PlayerUnlockedTechKnowledge))
+            {
+                packet.Write(techType);
+                packet.Write(unlockEncyclopedia);
+                packet.Write(verbose);
+
+                SendTCPDataToAll(_toClient, packet);
+            }
+        }
+
         private static void SendTCPData(int _toClient, Packet _packet)
         {
             _packet.WriteLength();

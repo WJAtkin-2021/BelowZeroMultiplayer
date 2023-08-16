@@ -66,6 +66,18 @@ namespace BelowZeroClient
             }
         }
 
+        public static void TechKnowledgeAdded(TechType techType, bool unlockEncyclopedia, bool verbose)
+        {
+            using (Packet packet = new Packet((int)ClientPackets.TechKnowledgeAdded))
+            {
+                packet.Write((int)techType);
+                packet.Write(unlockEncyclopedia);
+                packet.Write(verbose);
+
+                SendTCPData(packet);
+            }
+        }
+
         private static void SendTCPData(Packet _packet)
         {
             _packet.WriteLength();

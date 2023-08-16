@@ -71,5 +71,20 @@ namespace BelowZeroServer
 
             // TODO: Un-Store this data for late joiners
         }
+
+        public static void HandleTechKnowledgeAdded(int _fromClient, Packet _packet)
+        {
+            int techType = _packet.ReadInt();
+            bool unlockEncyclopedia = _packet.ReadBool();
+            bool verbose = _packet.ReadBool();
+
+            Logger.Log($"Client: {_fromClient} Unlocked tech: {techType}");
+
+            // Replicate to all other clients
+            NetSend.PlayerUnlockedTechKnowledge(_fromClient, techType, unlockEncyclopedia, verbose);
+
+            // TODO: Store this in a data base
+
+        }
     }
 }

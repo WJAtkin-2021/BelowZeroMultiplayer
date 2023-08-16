@@ -19,6 +19,7 @@ namespace BelowZeroMultiplayerCommon
         PlayerTransformUpdate = 6,
         PlayerDroppedItem = 7,
         PlayerPickedUpItem = 8,
+        PlayerUnlockedTechKnowledge = 9,
     }
 
     /// <summary>
@@ -31,5 +32,6 @@ namespace BelowZeroMultiplayerCommon
         TransformUpdate = 3,
         DroppedItem = 4,
         PickupItem = 5,
+        TechKnowledgeAdded = 6,
     }
 }

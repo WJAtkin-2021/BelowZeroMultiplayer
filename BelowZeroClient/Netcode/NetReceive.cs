@@ -154,5 +154,18 @@ namespace BelowZeroClient
                 }
             }
         }
+
+        public static void HandlePlayerUnlockedTechKnowledge(Packet _packet)
+        {
+            TechType techType = (TechType)_packet.ReadInt();
+            bool unlockEncyclopedia = _packet.ReadBool();
+            bool verbose = _packet.ReadBool();
+
+            TechUnlockState techUnlockState = KnownTech.GetTechUnlockState(techType);
+            if (techUnlockState != TechUnlockState.Available)
+            {
+                KnownTech.Add(techType, unlockEncyclopedia, verbose);
+            }
+        }
     }
 }

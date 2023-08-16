@@ -32,7 +32,7 @@ namespace BelowZeroServer
         {
             instance = this;
 
-            m_mapData = File.ReadAllBytes("BaseBuildTest.zip");
+            m_mapData = File.ReadAllBytes("TestMap.zip");
         }
 
         public void StartServer(int _port)
@@ -167,6 +167,7 @@ namespace BelowZeroServer
                 { (int)ClientPackets.TransformUpdate, NetReceive.HandleTranformUpdate },
                 { (int)ClientPackets.DroppedItem, NetReceive.HandleDroppedItem },
                 { (int)ClientPackets.PickupItem, NetReceive.HandlePickupItem },
+                { (int)ClientPackets.TechKnowledgeAdded, NetReceive.HandleTechKnowledgeAdded },
             };
         }
 

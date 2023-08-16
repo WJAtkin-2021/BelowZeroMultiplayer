@@ -128,6 +128,7 @@ namespace BelowZeroClient
                 { (int)ServerPackets.PlayerTransformUpdate, NetReceive.HandlePlayerTransformUpdate },
                 { (int)ServerPackets.PlayerDroppedItem, NetReceive.handlePlayerDroppedItem },
                 { (int)ServerPackets.PlayerPickedUpItem, NetReceive.handlePlayerPickedUpItem },
+                { (int)ServerPackets.PlayerUnlockedTechKnowledge, NetReceive.HandlePlayerUnlockedTechKnowledge },
             };
         }
 

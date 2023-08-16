@@ -88,6 +88,7 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="Patches\OnKnownTechAdd.cs" />
+    <Compile Include="Patches\OnPDAEncyclopedia.Add.cs" />
     <Compile Include="Utill\ApplicationSettings.cs" />
     <Compile Include="ExtensionComponents\ReplicatePlayer.cs" />
     <Compile Include="Main.cs" />

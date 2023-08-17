@@ -9,19 +9,8 @@ namespace BelowZeroClient
         [HarmonyPrefix]
         static void PreFix(string key, bool verbose, bool postNotification)
         {
-            if (!string.IsNullOrEmpty(key))
-            {
-                if (PDAEncyclopedia.HasEntryData(key))
-                {
-                    PDAEncyclopedia.EntryData entryData;
-                    PDAEncyclopedia.GetEntryData(key, out entryData);
-
-                    if (!entryData.unlocked)
-                    {
-                        NetSend.AddedPDAEncyclopedia(key, verbose, postNotification);
-                    }
-                }
-            }
+            ErrorMessage.AddMessage("[OnPDAEncyclopedia:PreFix] Called!");
+            NetSend.AddedPDAEncyclopedia(key, verbose, postNotification);
         }
     }
 

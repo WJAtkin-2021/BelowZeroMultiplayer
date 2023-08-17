@@ -9,6 +9,7 @@ using System.Text;
 using System.Threading.Tasks;
 using UnityEngine;
 using UWE;
+using static ICSharpCode.SharpZipLib.Zip.ExtendedUnixData;
 
 namespace BelowZeroClient
 {
@@ -184,17 +185,11 @@ namespace BelowZeroClient
                 // Check for an existing entry for this
                 if (!data.complete.Contains(techType))
                 {
-                    // Save this to the PDA
-                    data.complete.Add(techType);
-                    PDAScanner.Deserialize(data);
+                    PDAEncyclopedia.Add(key, verbose, postNotification);
 
                     // Add the data
-                    PDAEncyclopedia.EntryData entryData;
-                    PDAEncyclopedia.GetEntryData(key, out entryData);
-                    if (!entryData.unlocked)
-                    {
-                        PDAEncyclopedia.Add(key, verbose, postNotification);
-                    }
+                    data.complete.Add(techType);
+                    PDAScanner.Deserialize(data);
                 }
             }
         }

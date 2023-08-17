@@ -77,7 +77,7 @@ namespace BelowZeroServer
             else if (cmd == "pdatest")
             {
                 Logger.Log("TwistyBridgesMushroom test");
-
+                Thread.Sleep(2000);
                 NetSend.PlayerUnlockedPDAEncyclopedia(0, "TwistyBridgesMushroom", true, true);
             }
             else

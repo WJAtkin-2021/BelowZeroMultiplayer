@@ -176,7 +176,12 @@ namespace BelowZeroClient
 
             if (!PDAEncyclopedia.HasEntryData(key))
             {
+                ErrorMessage.AddMessage($"Dossn't have entry data for {key}");
                 PDAEncyclopedia.Add(key, verbose, postNotification);
+            }
+            else
+            {
+                ErrorMessage.AddMessage($"Already had entry data for {key}");
             }
         }
 

@@ -74,6 +74,12 @@ namespace BelowZeroServer
 
                 NetSend.PlayerUpdatedFragmentProgress(0, 1117);
             }
+            else if (cmd == "pdatest")
+            {
+                Logger.Log("TwistyBridgesMushroom test");
+
+                NetSend.PlayerUnlockedPDAEncyclopedia(0, "TwistyBridgesMushroom", true, true);
+            }
             else
             {
                 Logger.Log($"Invalid Command: {cmd}");

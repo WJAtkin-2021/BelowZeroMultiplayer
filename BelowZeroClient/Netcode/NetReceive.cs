@@ -175,7 +175,7 @@ namespace BelowZeroClient
             bool verbose = _packet.ReadBool();
             bool postNotification = _packet.ReadBool();
 
-            if (!PDAEncyclopedia.HasEntryData(key))
+            if (PDAEncyclopedia.HasEntryData(key))
             {
                 PDAEncyclopedia.EntryData entryData;
                 PDAEncyclopedia.GetEntryData(key, out entryData);

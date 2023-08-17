@@ -66,13 +66,25 @@ namespace BelowZeroClient
             }
         }
 
-        public static void TechKnowledgeAdded(TechType techType, bool unlockEncyclopedia, bool verbose)
+        public static void TechKnowledgeAdded(TechType _techType, bool _unlockEncyclopedia, bool _verbose)
         {
             using (Packet packet = new Packet((int)ClientPackets.TechKnowledgeAdded))
             {
-                packet.Write((int)techType);
-                packet.Write(unlockEncyclopedia);
-                packet.Write(verbose);
+                packet.Write((int)_techType);
+                packet.Write(_unlockEncyclopedia);
+                packet.Write(_verbose);
+
+                SendTCPData(packet);
+            }
+        }
+
+        public static void AddedPDAEncyclopedia(string _key, bool _verbose, bool _postNotification)
+        {
+            using (Packet packet = new Packet((int)ClientPackets.AddedPDAEncyclopedia))
+            {
+                packet.Write(_key);
+                packet.Write(_verbose);
+                packet.Write(_postNotification);
 
                 SendTCPData(packet);
             }

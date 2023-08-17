@@ -49,6 +49,10 @@ namespace BelowZeroServer
                 m_server.StopServer();
                 m_serverClosing = true;
             }
+            else if (cmd == "clear")
+            {
+                Console.Clear();
+            }
             else if (cmd == "droptest")
             {
                 Console.WriteLine("Its raining NutrientBlock");

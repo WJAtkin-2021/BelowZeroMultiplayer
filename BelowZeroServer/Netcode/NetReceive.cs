@@ -86,5 +86,18 @@ namespace BelowZeroServer
             // TODO: Store this in a data base
 
         }
+
+        public static void HandleUnlockedPDAEncyclopedia(int _fromClient, Packet _packet)
+        {
+            // Read the packet
+            string key = _packet.ReadString();
+            bool verbose = _packet.ReadBool();
+            bool postNotification = _packet.ReadBool();
+
+            Logger.Log($"Client: {_fromClient} Unlocked PDA Entry: {key}");
+
+            // Replicate to all the other clients
+            NetSend.PlayerUnlockedPDAEncyclopedia(_fromClient, key, verbose, postNotification);
+        }
     }
 }

@@ -2,13 +2,17 @@
 
 namespace BelowZeroClient
 {
-    [HarmonyPatch(typeof(PDAEncyclopedia), "Add")]
+    // Kinda gross but serves as a good example on how to patch overloaded methods
+    [HarmonyPatch(typeof(PDAEncyclopedia), nameof(PDAEncyclopedia.Add), new[] {typeof(string), typeof(bool), typeof(bool)})]
     class OnPDAEncyclopedia
     {
         [HarmonyPostfix]
         static void PostFix(string key, bool verbose, bool postNotification)
         {
-            // TODO: ...
+            if (!string.IsNullOrEmpty(key))
+            {
+                NetSend.AddedPDAEncyclopedia(key, verbose, postNotification);
+            }
         }
     }
 }

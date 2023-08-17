@@ -167,5 +167,17 @@ namespace BelowZeroClient
                 KnownTech.Add(techType, unlockEncyclopedia, verbose);
             }
         }
+
+        public static void HandlePlayerUnlockedPDAEncyclopedia(Packet _packet)
+        {
+            string key = _packet.ReadString();
+            bool verbose = _packet.ReadBool();
+            bool postNotification = _packet.ReadBool();
+
+            if (!PDAEncyclopedia.HasEntryData(key))
+            {
+                PDAEncyclopedia.Add(key, verbose, postNotification);
+            }
+        }
     }
 }

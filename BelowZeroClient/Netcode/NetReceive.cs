@@ -184,6 +184,10 @@ namespace BelowZeroClient
                 // Check for an existing entry for this
                 if (!data.complete.Contains(techType))
                 {
+                    // Save this to the PDA
+                    data.complete.Add(techType);
+                    PDAScanner.Deserialize(data);
+
                     // Add the data
                     PDAEncyclopedia.EntryData entryData;
                     PDAEncyclopedia.GetEntryData(key, out entryData);

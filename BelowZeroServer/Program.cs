@@ -29,6 +29,7 @@ namespace BelowZeroServer
                 }
 
                 Thread.Sleep(1000);
+                Logger.WriteToFile();
                 Console.WriteLine("Server shutdown, press any key to close console...");
                 Console.ReadKey();
             }
@@ -43,9 +44,11 @@ namespace BelowZeroServer
         {
             cmd = cmd.ToLower();
 
+            Logger.SilentLog($"Command entered: {cmd}");
+
             if (cmd == "stop")
             {
-                Console.WriteLine("Server shutting down");
+                Logger.Log("Server shutting down");
                 m_server.StopServer();
                 m_serverClosing = true;
             }
@@ -55,7 +58,7 @@ namespace BelowZeroServer
             }
             else if (cmd == "droptest")
             {
-                Console.WriteLine("Its raining NutrientBlock");
+                Logger.Log("Its raining NutrientBlock");
 
                 for (float x = -315.0f; x < -300.0f; x += 1.0f)
                 {
@@ -64,6 +67,10 @@ namespace BelowZeroServer
                         NetSend.PlayerDroppedItem(0, "NutrientBlock", new Vector3(x, 25.0f, z), Guid.NewGuid().ToString());
                     }
                 }
+            }
+            else
+            {
+                Logger.Log($"Invalid Command: {cmd}");
             }
         }
     }

@@ -1,6 +1,7 @@
 ﻿using BelowZeroClient.Utill;
 using HarmonyLib;
 using Newtonsoft.Json.Linq;
+using Story;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -176,12 +177,12 @@ namespace BelowZeroClient
 
             if (!PDAEncyclopedia.HasEntryData(key))
             {
-                ErrorMessage.AddMessage($"Dossn't have entry data for {key}");
-                PDAEncyclopedia.Add(key, verbose, postNotification);
-            }
-            else
-            {
-                ErrorMessage.AddMessage($"Already had entry data for {key}");
+                PDAEncyclopedia.EntryData entryData;
+                PDAEncyclopedia.GetEntryData(key, out entryData);
+                if (!entryData.unlocked)
+                {
+                    PDAEncyclopedia.Add(key, verbose, postNotification);
+                }
             }
         }
 

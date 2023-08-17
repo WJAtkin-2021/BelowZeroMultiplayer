@@ -99,5 +99,18 @@ namespace BelowZeroServer
             // Replicate to all the other clients
             NetSend.PlayerUnlockedPDAEncyclopedia(_fromClient, key, verbose, postNotification);
         }
+
+        public static void HandleFramentProgressUpdated(int _fromClient, Packet _packet)
+        {
+            // Read
+            int techType = _packet.ReadInt();
+
+            Logger.Log($"Client: {_fromClient} Updated fragment progress: {techType}");
+
+            // Replicate
+            NetSend.PlayerUpdatedFragmentProgress(_fromClient, techType);
+
+            // TODO: Store in database
+        }
     }
 }

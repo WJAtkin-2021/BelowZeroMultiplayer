@@ -21,6 +21,7 @@ namespace BelowZeroMultiplayerCommon
         PlayerPickedUpItem = 8,
         PlayerUnlockedTechKnowledge = 9,
         PlayerUnlockedPDAEncyclopedia = 10,
+        PlayerUpdatedFragmentProgress = 11,
     }
 
     /// <summary>
@@ -35,5 +36,6 @@ namespace BelowZeroMultiplayerCommon
         PickupItem = 5,
         TechKnowledgeAdded = 6,
         AddedPDAEncyclopedia = 10,
+        FramentProgressUpdated = 11,
     }
 }

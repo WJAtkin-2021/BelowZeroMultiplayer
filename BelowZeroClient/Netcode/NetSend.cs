@@ -90,6 +90,16 @@ namespace BelowZeroClient
             }
         }
 
+        public static void FramentProgressUpdated(PDAScanner.Entry entry)
+        {
+            using (Packet packet = new Packet((int)ClientPackets.FramentProgressUpdated))
+            {
+                packet.Write((int)entry.techType);
+
+                SendTCPData(packet);
+            }
+        }
+
         private static void SendTCPData(Packet _packet)
         {
             _packet.WriteLength();

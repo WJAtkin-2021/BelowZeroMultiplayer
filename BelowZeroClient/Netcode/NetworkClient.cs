@@ -130,6 +130,7 @@ namespace BelowZeroClient
                 { (int)ServerPackets.PlayerPickedUpItem, NetReceive.handlePlayerPickedUpItem },
                 { (int)ServerPackets.PlayerUnlockedTechKnowledge, NetReceive.HandlePlayerUnlockedTechKnowledge },
                 { (int)ServerPackets.PlayerUnlockedPDAEncyclopedia, NetReceive.HandlePlayerUnlockedPDAEncyclopedia },
+                { (int)ServerPackets.PlayerUpdatedFragmentProgress, NetReceive.HandlePlayerUpdatedFragmentProgress },
             };
         }
 

@@ -169,6 +169,7 @@ namespace BelowZeroServer
                 { (int)ClientPackets.PickupItem, NetReceive.HandlePickupItem },
                 { (int)ClientPackets.TechKnowledgeAdded, NetReceive.HandleTechKnowledgeAdded },
                 { (int)ClientPackets.AddedPDAEncyclopedia, NetReceive.HandleUnlockedPDAEncyclopedia },
+                { (int)ClientPackets.FramentProgressUpdated, NetReceive.HandleFramentProgressUpdated },
             };
         }
 

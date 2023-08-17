@@ -138,6 +138,16 @@ namespace BelowZeroServer
             }
         }
 
+        public static void PlayerUpdatedFragmentProgress(int _client, int _techType)
+        {
+            using (Packet packet = new Packet((int)ServerPackets.PlayerUpdatedFragmentProgress))
+            {
+                packet.Write(_techType);
+
+                SendTCPDataToAll(_client, packet);
+            }
+        }
+
         private static void SendTCPData(int _toClient, Packet _packet)
         {
             _packet.WriteLength();

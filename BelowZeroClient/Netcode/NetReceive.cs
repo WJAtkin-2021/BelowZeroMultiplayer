@@ -179,5 +179,35 @@ namespace BelowZeroClient
                 PDAEncyclopedia.Add(key, verbose, postNotification);
             }
         }
+
+        public static void HandlePlayerUpdatedFragmentProgress(Packet _packet)
+        {
+            TechType techType = (TechType)_packet.ReadInt();
+
+            PDAScanner.EntryData entryData = PDAScanner.GetEntryData(techType);
+            if (PDAScanner.GetPartialEntryByKey(techType, out PDAScanner.Entry entry))
+            {
+                entry.unlocked++;
+                PDAScanner.onProgress.Invoke(entry);
+            }
+            else
+            {
+                // Really horrible but we need to get the PDA's data by serilizing it and then
+                // pass it back to it for it to read
+                PDAScanner.Data data = PDAScanner.Serialize();
+                entry = new PDAScanner.Entry();
+                entry.techType = techType;
+                entry.unlocked = 1;
+                data.partial.Add(entry);
+                PDAScanner.onAdd.Invoke(entry);
+            }
+
+            int totalFragments = entryData.totalFragments;
+            if (totalFragments > 1 && entryData.blueprint != 0)
+            {
+                float arg = Mathf.RoundToInt((float)entry.unlocked / (float)totalFragments * 100f);
+                ErrorMessage.AddError(Language.main.GetFormat("ScannerInstanceScanned", Language.main.Get(techType.AsString()), arg, entry.unlocked, totalFragments));
+            }
+        }
     }
 }

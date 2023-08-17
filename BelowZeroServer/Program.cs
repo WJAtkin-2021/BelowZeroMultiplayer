@@ -68,6 +68,12 @@ namespace BelowZeroServer
                     }
                 }
             }
+            else if (cmd == "fragtest")
+            {
+                Logger.Log("Adding Seaglide fragment");
+
+                NetSend.PlayerUpdatedFragmentProgress(0, 1117);
+            }
             else
             {
                 Logger.Log($"Invalid Command: {cmd}");

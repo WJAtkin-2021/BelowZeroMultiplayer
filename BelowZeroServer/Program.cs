@@ -80,6 +80,11 @@ namespace BelowZeroServer
                 Thread.Sleep(2000);
                 NetSend.PlayerUnlockedPDAEncyclopedia(0, "TwistyBridgesMushroom", true, true);
             }
+            else if (cmd == "testplayer")
+            {
+                Logger.Log("Adding Test Player");
+                NetSend.PlayerSpawned(69);
+            }
             else
             {
                 Logger.Log($"Invalid Command: {cmd}");

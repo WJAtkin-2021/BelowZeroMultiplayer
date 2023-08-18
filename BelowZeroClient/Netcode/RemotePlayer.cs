@@ -19,6 +19,7 @@ namespace BelowZeroClient
         public bool spawnedIn = false;
 
         private GameObject m_viewModel;
+        private PingInstance m_pingInstance;
 
         public RemotePlayer(int _clientId)
         { 
@@ -45,10 +46,17 @@ namespace BelowZeroClient
             if (targetVisual != null)
             {
                 targetVisual.GetComponentInParent<Player>().staticHead.shadowCastingMode = ShadowCastingMode.On;
-
                 m_viewModel = GameObject.Instantiate<GameObject>(targetVisual, START_POS, Quaternion.identity);
-
                 targetVisual.GetComponentInParent<Player>().staticHead.shadowCastingMode = ShadowCastingMode.ShadowsOnly;
+
+                m_pingInstance = m_viewModel.AddComponent<PingInstance>();
+                m_pingInstance.displayPingInManager = false;
+                m_pingInstance.range = 2500.0f;
+                m_pingInstance.visitable = false;
+                m_pingInstance.origin = m_viewModel.transform;
+                m_pingInstance.SetLabel($"Player {m_clientId}");
+                m_pingInstance.SetType(PingType.ArchitectArtifact);
+                m_pingInstance.SetVisible(true);
 
                 spawnedIn = true;
             }

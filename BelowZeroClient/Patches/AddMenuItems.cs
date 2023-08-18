@@ -30,32 +30,46 @@ namespace BelowZeroClient
 
                     if (target == "SavedGames")
                     {
-                        GameObject gameObject = GameObject.Instantiate(GameObject.Find("Menu canvas/Panel/MainMenu/RightSide/Home/EmailBox"));
-                        gameObject.name = "MultiplayerMenu";
-                        gameObject.transform.parent = GameObject.Find("Menu canvas/Panel/MainMenu/RightSide/").transform;
+                        // Setup the socket entry
+                        GameObject multiplayerMenu = GameObject.Instantiate(GameObject.Find("Menu canvas/Panel/MainMenu/RightSide/Home/EmailBox"));
+                        multiplayerMenu.name = "MultiplayerMenu";
+                        multiplayerMenu.transform.parent = GameObject.Find("Menu canvas/Panel/MainMenu/RightSide/").transform;
+                        multiplayerMenu.transform.position = new Vector3(GameObject.Find("Menu canvas/Panel/MainMenu/RightSide/Home/EmailBox").transform.position.x, 0.285f, (float)(GameObject.Find("Menu canvas/Panel/MainMenu/RightSide/Home/EmailBox").transform.position.z - 0.01));
+                        multiplayerMenu.transform.localScale = new Vector3(1f, 1f, 1f);
+                        multiplayerMenu.transform.transform.rotation = (GameObject.Find("Menu canvas/Panel/MainMenu/RightSide/Home/EmailBox").transform.rotation);
+                        GameObject.Destroy(multiplayerMenu.FindChild("HeaderText").GetComponent<TranslationLiveUpdate>());
 
-                        gameObject.transform.position = new Vector3(GameObject.Find("Menu canvas/Panel/MainMenu/RightSide/Home/EmailBox").transform.position.x, 0.25f, (float)(GameObject.Find("Menu canvas/Panel/MainMenu/RightSide/Home/EmailBox").transform.position.z - 0.01));
-                        gameObject.transform.localScale = new Vector3(1f, 1f, 1f);
-                        gameObject.transform.transform.rotation = (GameObject.Find("Menu canvas/Panel/MainMenu/RightSide/Home/EmailBox").transform.rotation);
-
-                        GameObject.Destroy(gameObject.FindChild("HeaderText").GetComponent<TranslationLiveUpdate>());
-
-                        GameObject.Destroy(gameObject.transform.Find("SubscriptionSuccess/Text").GetComponent<TranslationLiveUpdate>());
+                        GameObject.Destroy(multiplayerMenu.transform.Find("SubscriptionSuccess/Text").GetComponent<TranslationLiveUpdate>());
                         GameObject.Find("Menu canvas/Panel/MainMenu/RightSide/MultiplayerMenu/SubscriptionSuccess/Text").GetComponent<TextMeshProUGUI>().text = "Server found !";
 
-                        GameObject.Destroy(gameObject.transform.Find("SubscriptionInProgress/Text").GetComponent<TranslationLiveUpdate>());
+                        GameObject.Destroy(multiplayerMenu.transform.Find("SubscriptionInProgress/Text").GetComponent<TranslationLiveUpdate>());
                         GameObject.Find("Menu canvas/Panel/MainMenu/RightSide/MultiplayerMenu/SubscriptionInProgress/Text").GetComponent<TextMeshProUGUI>().text = "Searching server...";
 
-                        GameObject.Destroy(gameObject.transform.Find("SubscriptionError/Text").GetComponent<TranslationLiveUpdate>());
+                        GameObject.Destroy(multiplayerMenu.transform.Find("SubscriptionError/Text").GetComponent<TranslationLiveUpdate>());
                         GameObject.Find("Menu canvas/Panel/MainMenu/RightSide/MultiplayerMenu/SubscriptionError/Text").GetComponent<TextMeshProUGUI>().text = "Server not found";
 
-                        gameObject.FindChild("Subscribe").GetComponent<Button>().onClick.AddListener(() =>
+                        GameObject playerNameBox = GameObject.Instantiate(multiplayerMenu.FindChild("InputField"), multiplayerMenu.transform);
+                        playerNameBox.name = "PlayerNameInput";
+                        playerNameBox.transform.localPosition = new Vector3(-202.7f, -85.0f, 0.0f);
+                        playerNameBox.GetComponent<TMP_InputField>().text = "";
+
+                        TextMeshProUGUI placeholderTest = GameObject.Find("Menu canvas/Panel/MainMenu/RightSide/MultiplayerMenu/PlayerNameInput/Placeholder").GetComponent<TextMeshProUGUI>();
+                        placeholderTest.text = "Enter a player name...";
+
+                        ErrorMessage.AddMessage("Got this far...");
+
+                        Image backGroundImage = multiplayerMenu.transform.GetComponent<Image>();
+                        FileLog.Log($"Background Image");
+                        FileLog.Log($"SIZE: {backGroundImage.rectTransform.sizeDelta}");
+                        backGroundImage.rectTransform.sizeDelta = new Vector2(401.3f, 111.0f);
+
+                        multiplayerMenu.FindChild("Subscribe").GetComponent<Button>().onClick.AddListener(() =>
                         {
                             GameObject.Find("Menu canvas/Panel/MainMenu/RightSide/MultiplayerMenu/SubscriptionInProgress").SetActive(true);
                             try
                             {
                                 // Save the socket info for next session
-                                string enteredSocket = gameObject.FindChild("InputField").GetComponent<TMP_InputField>().text;
+                                string enteredSocket = multiplayerMenu.FindChild("InputField").GetComponent<TMP_InputField>().text;
                                 ApplicationSettings.SaveSocket(enteredSocket);
                                 NetworkClient.Instance.AttemptServerConnection(enteredSocket);
 
@@ -101,11 +115,11 @@ namespace BelowZeroClient
 
                         GameObject.Find("Menu canvas/Panel/MainMenu/RightSide/MultiplayerMenu/ViewPastUpdates/").SetActive(false);
 
-                        uGUI_InputField playerNameInputField = gameObject.GetComponent<uGUI_InputField>();
+                        uGUI_InputField playerNameInputField = multiplayerMenu.GetComponent<uGUI_InputField>();
 
-                        SceneManager.MoveGameObjectToScene(gameObject, SceneManager.GetSceneByName("XMenu"));
+                        SceneManager.MoveGameObjectToScene(multiplayerMenu, SceneManager.GetSceneByName("XMenu"));
 
-                        gameObject.SetActive(true);
+                        multiplayerMenu.SetActive(true);
                     }
                 }
                 else

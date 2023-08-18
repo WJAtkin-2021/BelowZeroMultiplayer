@@ -31,7 +31,9 @@ namespace BelowZeroClient
 
         public static void PlayerDisconnected(Packet _packet)
         {
+            int client = _packet.ReadInt();
 
+            NetworkClient.Instance.m_remotePlayers[client].RemovePlayer();
         }
 
         public static void HandleSpawnPlayer(Packet _packet)

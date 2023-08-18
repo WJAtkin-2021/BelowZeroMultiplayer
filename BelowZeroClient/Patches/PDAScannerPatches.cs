@@ -9,7 +9,6 @@ namespace BelowZeroClient
         [HarmonyPrefix]
         static void PreFix(string key, bool verbose, bool postNotification)
         {
-            //ErrorMessage.AddMessage($"[OnPDAEncyclopedia:PreFix] Called for: {key}");
             NetSend.AddedPDAEncyclopedia(key, verbose, postNotification);
         }
     }

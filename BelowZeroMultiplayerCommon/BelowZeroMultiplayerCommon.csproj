@@ -30,6 +30,9 @@
     <ErrorReport>prompt</ErrorReport>
     <WarningLevel>4</WarningLevel>
   </PropertyGroup>
+  <PropertyGroup>
+    <RunPostBuildEvent>Always</RunPostBuildEvent>
+  </PropertyGroup>
   <ItemGroup>
     <Reference Include="System" />
     <Reference Include="System.Core" />
@@ -45,4 +48,9 @@
     <Compile Include="Properties\AssemblyInfo.cs" />
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
+  <PropertyGroup>
+    <PostBuildEvent>copy /Y "$(SolutionDir)Configs\Server\config.json" "$(SolutionDir)BelowZeroServer\$(OutDir)config.json"
+copy /Y "$(SolutionDir)Configs\Server\TestMap.zip" "$(SolutionDir)BelowZeroServer\$(OutDir)TestMap.zip"
+copy /Y "$(SolutionDir)Configs\Server\BaseBuildTest.zip" "$(SolutionDir)BelowZeroServer\$(OutDir)BaseBuildTest.zip"</PostBuildEvent>
+  </PropertyGroup>
 </Project>

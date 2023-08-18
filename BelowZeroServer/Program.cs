@@ -86,6 +86,11 @@ namespace BelowZeroServer
                 Thread.Sleep(2000);
                 NetSend.PlayerTransformUpdate(420, new Vector3(-275.5f, -11.473f, -23.05f), new Quaternion(0.0f, 0.9997668f, 0.0f, -0.02159826f));
             }
+            else if (cmd == "testplayerrip")
+            {
+                Logger.Log("Removing Test Player");
+                NetSend.PlayerDisconnected(420);
+            }
             else
             {
                 Logger.Log($"Invalid Command: {cmd}");

@@ -95,6 +95,9 @@ namespace BelowZeroServer
             bool verbose = _packet.ReadBool();
             bool postNotification = _packet.ReadBool();
 
+            if (string.IsNullOrEmpty(key))
+                return;
+
             Logger.Log($"Client: {_fromClient} Unlocked PDA Entry: {key}");
 
             // Replicate to all the other clients

@@ -27,7 +27,7 @@ namespace BelowZeroClient
             m_clientId = _clientId;
             m_clientName = _clientName;
 
-            ErrorMessage.AddMessage($"Player {_clientId} is joining...");
+            ErrorMessage.AddMessage($"{m_clientName} is joining...");
             
             AttemptSpawn();
         }
@@ -63,6 +63,13 @@ namespace BelowZeroClient
 
                 spawnedIn = true;
             }
+        }
+
+        public void RemovePlayer()
+        {
+            GameObject.Destroy(m_viewModel);
+
+            ErrorMessage.AddMessage($"{m_clientName} has left...");
         }
     }
 }

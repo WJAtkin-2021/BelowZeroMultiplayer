@@ -1,4 +1,5 @@
 ﻿using BelowZeroMultiplayerCommon;
+using HarmonyLib;
 using ICSharpCode.SharpZipLib.Zip;
 using System;
 using System.Collections;
@@ -51,7 +52,11 @@ namespace BelowZeroClient
         public void AttemptServerConnection(string _socketAddr, string _playerName)
         {
             if (string.IsNullOrEmpty(_playerName))
+            {
+                ErrorMessage.AddMessage("Please Enter A Player Name");
+                OnFailedToConnect?.Invoke();
                 return;
+            }
 
             int collonPos;
             string ip;
@@ -66,15 +71,18 @@ namespace BelowZeroClient
             }
             catch (Exception ex)
             {
+                OnFailedToConnect?.Invoke();
                 throw new FormatException("Invalid Socket Format");
             }
 
             if (string.IsNullOrEmpty(ip))
             {
+                OnFailedToConnect?.Invoke();
                 throw new FormatException("Invalid Socket Format");
             }
             else if (port <= 0)
             {
+                OnFailedToConnect?.Invoke();
                 throw new FormatException("Invalid Socket Format");
             }
 
@@ -83,6 +91,8 @@ namespace BelowZeroClient
 
         public void AttemptServerConnection(string _ip, int _port)
         {
+            ErrorMessage.AddMessage("Connecting...");
+
             OnAttemptConnection?.Invoke();
 
             m_tcp = new TCP();
@@ -109,6 +119,10 @@ namespace BelowZeroClient
                     m_udp.m_udpClient.Close();
                 }
                 catch { }
+                finally
+                {
+                    StartCoroutine(HandleDisconnectDelayed());
+                }
             }
         }
 
@@ -143,6 +157,19 @@ namespace BelowZeroClient
         private void OnApplicationQuit()
         {
             Disconnect();
+        }
+
+        private IEnumerator HandleDisconnectDelayed()
+        {
+            ErrorMessage.AddError("Connection to server was lost!");
+
+            yield return new WaitForSeconds(1);
+
+            ErrorMessage.AddError("Returning to main menu...");
+
+            yield return new WaitForSeconds(3);
+
+            IngameMenu.main.QuitGame(false);
         }
 
         private IEnumerator CheckRemoteViews()

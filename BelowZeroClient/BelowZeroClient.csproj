@@ -89,6 +89,7 @@
   <ItemGroup>
     <Compile Include="Patches\OnKnownTechAdd.cs" />
     <Compile Include="Patches\PDAScannerPatches.cs" />
+    <Compile Include="Patches\TurnOffMainSubscriptionPatch.cs" />
     <Compile Include="Utill\ApplicationSettings.cs" />
     <Compile Include="ExtensionComponents\ReplicatePlayer.cs" />
     <Compile Include="Main.cs" />
@@ -104,7 +105,7 @@
     <Compile Include="Patches\InventoryPatches.cs" />
     <Compile Include="Patches\OnPickDropZone.cs" />
     <Compile Include="Patches\PlayerPatches.cs" />
-    <Compile Include="Patches\StopPause.cs" />
+    <Compile Include="Patches\IngameMenuPatches.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="Utill\CreateTechTypeAsyc.cs" />
     <Compile Include="Utill\MapDataUtils.cs" />

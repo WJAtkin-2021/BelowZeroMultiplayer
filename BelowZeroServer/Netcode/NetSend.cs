@@ -21,7 +21,12 @@ namespace BelowZeroServer
 
         public static void PlayerDisconnected(int _client)
         {
+            using (Packet packet = new Packet((int)ServerPackets.PlayerDisconnected))
+            {
+                packet.Write(_client);
 
+                SendTCPDataToAll(_client, packet);
+            }
         }
 
         public static void UploadMapToClient(int _client)

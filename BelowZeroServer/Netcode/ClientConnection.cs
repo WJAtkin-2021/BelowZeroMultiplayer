@@ -39,9 +39,10 @@ namespace BelowZeroServer
                 finally 
                 {
                     m_tcp.DisconnectTcp(); 
-                    m_udp.DisconnectUdp();
                 }
             }
+
+            m_udp.DisconnectUdp();
         }
     }
 }

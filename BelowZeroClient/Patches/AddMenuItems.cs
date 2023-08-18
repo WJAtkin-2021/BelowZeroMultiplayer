@@ -51,7 +51,6 @@ namespace BelowZeroClient
                         GameObject playerNameBox = GameObject.Instantiate(multiplayerMenu.FindChild("InputField"), multiplayerMenu.transform);
                         playerNameBox.name = "PlayerNameInput";
                         playerNameBox.transform.localPosition = new Vector3(-202.7f, -85.0f, 0.0f);
-                        playerNameBox.GetComponent<TMP_InputField>().text = "";
 
                         TextMeshProUGUI placeholderTest = GameObject.Find("Menu canvas/Panel/MainMenu/RightSide/MultiplayerMenu/PlayerNameInput/Placeholder").GetComponent<TextMeshProUGUI>();
                         placeholderTest.text = "Enter a player name...";
@@ -70,8 +69,10 @@ namespace BelowZeroClient
                             {
                                 // Save the socket info for next session
                                 string enteredSocket = multiplayerMenu.FindChild("InputField").GetComponent<TMP_InputField>().text;
+                                string enteredPlayerName = playerNameBox.GetComponent<TMP_InputField>().text;
                                 ApplicationSettings.SaveSocket(enteredSocket);
-                                NetworkClient.Instance.AttemptServerConnection(enteredSocket);
+                                ApplicationSettings.SavePlayerName(enteredPlayerName);
+                                NetworkClient.Instance.AttemptServerConnection(enteredSocket, enteredPlayerName);
 
                                 GameObject.Find("Menu canvas/Panel/MainMenu/RightSide/MultiplayerMenu/SubscriptionInProgress").SetActive(false);
 
@@ -110,8 +111,10 @@ namespace BelowZeroClient
                         GameObject.Find("Menu canvas/Panel/MainMenu/RightSide/MultiplayerMenu/InputField/Placeholder").GetComponent<TextMeshProUGUI>().text = "Enter the ip adress of the server...";
 
                         string socket = ApplicationSettings.LoadSocket();
+                        string name = ApplicationSettings.LoadPlayerName();
 
                         GameObject.Find("Menu canvas/Panel/MainMenu/RightSide/MultiplayerMenu/InputField").GetComponent<TMP_InputField>().text = socket;
+                        playerNameBox.GetComponent<TMP_InputField>().text = name;
 
                         GameObject.Find("Menu canvas/Panel/MainMenu/RightSide/MultiplayerMenu/ViewPastUpdates/").SetActive(false);
 

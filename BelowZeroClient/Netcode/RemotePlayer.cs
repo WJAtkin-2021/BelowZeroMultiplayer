@@ -17,13 +17,15 @@ namespace BelowZeroClient
         public const string CHARACTER_MODEL = "player_view_female";
         public int m_clientId = 0;
         public bool spawnedIn = false;
+        public string m_clientName = "";
 
         private GameObject m_viewModel;
         private PingInstance m_pingInstance;
 
-        public RemotePlayer(int _clientId)
+        public RemotePlayer(int _clientId, string _clientName)
         { 
             m_clientId = _clientId;
+            m_clientName = _clientName;
 
             ErrorMessage.AddMessage($"Player {_clientId} is joining...");
             
@@ -53,7 +55,7 @@ namespace BelowZeroClient
                 m_pingInstance.displayPingInManager = false;
                 m_pingInstance.visitable = false;
                 m_pingInstance.origin = m_viewModel.transform;
-                m_pingInstance.SetLabel($"Player {m_clientId}");
+                m_pingInstance.SetLabel($"{m_clientName}");
                 m_pingInstance.SetType(PingType.Signal);
                 m_pingInstance.SetVisible(true);
                 m_pingInstance.SetColor(2);

@@ -27,6 +27,7 @@ namespace BelowZeroClient
             using (Packet packet = new Packet((int)ClientPackets.SpawnMe))
             {
                 packet.Write(NetworkClient.Instance.m_clientId);
+                packet.Write(NetworkClient.Instance.m_playerName);
 
                 SendTCPData(packet);
             }

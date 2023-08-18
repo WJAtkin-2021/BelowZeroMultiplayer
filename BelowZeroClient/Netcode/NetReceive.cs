@@ -38,10 +38,11 @@ namespace BelowZeroClient
         {
             // Read the ID of the player that spawned
             int newClientId = _packet.ReadInt();
+            string newClientName = _packet.ReadString();
 
             if (newClientId != NetworkClient.Instance.m_clientId)
             {
-                NetworkClient.Instance.AddRemotePlayer(newClientId);
+                NetworkClient.Instance.AddRemotePlayer(newClientId, newClientName);
             }
         }
 
@@ -52,9 +53,10 @@ namespace BelowZeroClient
             for (int i = 0; i < numberOfClients; i++)
             {
                 int clientId = _packet.ReadInt();
+                string clientName = _packet.ReadString();
                 if (clientId != NetworkClient.Instance.m_clientId)
                 {
-                    NetworkClient.Instance.AddRemotePlayer(clientId);
+                    NetworkClient.Instance.AddRemotePlayer(clientId, clientName);
                 }
             }
         }

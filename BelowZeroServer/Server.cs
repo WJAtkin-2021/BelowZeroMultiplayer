@@ -41,7 +41,7 @@ namespace BelowZeroServer
 
             for (int i = 0; i < MAX_PLAYERS; i++)
             {
-                m_clients.Add(i, new ClientConnection(i));
+                m_clients.Add(i, new ClientConnection(i, ""));
             }
             InitPacketHandlers();
 

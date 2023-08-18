@@ -40,12 +40,13 @@ namespace BelowZeroServer
             }
         }
 
-        public static void PlayerSpawned(int _client)
+        public static void PlayerSpawned(int _client, string _playerName)
         {
             using (Packet packet = new Packet((int)ServerPackets.SpawnPlayer))
             {
                 // Write the client ID of the new client
                 packet.Write(_client);
+                packet.Write(_playerName);
 
                 // TODO: Provide a spawn location for them.
 
@@ -69,10 +70,11 @@ namespace BelowZeroServer
 
                 // Write the total number
                 packet.Write(spawnedPlayers.Count);
-                // Write each client ID
+                // Write each client ID and name
                 for (int i = 0; i < spawnedPlayers.Count; i++)
                 {
                     packet.Write(spawnedPlayers[i]);
+                    packet.Write(Server.instance.m_clients[i].m_clientName);
                 }
 
                 // Send it

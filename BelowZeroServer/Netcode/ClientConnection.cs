@@ -11,12 +11,14 @@ namespace BelowZeroServer
         public const int DATA_BUFFER_SIZE = 4096;
 
         public int m_clientId;
+        public string m_clientName = "";
         public TCP m_tcp;
         public UDP m_udp;
 
-        public ClientConnection(int _clientId)
+        public ClientConnection(int _clientId, string _clientName)
         {
             m_clientId = _clientId;
+            m_clientName = _clientName;
             m_tcp = new TCP(m_clientId, DATA_BUFFER_SIZE);
             m_udp = new UDP(m_clientId);
         }

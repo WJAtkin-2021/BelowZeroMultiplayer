@@ -24,6 +24,8 @@ namespace BelowZeroClient
         public UDP m_udp;
 
         public int m_clientId;
+        public string m_playerName;
+        
         private bool m_isConnected = false;
 
         public delegate void PacketHandler(Packet packet);
@@ -46,11 +48,15 @@ namespace BelowZeroClient
             }
         }
 
-        public void AttemptServerConnection(string _socketAddr)
+        public void AttemptServerConnection(string _socketAddr, string _playerName)
         {
+            if (string.IsNullOrEmpty(_playerName))
+                return;
+
             int collonPos;
             string ip;
             int port;
+            m_playerName = _playerName;
 
             try
             {
@@ -86,9 +92,9 @@ namespace BelowZeroClient
             m_tcp.Connect(_ip, _port, DATA_BUFF_SIZE);
         }
 
-        public void AddRemotePlayer(int _clientId)
+        public void AddRemotePlayer(int _clientId, string _clientName)
         {
-            RemotePlayer player = new RemotePlayer(_clientId);
+            RemotePlayer player = new RemotePlayer(_clientId, _clientName);
             m_remotePlayers[_clientId] = player;
         }
 

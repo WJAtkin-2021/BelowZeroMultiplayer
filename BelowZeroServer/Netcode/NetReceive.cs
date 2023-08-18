@@ -16,13 +16,14 @@ namespace BelowZeroServer
 
         public static void HandleClientSpawnMe(int _fromClient, Packet _packet)
         {
-            // Grab the client ID
+            // Grab the client data
             int clientId = _packet.ReadInt();
+            string clientName = _packet.ReadString();
 
             // This is TCP so we can skip the check
             //Logger.Log($"Client: {clientId} wishes to spawn in!");
 
-            NetSend.PlayerSpawned(clientId);
+            NetSend.PlayerSpawned(clientId, clientName);
             NetSend.SycPlayerList(clientId);
         }
 

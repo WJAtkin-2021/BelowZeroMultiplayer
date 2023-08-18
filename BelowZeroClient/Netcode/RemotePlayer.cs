@@ -51,12 +51,13 @@ namespace BelowZeroClient
 
                 m_pingInstance = m_viewModel.AddComponent<PingInstance>();
                 m_pingInstance.displayPingInManager = false;
-                m_pingInstance.range = 2500.0f;
                 m_pingInstance.visitable = false;
                 m_pingInstance.origin = m_viewModel.transform;
                 m_pingInstance.SetLabel($"Player {m_clientId}");
-                m_pingInstance.SetType(PingType.ArchitectArtifact);
+                m_pingInstance.SetType(PingType.Signal);
                 m_pingInstance.SetVisible(true);
+                m_pingInstance.SetColor(2);
+                m_pingInstance.minDist = 2.5f;
 
                 spawnedIn = true;
             }

@@ -140,6 +140,11 @@ namespace BelowZeroServer
             catch (Exception ex)
             {
                 Logger.Log($"[Server:UDPReceiveCallback] Error receiving UDP data: {ex}");
+
+                Logger.Log($"Restarting UDP Stream");
+                m_udpListener.Close();
+                m_udpListener = new UdpClient(m_port);
+                m_udpListener.BeginReceive(UDPReceiveCallback, null);
             }
         }
 

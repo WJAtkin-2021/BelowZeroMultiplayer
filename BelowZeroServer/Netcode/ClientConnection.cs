@@ -15,9 +15,9 @@ namespace BelowZeroServer
         public TCP m_tcp;
         public UDP m_udp;
 
-        public Vector3 m_lastPos;
-        public Quaternion m_lastRot;
-        public bool m_isInside;
+        public Vector3 m_lastPos = new Vector3();
+        public Quaternion m_lastRot = new Quaternion();
+        public bool m_isInside = false;
 
         public ClientConnection(int _clientId, string _clientName)
         {

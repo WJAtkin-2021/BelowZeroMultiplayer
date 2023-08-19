@@ -102,9 +102,9 @@ namespace BelowZeroServer
                 for (int i = 0; i < spawnedPlayers.Count; i++)
                 {
                     packet.Write(spawnedPlayers[i]);
-                    packet.Write(Server.instance.m_clients[i].m_clientName);
-                    packet.Write(Server.instance.m_clients[i].m_lastPos);
-                    packet.Write(Server.instance.m_clients[i].m_lastRot);
+                    packet.Write(Server.instance.m_clients[spawnedPlayers[i]].m_clientName);
+                    packet.Write(Server.instance.m_clients[spawnedPlayers[i]].m_lastPos);
+                    packet.Write(Server.instance.m_clients[spawnedPlayers[i]].m_lastRot);
                 }
 
                 // Send it

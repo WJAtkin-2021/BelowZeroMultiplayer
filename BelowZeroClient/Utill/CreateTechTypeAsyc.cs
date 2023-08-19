@@ -24,7 +24,7 @@ namespace BelowZeroClient.Utill
             gameObject.SetActive(true);
 
             Pickupable pickupable = gameObject.GetComponent<Pickupable>();
-            pickupable.Drop(pos);
+            pickupable.Drop(pos, Vector3.zero, false);
 
             LargeWorldEntity.Register(gameObject);
             CrafterLogic.NotifyCraftEnd(gameObject, objectTechType);

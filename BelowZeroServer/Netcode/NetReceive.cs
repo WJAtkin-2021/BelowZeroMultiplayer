@@ -99,7 +99,7 @@ namespace BelowZeroServer
             // Replicate this
             NetSend.PlayerDroppedItem(_fromClient, techName, position, token);
 
-            Logger.Log($"Client: {_fromClient} Dropped: {techName} With Token: {token}");
+            Logger.Log($"Client: {_fromClient} Dropped: {techName} With Token: {token} At: {position}");
 
             // TODO: Store this data for late joiners
 

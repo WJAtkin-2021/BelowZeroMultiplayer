@@ -59,7 +59,10 @@ namespace BelowZeroServer
             // This is TCP so we can skip the check
             //Logger.Log($"Client: {clientId} wishes to spawn in!");
 
-            NetSend.PlayerSpawned(clientId, clientName, new Vector3(0.0f, 1000.0f, 0.0f));
+            Server.instance.m_clients[_fromClient].m_clientName = clientName;
+            PlayerSaveData data = DataStore.GetPlayerData(clientName);
+
+            NetSend.PlayerSpawned(clientId, clientName, data.Pos, data.Rot, data.IsInside);
             NetSend.SycPlayerList(clientId);
         }
 
@@ -77,8 +80,11 @@ namespace BelowZeroServer
 
             Vector3 position = _packet.ReadVector3();
             Quaternion rotation = _packet.ReadQuaternoin();
+            bool isInside = _packet.ReadBool();
 
             //Logger.Log($"Client: {clientId}: Transform: {position} : {rotation}");
+
+            Server.instance.m_clients[_fromClient].SetLastPos(position, rotation, isInside);
 
             NetSend.PlayerTransformUpdate(clientId, position, rotation);
         }

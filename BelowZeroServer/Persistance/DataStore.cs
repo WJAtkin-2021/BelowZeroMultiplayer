@@ -121,14 +121,49 @@ namespace BelowZeroServer
             ExecuteNonQuery($"INSERT INTO PlayerToken (PlayerName, PlayerGuid) VALUES (\"{_userName}\", \"{_userGuid}\")");
         }
 
-        public static PlayerSaveData GetPlayerData()
+        public static PlayerSaveData GetPlayerData(string _userName)
         {
-            return new PlayerSaveData();
+            try
+            {
+                SQLiteCommand cmd = m_connection.CreateCommand();
+                cmd.CommandText = $"select * from PlayerPos WHERE PlayerName = \"{_userName}\"";
+                using (var reader = cmd.ExecuteReader())
+                {
+                    while (reader.Read())
+                    {
+                        var posX = reader.GetFloat(1);
+                        var posY = reader.GetFloat(2);
+                        var posZ = reader.GetFloat(3);
+                        var rotX = reader.GetFloat(4);
+                        var rotY = reader.GetFloat(5);
+                        var rotZ = reader.GetFloat(6);
+                        var rotW = reader.GetFloat(7);
+                        var isInside = reader.GetBoolean(8);
+                        
+                        PlayerSaveData saveData = new PlayerSaveData();
+                        saveData.Pos = new Vector3((int)posX, posY, posZ);
+                        saveData.Rot = new Quaternion(rotX, rotY, rotZ, rotW);
+                        saveData.IsInside = isInside;
+                        return saveData;
+                    }
+                }
+
+                return GenerateDefaultData();
+            }
+            catch (Exception ex)
+            {
+                Logger.Log($"SQL Error: {ex}");
+            }
+
+            return GenerateDefaultData();
         }
 
-        private static void SavePlayerData(PlayerSaveData _playerSaveData)
+        public static void SavePlayerData(PlayerSaveData _playerSaveData, string _userName)
         {
-
+            Vector3 pos = _playerSaveData.Pos;
+            Quaternion rot = _playerSaveData.Rot;
+            ExecuteNonQuery($"DELETE FROM PlayerPos WHERE PlayerName = \"{_userName}\"");
+            ExecuteNonQuery($"INSERT INTO PlayerPos (PlayerName, xPos, yPos, zPos, xRot, yRot, zRot, wRot, isInside) VALUES (\"{_userName}\", {pos.x}, {pos.y}, {pos.z}, {rot.x}, {rot.y}, {rot.z}, {rot.w}, {_playerSaveData.IsInside})");
         }
 
         private void OpenConnection()
@@ -160,7 +195,7 @@ namespace BelowZeroServer
             ExecuteNonQuery("CREATE TABLE ServerSettings (ServerGuid TEXT)");
             ExecuteNonQuery($"INSERT INTO ServerSettings (ServerGuid) VALUES (\"{m_serverGuid}\")");
             ExecuteNonQuery("CREATE TABLE PlayerToken (PlayerName Text, PlayerGuid TEXT)");
-            ExecuteNonQuery("CREATE TABLE PlayerPos (PlayerGuid TEXT, xPos REAL, yPos REAL, zPos REAL, xRot REAL, yRot REAL, zRot REAL, wRot REAL)");
+            ExecuteNonQuery("CREATE TABLE PlayerPos (PlayerName TEXT, xPos REAL, yPos REAL, zPos REAL, xRot REAL, yRot REAL, zRot REAL, wRot REAL, isInside INTEGER)");
         }
 
         private static void ExecuteNonQuery(string _nonQuery)
@@ -175,6 +210,13 @@ namespace BelowZeroServer
             {
                 Logger.Log($"SQL Error: {ex}");
             }
+        }
+
+        private static PlayerSaveData GenerateDefaultData()
+        {
+            PlayerSaveData saveData = new PlayerSaveData();
+            saveData.Pos = new Vector3(-309.5f, 17.75f, 255.0f);
+            return saveData;
         }
     }
 }

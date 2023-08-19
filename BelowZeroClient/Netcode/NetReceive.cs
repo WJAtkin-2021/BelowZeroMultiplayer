@@ -54,6 +54,8 @@ namespace BelowZeroClient
             int newClientId = _packet.ReadInt();
             string newClientName = _packet.ReadString();
             Vector3 newClientPos = _packet.ReadVector3();
+            Quaternion newClientRot = _packet.ReadQuaternoin();
+            bool newClientIsInside = _packet.ReadBool();
 
             if (newClientId != NetworkClient.Instance.m_clientId)
             {
@@ -62,7 +64,7 @@ namespace BelowZeroClient
             else
             {
                 // This is us, so we need to find our player and teleport
-                ReplicatePlayer.m_instance.Teleport(newClientPos);
+                ReplicatePlayer.m_instance.Teleport(newClientPos, newClientRot, newClientIsInside);
             }
         }
 

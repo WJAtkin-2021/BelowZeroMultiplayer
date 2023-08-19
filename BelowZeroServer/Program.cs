@@ -18,7 +18,6 @@ namespace BelowZeroServer
             {
                 DataStore.CreateDataStore();
                 Logger.Log($"Server GUID is: {DataStore.GetServerGuid()}");
-                DataStore.SaveCredentails("Billy Bob", "123456789-asdfg");
                 m_server = new Server();
                 m_server.StartServer(5000);
 
@@ -85,9 +84,7 @@ namespace BelowZeroServer
             else if (cmd == "testplayer")
             {
                 Logger.Log("Adding Test Player");
-                NetSend.PlayerSpawned(420, "Bing Bong", new Vector3(-275.5f, -11.473f, -23.05f));
-                Thread.Sleep(2000);
-                //NetSend.PlayerTransformUpdate(420, new Vector3(-275.5f, -11.473f, -23.05f), new Quaternion(0.0f, 0.9997668f, 0.0f, -0.02159826f));
+                NetSend.PlayerSpawned(420, "Bing Bong", new Vector3(-275.5f, -11.473f, -23.05f), new Quaternion(0.0f, 0.9997668f, 0.0f, -0.02159826f), true);
             }
             else if (cmd == "testplayerrip")
             {

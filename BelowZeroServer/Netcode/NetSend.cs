@@ -67,7 +67,7 @@ namespace BelowZeroServer
             }
         }
 
-        public static void PlayerSpawned(int _client, string _playerName, Vector3 _spawnPos)
+        public static void PlayerSpawned(int _client, string _playerName, Vector3 _spawnPos, Quaternion _spawnRot, bool _isInside)
         {
             using (Packet packet = new Packet((int)ServerPackets.SpawnPlayer))
             {
@@ -75,6 +75,8 @@ namespace BelowZeroServer
                 packet.Write(_client);
                 packet.Write(_playerName);
                 packet.Write(_spawnPos);
+                packet.Write(_spawnRot);
+                packet.Write(_isInside);
 
                 SendTCPDataToAll(packet);
             }
@@ -101,7 +103,8 @@ namespace BelowZeroServer
                 {
                     packet.Write(spawnedPlayers[i]);
                     packet.Write(Server.instance.m_clients[i].m_clientName);
-                    packet.Write(new Vector3(-309.5f, 17.75f, 255.0f));
+                    packet.Write(Server.instance.m_clients[i].m_lastPos);
+                    packet.Write(Server.instance.m_clients[i].m_lastRot);
                 }
 
                 // Send it

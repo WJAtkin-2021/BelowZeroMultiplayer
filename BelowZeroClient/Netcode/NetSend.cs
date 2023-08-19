@@ -6,6 +6,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using TMPro;
 using UnityEngine;
 
 namespace BelowZeroClient
@@ -35,13 +36,14 @@ namespace BelowZeroClient
             }
         }
 
-        public static void TranformUpdate(Vector3 _pos, Quaternion _rot)
+        public static void TranformUpdate(Vector3 _pos, Quaternion _rot, bool _isInside)
         {
             using (Packet packet = new Packet((int)ClientPackets.TransformUpdate))
             {
                 packet.Write(NetworkClient.Instance.m_clientId);
                 packet.Write(_pos);
                 packet.Write(_rot);
+                packet.Write(_isInside);
 
                 SendUDPData(packet);
             }

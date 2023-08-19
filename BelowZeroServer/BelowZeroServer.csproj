@@ -66,7 +66,8 @@
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <PropertyGroup>
-    <PostBuildEvent>
-    </PostBuildEvent>
+    <PostBuildEvent>copy /Y "$(SolutionDir)Configs\Server\config.json" "$(SolutionDir)BelowZeroServer\$(OutDir)config.json"
+copy /Y "$(SolutionDir)Configs\Server\TestMap.zip" "$(SolutionDir)BelowZeroServer\$(OutDir)TestMap.zip"
+copy /Y "$(SolutionDir)Configs\Server\BaseBuildTest.zip" "$(SolutionDir)BelowZeroServer\$(OutDir)BaseBuildTest.zip"</PostBuildEvent>
   </PropertyGroup>
 </Project>

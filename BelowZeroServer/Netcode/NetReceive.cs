@@ -92,8 +92,6 @@ namespace BelowZeroServer
         {
             // Read the packet
             string key = _packet.ReadString();
-            bool verbose = _packet.ReadBool();
-            bool postNotification = _packet.ReadBool();
 
             if (string.IsNullOrEmpty(key))
                 return;
@@ -101,7 +99,7 @@ namespace BelowZeroServer
             Logger.Log($"Client: {_fromClient} Unlocked PDA Entry: {key}");
 
             // Replicate to all the other clients
-            NetSend.PlayerUnlockedPDAEncyclopedia(_fromClient, key, verbose, postNotification);
+            NetSend.PlayerUnlockedPDAEncyclopedia(_fromClient, key);
         }
 
         public static void HandleFramentProgressUpdated(int _fromClient, Packet _packet)

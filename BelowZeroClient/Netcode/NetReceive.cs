@@ -177,25 +177,7 @@ namespace BelowZeroClient
         public static void HandlePlayerUnlockedPDAEncyclopedia(Packet _packet)
         {
             string key = _packet.ReadString();
-            TechType techType;
-            TechTypeExtensions.FromString(key, out techType, true);
-            bool verbose = _packet.ReadBool();
-            bool postNotification = _packet.ReadBool();
-
-            if (PDAEncyclopedia.HasEntryData(key))
-            {
-                // Grab the PDA data
-                PDAScanner.Data data = PDAScanner.Serialize();
-                // Check for an existing entry for this
-                if (!data.complete.Contains(techType))
-                {
-                    PDAEncyclopedia.Add(key, verbose, postNotification);
-
-                    // Add the data
-                    data.complete.Add(techType);
-                    PDAScanner.Deserialize(data);
-                }
-            }
+            PDAUnlockQueue.m_instance.UnlockDelayed(key);
         }
 
         public static void HandlePlayerUpdatedFragmentProgress(Packet _packet)

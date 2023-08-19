@@ -9,7 +9,8 @@ namespace BelowZeroClient
         [HarmonyPrefix]
         static void PreFix(string key, bool verbose, bool postNotification)
         {
-            NetSend.AddedPDAEncyclopedia(key, verbose, postNotification);
+            NetSend.AddedPDAEncyclopedia(key);
+            PDAUnlockQueue.m_instance.ResetTimer();
         }
     }
 

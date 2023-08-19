@@ -133,13 +133,11 @@ namespace BelowZeroServer
             }
         }
 
-        public static void PlayerUnlockedPDAEncyclopedia(int _toClient, string _key, bool _verbose, bool _postNotification)
+        public static void PlayerUnlockedPDAEncyclopedia(int _toClient, string _key)
         {
             using (Packet packet = new Packet((int)ServerPackets.PlayerUnlockedPDAEncyclopedia))
             {
                 packet.Write(_key);
-                packet.Write(_verbose);
-                packet.Write(_postNotification);
 
                 SendTCPDataToAll(_toClient, packet);
             }

@@ -79,13 +79,11 @@ namespace BelowZeroClient
             }
         }
 
-        public static void AddedPDAEncyclopedia(string _key, bool _verbose, bool _postNotification)
+        public static void AddedPDAEncyclopedia(string _key)
         {
             using (Packet packet = new Packet((int)ClientPackets.AddedPDAEncyclopedia))
             {
                 packet.Write(_key);
-                packet.Write(_verbose);
-                packet.Write(_postNotification);
 
                 SendTCPData(packet);
             }

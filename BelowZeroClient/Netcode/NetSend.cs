@@ -1,4 +1,5 @@
 ﻿using BelowZeroMultiplayerCommon;
+using HarmonyLib;
 using Newtonsoft.Json.Linq;
 using System;
 using System.Collections.Generic;
@@ -11,12 +12,13 @@ namespace BelowZeroClient
 {
     public class NetSend
     {
-        public static void ConnectedReceived()
+        public static void ConnectedReceived(string _serverGuid)
         {
-            // TODO: Send a user name with this packet
             using (Packet packet = new Packet((int)ClientPackets.ConnectedReceived))
             {
                 packet.Write(NetworkClient.Instance.m_clientId);
+                packet.Write(NetworkClient.Instance.m_playerName);
+                packet.Write(ApplicationSettings.GetCredentailToken(_serverGuid));
 
                 SendTCPData(packet);
             }

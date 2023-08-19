@@ -14,6 +14,28 @@ namespace BelowZeroServer
             using (Packet packet = new Packet((int)ServerPackets.Connected))
             {
                 packet.Write(_client);
+                packet.Write(DataStore.GetServerGuid());
+
+                SendTCPData(_client, packet);
+            }
+        }
+
+        public static void SendNewMachineToken(int _client, string _machineToken)
+        {
+            using (Packet packet = new Packet((int)ServerPackets.NewMachineToken))
+            {
+                packet.Write(DataStore.GetServerGuid());
+                packet.Write(_machineToken);
+
+                SendTCPData(_client, packet);
+            }
+        }
+
+        public static void SendUserNameTakenMessage(int _client)
+        {
+            using (Packet packet = new Packet((int)ServerPackets.UserNameInUse))
+            {
+                packet.Write(_client);
 
                 SendTCPData(_client, packet);
             }
@@ -45,17 +67,16 @@ namespace BelowZeroServer
             }
         }
 
-        public static void PlayerSpawned(int _client, string _playerName)
+        public static void PlayerSpawned(int _client, string _playerName, Vector3 _spawnPos)
         {
             using (Packet packet = new Packet((int)ServerPackets.SpawnPlayer))
             {
                 // Write the client ID of the new client
                 packet.Write(_client);
                 packet.Write(_playerName);
+                packet.Write(_spawnPos);
 
-                // TODO: Provide a spawn location for them.
-
-                SendTCPDataToAll(_client, packet);
+                SendTCPDataToAll(packet);
             }
         }
 
@@ -80,6 +101,7 @@ namespace BelowZeroServer
                 {
                     packet.Write(spawnedPlayers[i]);
                     packet.Write(Server.instance.m_clients[i].m_clientName);
+                    packet.Write(new Vector3(-309.5f, 17.75f, 255.0f));
                 }
 
                 // Send it

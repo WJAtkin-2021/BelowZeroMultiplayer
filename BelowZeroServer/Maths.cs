@@ -8,8 +8,10 @@ namespace BelowZeroServer
 {
     public class Vector2
     {
-        public float x;
-        public float y;
+        public float x = 0.0f;
+        public float y = 0.0f;
+
+        public Vector2() { }
 
         public Vector2(float x, float y)
         {
@@ -25,9 +27,11 @@ namespace BelowZeroServer
 
     public class Vector3
     {
-        public float x;
-        public float y;
-        public float z;
+        public float x = 0.0f;
+        public float y = 0.0f;
+        public float z = 0.0f;
+
+        public Vector3() { }
 
         public Vector3(float x, float y, float z)
         {
@@ -44,10 +48,12 @@ namespace BelowZeroServer
 
     public class Quaternion
     {
-        public float x;
-        public float y;
-        public float z;
-        public float w;
+        public float x = 0.0f;
+        public float y = 0.0f;
+        public float z = 0.0f;
+        public float w = 0.0f;
+
+        public Quaternion() { }
 
         public Quaternion(float x, float y, float z, float w)
         {

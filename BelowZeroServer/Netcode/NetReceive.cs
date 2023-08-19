@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
+using System.Threading;
 using System.Threading.Tasks;
 
 namespace BelowZeroServer
@@ -10,8 +11,43 @@ namespace BelowZeroServer
     {
         public static void ConnectedReceived(int _fromClient, Packet _packet)
         {
-            // Start the map download to this client
-            NetSend.UploadMapToClient(_fromClient);
+            // Perform a credential check
+            int clientId = _packet.ReadInt();
+            string playerName = _packet.ReadString();
+            string playerToken = _packet.ReadString();
+
+            if (DataStore.IsUserNameInUse(playerName))
+            {
+                if (DataStore.CheckCredentials(playerName, playerToken))
+                {
+                    // Start the map download to this client
+                    NetSend.UploadMapToClient(_fromClient);
+                }
+                else
+                {
+                    // User name is in use
+                    NetSend.SendUserNameTakenMessage(_fromClient);
+                    // Force a disconnect, NOTE: we allow time for the user name
+                    // taken packet to be recived. TODO: add another packet that can
+                    // be sent by the client to acknowledge this then we close
+                    Thread.Sleep(500);
+                    Server.instance.m_clients[_fromClient].Disconnect();
+                }
+            }
+            else
+            {
+                // Send a new machine token to the client if they did not
+                // provide one
+                if (playerToken == "")
+                {
+                    playerToken = Guid.NewGuid().ToString();
+                    DataStore.SaveCredentails(playerName, playerToken);
+                    NetSend.SendNewMachineToken(clientId, playerToken);
+                }
+
+                // Start the map download to this client
+                NetSend.UploadMapToClient(_fromClient);
+            }
         }
 
         public static void HandleClientSpawnMe(int _fromClient, Packet _packet)
@@ -23,7 +59,7 @@ namespace BelowZeroServer
             // This is TCP so we can skip the check
             //Logger.Log($"Client: {clientId} wishes to spawn in!");
 
-            NetSend.PlayerSpawned(clientId, clientName);
+            NetSend.PlayerSpawned(clientId, clientName, new Vector3(0.0f, 1000.0f, 0.0f));
             NetSend.SycPlayerList(clientId);
         }
 

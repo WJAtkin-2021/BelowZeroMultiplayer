@@ -9,7 +9,6 @@ using System.Text;
 using System.Threading.Tasks;
 using UnityEngine;
 using UWE;
-using static ICSharpCode.SharpZipLib.Zip.ExtendedUnixData;
 
 namespace BelowZeroClient
 {
@@ -19,14 +18,27 @@ namespace BelowZeroClient
         {
             // Read the packet
             int newClientId = _packet.ReadInt();
+            string serverGuid = _packet.ReadString();
 
             ErrorMessage.AddMessage($"Assigned client ID: {newClientId}");
 
             NetworkClient.Instance.m_clientId = newClientId;
 
-            // Tell the server we got it and to start up the UDP connection
-            NetSend.ConnectedReceived();
-            NetworkClient.Instance.StartUDPConnection();
+            // Tell the server we got it and to check our credentials
+            NetSend.ConnectedReceived(serverGuid);
+        }
+
+        public static void HandleNewMachineToken(Packet _packet)
+        {
+            string serverGuid = _packet.ReadString();
+            string machineToken = _packet.ReadString();
+
+            ApplicationSettings.SaveCredentailToken(serverGuid, machineToken);
+        }
+
+        public static void HandleUserNameInUse(Packet _packet)
+        {
+            ErrorMessage.AddWarning("Username Is Taken, please try another...");
         }
 
         public static void PlayerDisconnected(Packet _packet)
@@ -41,10 +53,16 @@ namespace BelowZeroClient
             // Read the ID of the player that spawned
             int newClientId = _packet.ReadInt();
             string newClientName = _packet.ReadString();
+            Vector3 newClientPos = _packet.ReadVector3();
 
             if (newClientId != NetworkClient.Instance.m_clientId)
             {
-                NetworkClient.Instance.AddRemotePlayer(newClientId, newClientName);
+                NetworkClient.Instance.AddRemotePlayer(newClientId, newClientName, newClientPos);
+            }
+            else
+            {
+                // This is us, so we need to find our player and teleport
+                ReplicatePlayer.m_instance.Teleport(newClientPos);
             }
         }
 
@@ -56,9 +74,10 @@ namespace BelowZeroClient
             {
                 int clientId = _packet.ReadInt();
                 string clientName = _packet.ReadString();
+                Vector3 position = _packet.ReadVector3();
                 if (clientId != NetworkClient.Instance.m_clientId)
                 {
-                    NetworkClient.Instance.AddRemotePlayer(clientId, clientName);
+                    NetworkClient.Instance.AddRemotePlayer(clientId, clientName, position);
                 }
             }
         }
@@ -77,6 +96,9 @@ namespace BelowZeroClient
 
         public static void HandleMapData(Packet _packet)
         {
+            // Start the UDP stream here...
+            NetworkClient.Instance.StartUDPConnection();
+
             // Grab the length
             int length = _packet.ReadInt();
 

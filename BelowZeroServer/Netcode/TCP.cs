@@ -89,51 +89,60 @@ namespace BelowZeroServer
 
         private bool HandleData(byte[] _data)
         {
-            int packetLength = 0;
-            m_receivedPacket.SetBytes(_data);
-
-            if (m_receivedPacket.UnreadLength() >= 4)
+            try
             {
-                // Set the packet length by reading the first integer in the buffer
-                packetLength = m_receivedPacket.ReadInt();
-                if (packetLength <= 0)
-                {
-                    // If the packet contains no data we can just return here
-                    return true;
-                }
-            }
+                int packetLength = 0;
+                m_receivedPacket.SetBytes(_data);
 
-            while (packetLength > 0 && packetLength <= m_receivedPacket.UnreadLength())
-            {
-                // Grab the packets raw byte data and its type
-                byte[] packetBytes = m_receivedPacket.ReadBytes(packetLength);
-
-                using (Packet packet = new Packet(packetBytes)) 
-                {
-                    int packetId = packet.ReadInt();
-                    Server.instance.m_packetHandlers[packetId](m_clientId, packet);
-                }
-
-                // Check to see if there is another packet of data waiting
-                packetLength = 0;
                 if (m_receivedPacket.UnreadLength() >= 4)
                 {
+                    // Set the packet length by reading the first integer in the buffer
                     packetLength = m_receivedPacket.ReadInt();
                     if (packetLength <= 0)
                     {
-                        // Can safely stop as the packet is now empty
+                        // If the packet contains no data we can just return here
                         return true;
                     }
                 }
-            }
 
-            if (packetLength <= 1)
+                while (packetLength > 0 && packetLength <= m_receivedPacket.UnreadLength())
+                {
+                    // Grab the packets raw byte data and its type
+                    byte[] packetBytes = m_receivedPacket.ReadBytes(packetLength);
+
+                    using (Packet packet = new Packet(packetBytes)) 
+                    {
+                        int packetId = packet.ReadInt();
+                        Server.instance.m_packetHandlers[packetId](m_clientId, packet);
+                    }
+
+                    // Check to see if there is another packet of data waiting
+                    packetLength = 0;
+                    if (m_receivedPacket.UnreadLength() >= 4)
+                    {
+                        packetLength = m_receivedPacket.ReadInt();
+                        if (packetLength <= 0)
+                        {
+                            // Can safely stop as the packet is now empty
+                            return true;
+                        }
+                    }
+                }
+
+                if (packetLength <= 1)
+                {
+                    // Can safely stop as the packet is now empty
+                    return true;
+                }
+
+                return false;
+            }
+            catch (Exception ex)
             {
-                // Can safely stop as the packet is now empty
-                return true;
+                Logger.Log($"[TCP:HandleData] Error: {ex}");
             }
 
-            return false;
+            return true;
         }
 
         public void DisconnectTcp()

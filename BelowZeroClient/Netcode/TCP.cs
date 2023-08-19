@@ -54,7 +54,6 @@ namespace BelowZeroClient
             ThreadManager.ExecuteOnMainThread(() =>
             {
                 NetworkClient.Instance.OnConnected?.Invoke();
-                ErrorMessage.AddMessage("Connected to server");
             });
         }
 

@@ -21,11 +21,13 @@ namespace BelowZeroClient
 
         private GameObject m_viewModel;
         private PingInstance m_pingInstance;
+        private Vector3 m_spawnPos;
 
-        public RemotePlayer(int _clientId, string _clientName)
+        public RemotePlayer(int _clientId, string _clientName, Vector3 _pos)
         { 
             m_clientId = _clientId;
             m_clientName = _clientName;
+            m_spawnPos = _pos;
 
             ErrorMessage.AddMessage($"{m_clientName} is joining...");
             
@@ -48,7 +50,7 @@ namespace BelowZeroClient
             if (targetVisual != null)
             {
                 targetVisual.GetComponentInParent<Player>().staticHead.shadowCastingMode = ShadowCastingMode.On;
-                m_viewModel = GameObject.Instantiate<GameObject>(targetVisual, START_POS, Quaternion.identity);
+                m_viewModel = GameObject.Instantiate<GameObject>(targetVisual, m_spawnPos, Quaternion.identity);
                 targetVisual.GetComponentInParent<Player>().staticHead.shadowCastingMode = ShadowCastingMode.ShadowsOnly;
 
                 m_pingInstance = m_viewModel.AddComponent<PingInstance>();

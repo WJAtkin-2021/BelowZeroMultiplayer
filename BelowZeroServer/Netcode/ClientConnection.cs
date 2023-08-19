@@ -29,20 +29,26 @@ namespace BelowZeroServer
             {
                 try
                 {
-                    Logger.Log($"{m_tcp.m_tcpClient.Client.RemoteEndPoint} has disconnected"); 
-                    NetSend.PlayerDisconnected(m_clientId); 
+                    Logger.Log($"{m_tcp.m_tcpClient.Client.RemoteEndPoint} has disconnected");
+                    NetSend.PlayerDisconnected(m_clientId);
                 }
                 catch (Exception ex)
                 {
                     Logger.Log($"[ClientConnection:Disconnect] Error while disconnecting client: {ex}");
                 }
-                finally 
+                finally
                 {
-                    m_tcp.DisconnectTcp(); 
+                    m_tcp.DisconnectTcp();
                 }
             }
 
             m_udp.DisconnectUdp();
         }
+    }
+
+    public class PlayerSaveData
+    {
+        Vector3 Pos = new Vector3();
+        Quaternion Rot = new Quaternion();
     }
 }

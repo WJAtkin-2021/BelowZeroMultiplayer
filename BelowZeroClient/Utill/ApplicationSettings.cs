@@ -11,6 +11,7 @@ namespace BelowZeroClient
     public class ApplicationSettings
     {
         private static string SUB_KEY = "SOFTWARE\\WillAtkin\\BelowZeroClient";
+        private static string SUB_KEY_SERVER_TOKENS = "SOFTWARE\\WillAtkin\\BelowZeroClient\\ServerTokens";
 
         public static void SaveSocket(string _socket)
         {
@@ -38,6 +39,19 @@ namespace BelowZeroClient
         {
             RegistryKey userPrefs = GetKey(SUB_KEY);
             return (string)userPrefs.GetValue("PlayerName", "");
+        }
+
+        public static string GetCredentailToken(string _serverGuid)
+        {
+            RegistryKey userPrefs = GetKey(SUB_KEY_SERVER_TOKENS);
+            return (string)userPrefs.GetValue(_serverGuid, "");
+        }
+
+        public static void SaveCredentailToken(string _serverGuid, string _machineToken)
+        {
+            RegistryKey userPrefs = GetKey(SUB_KEY_SERVER_TOKENS);
+            userPrefs.SetValue(_serverGuid, _machineToken);
+            userPrefs.Close();
         }
 
         private static RegistryKey GetKey(string key)

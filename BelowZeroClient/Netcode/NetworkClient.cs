@@ -28,6 +28,7 @@ namespace BelowZeroClient
         public string m_playerName;
         
         private bool m_isConnected = false;
+        private bool m_isMapLoaded = false;
 
         public delegate void PacketHandler(Packet packet);
         private static Dictionary<int, PacketHandler> m_packetHandlers;
@@ -102,9 +103,9 @@ namespace BelowZeroClient
             m_tcp.Connect(_ip, _port, DATA_BUFF_SIZE);
         }
 
-        public void AddRemotePlayer(int _clientId, string _clientName)
+        public void AddRemotePlayer(int _clientId, string _clientName, Vector3 _pos)
         {
-            RemotePlayer player = new RemotePlayer(_clientId, _clientName);
+            RemotePlayer player = new RemotePlayer(_clientId, _clientName, _pos);
             m_remotePlayers[_clientId] = player;
         }
 
@@ -121,7 +122,10 @@ namespace BelowZeroClient
                 catch { }
                 finally
                 {
-                    StartCoroutine(HandleDisconnectDelayed());
+                    if (m_isMapLoaded)
+                    {
+                        StartCoroutine(HandleDisconnectDelayed());
+                    }
                 }
             }
         }
@@ -151,6 +155,8 @@ namespace BelowZeroClient
                 { (int)ServerPackets.PlayerUnlockedTechKnowledge, NetReceive.HandlePlayerUnlockedTechKnowledge },
                 { (int)ServerPackets.PlayerUnlockedPDAEncyclopedia, NetReceive.HandlePlayerUnlockedPDAEncyclopedia },
                 { (int)ServerPackets.PlayerUpdatedFragmentProgress, NetReceive.HandlePlayerUpdatedFragmentProgress },
+                { (int)ServerPackets.NewMachineToken, NetReceive.HandleNewMachineToken },
+                { (int)ServerPackets.UserNameInUse, NetReceive.HandleUserNameInUse },
             };
         }
 

@@ -22,6 +22,8 @@ namespace BelowZeroMultiplayerCommon
         PlayerUnlockedTechKnowledge = 9,
         PlayerUnlockedPDAEncyclopedia = 10,
         PlayerUpdatedFragmentProgress = 11,
+        NewMachineToken = 12,
+        UserNameInUse = 13,
     }
 
     /// <summary>

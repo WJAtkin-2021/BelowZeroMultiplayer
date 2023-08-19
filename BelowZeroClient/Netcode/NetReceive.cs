@@ -166,6 +166,8 @@ namespace BelowZeroClient
 
             TechType techType = (TechType)Enum.Parse(typeof(TechType), teckName);
 
+            ErrorMessage.AddMessage($"Dropped Item: {techType}: At: {pos} Token: {token}");
+
             CoroutineHost.StartCoroutine(CreateTechTypeAsyc.CreateNetworkedTechTypeAsyc(techType, pos, token, null));
         }
 

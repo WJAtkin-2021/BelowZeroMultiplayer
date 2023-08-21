@@ -1,9 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-using System.Net;
+﻿using System.Net;
 
 namespace BelowZeroServer
 {
@@ -25,7 +20,7 @@ namespace BelowZeroServer
 
         public void SendPacket(Packet _packet)
         {
-            Server.instance.SendUDPData(m_endPoint, _packet);
+            Server.m_instance.SendUDPData(m_endPoint, _packet);
         }
 
         public void HandlePacket(Packet _packet)
@@ -36,7 +31,7 @@ namespace BelowZeroServer
             using (Packet packet = new Packet(packetBytes))
             {
                 int packetId = packet.ReadInt();
-                Server.instance.m_packetHandlers[packetId](m_clientId, packet);
+                Server.m_instance.m_packetHandlers[packetId](m_clientId, packet);
             }
         }
 

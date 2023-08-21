@@ -1,15 +1,8 @@
 ﻿using System;
-using System.Collections.Generic;
 using System.IO;
 using System.IO.Compression;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-using System.Xml.Linq;
 using UnityEngine;
 using Newtonsoft.Json.Linq;
-using static SaveLoadManager;
-using UWE;
 
 namespace BelowZeroClient
 {
@@ -33,8 +26,6 @@ namespace BelowZeroClient
             File.WriteAllBytes(outZipPath, mapData);
             ZipFile.ExtractToDirectory(outZipPath, outDirectoryPath);
             File.Delete(outZipPath);
-
-            //outDirectoryPath = Path.Combine(outDirectoryPath, "world");
 
             return outDirectoryPath;
         }

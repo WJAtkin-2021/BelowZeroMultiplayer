@@ -1,14 +1,10 @@
 ﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 using UnityEngine;
 
 namespace BelowZeroClient
 {
     public class NetToken : MonoBehaviour
     {
-        public String guid;
+        public string guid;
     }
 }

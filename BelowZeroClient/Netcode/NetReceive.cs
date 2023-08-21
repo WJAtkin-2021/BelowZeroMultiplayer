@@ -1,14 +1,8 @@
-﻿using BelowZeroClient.Utill;
-using HarmonyLib;
-using Newtonsoft.Json.Linq;
-using Story;
+﻿using Newtonsoft.Json.Linq;
 using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 using UnityEngine;
 using UWE;
+using BelowZeroClient.Utill;
 
 namespace BelowZeroClient
 {
@@ -22,7 +16,7 @@ namespace BelowZeroClient
 
             ErrorMessage.AddMessage($"Assigned client ID: {newClientId}");
 
-            NetworkClient.Instance.m_clientId = newClientId;
+            NetworkClient.m_instance.m_clientId = newClientId;
 
             // Tell the server we got it and to check our credentials
             NetSend.ConnectedReceived(serverGuid);
@@ -45,7 +39,7 @@ namespace BelowZeroClient
         {
             int client = _packet.ReadInt();
 
-            NetworkClient.Instance.m_remotePlayers[client].RemovePlayer();
+            NetworkClient.m_instance.m_remotePlayers[client].RemovePlayer();
         }
 
         public static void HandleSpawnPlayer(Packet _packet)
@@ -57,9 +51,9 @@ namespace BelowZeroClient
             Quaternion newClientRot = _packet.ReadQuaternoin();
             bool newClientIsInside = _packet.ReadBool();
 
-            if (newClientId != NetworkClient.Instance.m_clientId)
+            if (newClientId != NetworkClient.m_instance.m_clientId)
             {
-                NetworkClient.Instance.AddRemotePlayer(newClientId, newClientName, newClientPos);
+                NetworkClient.m_instance.AddRemotePlayer(newClientId, newClientName, newClientPos);
             }
             else
             {
@@ -77,9 +71,9 @@ namespace BelowZeroClient
                 int clientId = _packet.ReadInt();
                 string clientName = _packet.ReadString();
                 Vector3 position = _packet.ReadVector3();
-                if (clientId != NetworkClient.Instance.m_clientId)
+                if (clientId != NetworkClient.m_instance.m_clientId)
                 {
-                    NetworkClient.Instance.AddRemotePlayer(clientId, clientName, position);
+                    NetworkClient.m_instance.AddRemotePlayer(clientId, clientName, position);
                 }
             }
         }
@@ -90,16 +84,16 @@ namespace BelowZeroClient
             Vector3 pos = _packet.ReadVector3();
             Quaternion rot = _packet.ReadQuaternoin();
 
-            if (NetworkClient.Instance.m_remotePlayers.ContainsKey(clientId))
+            if (NetworkClient.m_instance.m_remotePlayers.ContainsKey(clientId))
             {
-                NetworkClient.Instance.m_remotePlayers[clientId].UpdateTransform(pos, rot);
+                NetworkClient.m_instance.m_remotePlayers[clientId].UpdateTransform(pos, rot);
             }
         }
 
         public static void HandleMapData(Packet _packet)
         {
             // Start the UDP stream here...
-            NetworkClient.Instance.StartUDPConnection();
+            NetworkClient.m_instance.StartUDPConnection();
 
             // Grab the length
             int length = _packet.ReadInt();

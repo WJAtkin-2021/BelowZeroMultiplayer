@@ -1,12 +1,8 @@
 ﻿using System;
-using System.Collections;
 using System.Collections.Generic;
 using System.IO;
-using System.Linq;
 using System.Net;
 using System.Net.Sockets;
-using System.Text;
-using System.Threading.Tasks;
 using BelowZeroMultiplayerCommon;
 
 namespace BelowZeroServer
@@ -24,13 +20,13 @@ namespace BelowZeroServer
         private TcpListener m_tcpListener;
         private UdpClient m_udpListener;
 
-        public static Server instance;
+        public static Server m_instance;
 
         private byte[] m_mapData;
 
         public Server()
         {
-            instance = this;
+            m_instance = this;
 
             m_mapData = File.ReadAllBytes("TestMap.zip");
         }

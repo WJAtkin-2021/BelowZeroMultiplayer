@@ -1,9 +1,5 @@
 ﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
 using System.Threading;
-using System.Threading.Tasks;
 
 namespace BelowZeroServer
 {
@@ -31,7 +27,7 @@ namespace BelowZeroServer
                     // taken packet to be recived. TODO: add another packet that can
                     // be sent by the client to acknowledge this then we close
                     Thread.Sleep(500);
-                    Server.instance.m_clients[_fromClient].Disconnect();
+                    Server.m_instance.m_clients[_fromClient].Disconnect();
                 }
             }
             else
@@ -59,7 +55,7 @@ namespace BelowZeroServer
             // This is TCP so we can skip the check
             //Logger.Log($"Client: {clientId} wishes to spawn in!");
 
-            Server.instance.m_clients[_fromClient].m_clientName = clientName;
+            Server.m_instance.m_clients[_fromClient].m_clientName = clientName;
             PlayerSaveData data = DataStore.GetPlayerData(clientName);
 
             NetSend.PlayerSpawned(clientId, clientName, data.Pos, data.Rot, data.IsInside);
@@ -84,7 +80,7 @@ namespace BelowZeroServer
 
             //Logger.Log($"Client: {clientId}: Transform: {position} : {rotation}");
 
-            Server.instance.m_clients[_fromClient].SetLastPos(position, rotation, isInside);
+            Server.m_instance.m_clients[_fromClient].SetLastPos(position, rotation, isInside);
 
             NetSend.PlayerTransformUpdate(clientId, position, rotation);
         }

@@ -1,9 +1,6 @@
-﻿using BelowZeroClient;
-using HarmonyLib;
-using System.Net.Sockets;
-using System.Threading;
+﻿using HarmonyLib;
 
-namespace BelowZeroClient.Patches
+namespace BelowZeroClient
 {
     class PlayerPatches
     {

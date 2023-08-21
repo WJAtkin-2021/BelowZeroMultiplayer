@@ -21,7 +21,7 @@ namespace BelowZeroClient
             [HarmonyPrefix]
             static void PreFix(bool quitToDesktop)
             {
-                NetworkClient.Instance.Disconnect();
+                NetworkClient.m_instance.Disconnect();
             }
         }
     }

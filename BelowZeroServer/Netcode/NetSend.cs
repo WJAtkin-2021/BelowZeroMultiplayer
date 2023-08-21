@@ -1,9 +1,5 @@
-﻿using BelowZeroMultiplayerCommon;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
+﻿using System.Collections.Generic;
+using BelowZeroMultiplayerCommon;
 
 namespace BelowZeroServer
 {
@@ -55,7 +51,7 @@ namespace BelowZeroServer
         {
             using (Packet packet = new Packet((int)ServerPackets.MapDownload))
             {
-                byte[] mapData = Server.instance.GetMapData();
+                byte[] mapData = Server.m_instance.GetMapData();
 
                 // Length
                 packet.Write(mapData.Length);
@@ -88,9 +84,9 @@ namespace BelowZeroServer
             {
                 // Generate a list of players currently in
                 List<int> spawnedPlayers = new List<int>();
-                for (int i = 0; i < Server.instance.m_clients.Count; i++)
+                for (int i = 0; i < Server.m_instance.m_clients.Count; i++)
                 {
-                    if (Server.instance.m_clients[i].m_tcp.m_tcpClient != null && i != _client)
+                    if (Server.m_instance.m_clients[i].m_tcp.m_tcpClient != null && i != _client)
                     {
                         spawnedPlayers.Add(i);
                     }
@@ -102,9 +98,9 @@ namespace BelowZeroServer
                 for (int i = 0; i < spawnedPlayers.Count; i++)
                 {
                     packet.Write(spawnedPlayers[i]);
-                    packet.Write(Server.instance.m_clients[spawnedPlayers[i]].m_clientName);
-                    packet.Write(Server.instance.m_clients[spawnedPlayers[i]].m_lastPos);
-                    packet.Write(Server.instance.m_clients[spawnedPlayers[i]].m_lastRot);
+                    packet.Write(Server.m_instance.m_clients[spawnedPlayers[i]].m_clientName);
+                    packet.Write(Server.m_instance.m_clients[spawnedPlayers[i]].m_lastPos);
+                    packet.Write(Server.m_instance.m_clients[spawnedPlayers[i]].m_lastRot);
                 }
 
                 // Send it
@@ -181,13 +177,13 @@ namespace BelowZeroServer
         private static void SendTCPData(int _toClient, Packet _packet)
         {
             _packet.WriteLength();
-            Server.instance.m_clients[_toClient].m_tcp.SendPacket(_packet);
+            Server.m_instance.m_clients[_toClient].m_tcp.SendPacket(_packet);
         }
 
         private static void SendUDPData(int _toClient, Packet _packet)
         {
             _packet.WriteLength();
-            Server.instance.m_clients[_toClient].m_udp.SendPacket(_packet);
+            Server.m_instance.m_clients[_toClient].m_udp.SendPacket(_packet);
         }
 
         private static void SendTCPDataToAll(Packet _packet)
@@ -195,11 +191,11 @@ namespace BelowZeroServer
             _packet.WriteLength();
             for (int i = 1; i <= Server.MAX_PLAYERS; i++)
             {
-                if (Server.instance.m_clients.ContainsKey(i))
+                if (Server.m_instance.m_clients.ContainsKey(i))
                 {
-                    if (Server.instance.m_clients[i].m_tcp != null)
+                    if (Server.m_instance.m_clients[i].m_tcp != null)
                     {
-                        Server.instance.m_clients[i].m_tcp.SendPacket(_packet);
+                        Server.m_instance.m_clients[i].m_tcp.SendPacket(_packet);
                     }
                 }
             }
@@ -212,11 +208,11 @@ namespace BelowZeroServer
             {
                 if (i != _exceptClient)
                 {
-                    if (Server.instance.m_clients.ContainsKey(i))
+                    if (Server.m_instance.m_clients.ContainsKey(i))
                     {
-                        if (Server.instance.m_clients[i].m_tcp != null)
+                        if (Server.m_instance.m_clients[i].m_tcp != null)
                         {
-                            Server.instance.m_clients[i].m_tcp.SendPacket(_packet);
+                            Server.m_instance.m_clients[i].m_tcp.SendPacket(_packet);
                         }
                     }
                 }
@@ -228,11 +224,11 @@ namespace BelowZeroServer
             _packet.WriteLength();
             for (int i = 1; i <= Server.MAX_PLAYERS; i++)
             {
-                if (Server.instance.m_clients.ContainsKey(i))
+                if (Server.m_instance.m_clients.ContainsKey(i))
                 {
-                    if (Server.instance.m_clients[i].m_udp != null)
+                    if (Server.m_instance.m_clients[i].m_udp != null)
                     {
-                        Server.instance.m_clients[i].m_udp.SendPacket(_packet);
+                        Server.m_instance.m_clients[i].m_udp.SendPacket(_packet);
                     }
                 }
             }
@@ -245,11 +241,11 @@ namespace BelowZeroServer
             {
                 if (i != _exceptClient)
                 {
-                    if (Server.instance.m_clients.ContainsKey(i))
+                    if (Server.m_instance.m_clients.ContainsKey(i))
                     {
-                        if (Server.instance.m_clients[i].m_udp != null)
+                        if (Server.m_instance.m_clients[i].m_udp != null)
                         {
-                            Server.instance.m_clients[i].m_udp.SendPacket(_packet);
+                            Server.m_instance.m_clients[i].m_udp.SendPacket(_packet);
                         }
                     }
                 }

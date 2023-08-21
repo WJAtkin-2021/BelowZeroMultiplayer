@@ -1,26 +1,20 @@
-﻿using HarmonyLib;
-using System;
-using System.Collections;
+﻿using System.Collections;
 using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 using UnityEngine;
-using UnityEngine.LowLevel;
 
 namespace BelowZeroClient
 {
     public class ReplicatePlayer : MonoBehaviour
     {
         public static ReplicatePlayer m_instance;
-        Player playerComp;
+        Player m_playerComp;
 
         public void Awake()
         {
             if (m_instance == null)
             {
                 m_instance = this;
-                playerComp = GetComponent<Player>();
+                m_playerComp = GetComponent<Player>();
             }
             else
             {
@@ -30,7 +24,7 @@ namespace BelowZeroClient
 
         public void Update()
         {
-            NetSend.TranformUpdate(transform.position, MainCameraControl.main.viewModel.transform.rotation, playerComp.IsInside());
+            NetSend.TranformUpdate(transform.position, MainCameraControl.main.viewModel.transform.rotation, m_playerComp.IsInside());
         }
 
         public void Teleport(Vector3 _pos, Quaternion _rot, bool _isInside)
@@ -41,17 +35,17 @@ namespace BelowZeroClient
         private IEnumerator DelayedTeleport(Vector3 _pos, Quaternion _rot, bool _isInside)
         {
             yield return new WaitForSeconds(0.5f);
-          
-            playerComp.SetPosition(_pos, _rot);
 
-            UnderwaterMotor underWaterController = playerComp.GetComponent<UnderwaterMotor>(); 
-            GroundMotor groundController = playerComp.GetComponent<GroundMotor>();
+            m_playerComp.SetPosition(_pos, _rot);
+
+            UnderwaterMotor underWaterController = m_playerComp.GetComponent<UnderwaterMotor>(); 
+            GroundMotor groundController = m_playerComp.GetComponent<GroundMotor>();
             underWaterController.SetEnabled(enabled: false);
             groundController.SetEnabled(enabled: false);
             groundController.gravity = 0.0f;
 
             yield return new WaitForSeconds(2.5f);
-            if (playerComp.IsUnderwaterForSwimming())
+            if (m_playerComp.IsUnderwaterForSwimming())
             {
                 underWaterController.SetEnabled(enabled: true);
             }
@@ -63,11 +57,11 @@ namespace BelowZeroClient
             }
             if (_isInside)
             {
-                playerComp.currentInterior = GetCurrentSpace(_pos);
+                m_playerComp.currentInterior = GetCurrentSpace(_pos);
             }
             else
             {
-                playerComp.currentInterior = null;
+                m_playerComp.currentInterior = null;
             }
 
             yield return null;

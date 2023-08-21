@@ -1,7 +1,7 @@
 ﻿using System;
 using HarmonyLib;
 
-namespace BelowZeroClient.Patches
+namespace BelowZeroClient
 {
     class OnPickDropZone
     {

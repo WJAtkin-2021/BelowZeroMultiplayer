@@ -1,9 +1,5 @@
 ﻿using System;
-using System.Collections.Generic;
-using System.Linq;
 using System.Net.Sockets;
-using System.Text;
-using System.Threading.Tasks;
 
 namespace BelowZeroServer
 {
@@ -60,7 +56,7 @@ namespace BelowZeroServer
 
         private void ReceiveCallback(IAsyncResult _result)
         {
-            if (Server.instance.IsServerShuttingDown())
+            if (Server.m_instance.IsServerShuttingDown())
                 return;
 
             try
@@ -113,7 +109,7 @@ namespace BelowZeroServer
                     using (Packet packet = new Packet(packetBytes)) 
                     {
                         int packetId = packet.ReadInt();
-                        Server.instance.m_packetHandlers[packetId](m_clientId, packet);
+                        Server.m_instance.m_packetHandlers[packetId](m_clientId, packet);
                     }
 
                     // Check to see if there is another packet of data waiting

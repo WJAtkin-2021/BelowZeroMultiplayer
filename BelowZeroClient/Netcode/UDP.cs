@@ -1,11 +1,6 @@
 ﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 using System.Net;
 using System.Net.Sockets;
-using System.Globalization;
 using UnityEngine;
 
 namespace BelowZeroClient
@@ -38,7 +33,7 @@ namespace BelowZeroClient
         {
             try
             {
-                _packet.InsertInt(NetworkClient.Instance.m_clientId);
+                _packet.InsertInt(NetworkClient.m_instance.m_clientId);
                 if (m_udpClient != null)
                 {
                     m_udpClient.BeginSend(_packet.ToArray(), _packet.Length(), null, null);
@@ -87,14 +82,14 @@ namespace BelowZeroClient
                 using (Packet packet = new Packet(_data))
                 {
                     int packetId = packet.ReadInt();
-                    NetworkClient.Instance.GetPacketHandlers()[packetId](packet);
+                    NetworkClient.m_instance.GetPacketHandlers()[packetId](packet);
                 }
             });
         }
 
         private void Disconnect()
         {
-            NetworkClient.Instance.Disconnect();
+            NetworkClient.m_instance.Disconnect();
 
             m_endPoint = null;
             m_udpClient = null;

@@ -1,11 +1,4 @@
 ﻿using HarmonyLib;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Net.Sockets;
-using System.Security.Policy;
-using System.Text;
-using System.Threading.Tasks;
 using TMPro;
 using UnityEngine;
 using UnityEngine.SceneManagement;
@@ -53,7 +46,7 @@ namespace BelowZeroClient
                         Image backGroundImage = multiplayerMenu.transform.GetComponent<Image>();
                         backGroundImage.rectTransform.sizeDelta = new Vector2(401.3f, 111.0f);
 
-                        NetworkClient.Instance.OnFailedToConnect += (() => {
+                        NetworkClient.m_instance.OnFailedToConnect += (() => {
                             multiplayerMenu.FindChild("Subscribe").GetComponent<Button>().interactable = true;
                         });
 
@@ -67,7 +60,7 @@ namespace BelowZeroClient
                                 ApplicationSettings.SaveSocket(enteredSocket);
                                 ApplicationSettings.SavePlayerName(enteredPlayerName);
                                 multiplayerMenu.FindChild("Subscribe").GetComponent<Button>().interactable = false;
-                                NetworkClient.Instance.AttemptServerConnection(enteredSocket, enteredPlayerName);
+                                NetworkClient.m_instance.AttemptServerConnection(enteredSocket, enteredPlayerName);
                             }
                             catch { }
                         });

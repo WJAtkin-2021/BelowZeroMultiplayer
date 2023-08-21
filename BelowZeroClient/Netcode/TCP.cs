@@ -1,10 +1,5 @@
-﻿using HarmonyLib;
-using System;
-using System.Collections.Generic;
-using System.Linq;
+﻿using System;
 using System.Net.Sockets;
-using System.Text;
-using System.Threading.Tasks;
 using UnityEngine;
 
 namespace BelowZeroClient
@@ -39,7 +34,7 @@ namespace BelowZeroClient
             {
                 ThreadManager.ExecuteOnMainThread(() =>
                 {
-                    NetworkClient.Instance.OnFailedToConnect?.Invoke();
+                    NetworkClient.m_instance.OnFailedToConnect?.Invoke();
                     ErrorMessage.AddMessage("Failed to connect to server");
                 });
 
@@ -53,7 +48,7 @@ namespace BelowZeroClient
 
             ThreadManager.ExecuteOnMainThread(() =>
             {
-                NetworkClient.Instance.OnConnected?.Invoke();
+                NetworkClient.m_instance.OnConnected?.Invoke();
             });
         }
 
@@ -125,7 +120,7 @@ namespace BelowZeroClient
                     using (Packet packet = new Packet(packetBytes))
                     {
                         int packetId = packet.ReadInt();
-                        NetworkClient.Instance.GetPacketHandlers()[packetId](packet);
+                        NetworkClient.m_instance.GetPacketHandlers()[packetId](packet);
                     }
                 });
 
@@ -153,7 +148,7 @@ namespace BelowZeroClient
 
         private void Disconnect()
         {
-            NetworkClient.Instance.Disconnect();
+            NetworkClient.m_instance.Disconnect();
 
             m_stream = null;
             m_receivedPacket = null;

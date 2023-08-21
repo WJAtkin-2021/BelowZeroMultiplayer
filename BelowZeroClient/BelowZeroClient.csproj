@@ -91,14 +91,14 @@
     <Compile Include="Patches\PDAScannerPatches.cs" />
     <Compile Include="Patches\TurnOffMainSubscriptionPatch.cs" />
     <Compile Include="Utill\ApplicationSettings.cs" />
-    <Compile Include="ExtensionComponents\ReplicatePlayer.cs" />
+    <Compile Include="Player\ReplicatePlayer.cs" />
     <Compile Include="Main.cs" />
     <Compile Include="Netcode\NetReceive.cs" />
     <Compile Include="Netcode\NetSend.cs" />
     <Compile Include="Netcode\NetToken.cs" />
     <Compile Include="Netcode\NetworkClient.cs" />
     <Compile Include="Netcode\Packet.cs" />
-    <Compile Include="Netcode\RemotePlayer.cs" />
+    <Compile Include="Player\RemotePlayer.cs" />
     <Compile Include="Netcode\TCP.cs" />
     <Compile Include="Netcode\UDP.cs" />
     <Compile Include="Patches\AddMenuItems.cs" />

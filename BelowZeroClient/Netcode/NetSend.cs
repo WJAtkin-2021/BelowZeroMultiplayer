@@ -1,12 +1,5 @@
 ﻿using BelowZeroMultiplayerCommon;
-using HarmonyLib;
-using Newtonsoft.Json.Linq;
 using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-using TMPro;
 using UnityEngine;
 
 namespace BelowZeroClient
@@ -17,8 +10,8 @@ namespace BelowZeroClient
         {
             using (Packet packet = new Packet((int)ClientPackets.ConnectedReceived))
             {
-                packet.Write(NetworkClient.Instance.m_clientId);
-                packet.Write(NetworkClient.Instance.m_playerName);
+                packet.Write(NetworkClient.m_instance.m_clientId);
+                packet.Write(NetworkClient.m_instance.m_playerName);
                 packet.Write(ApplicationSettings.GetCredentailToken(_serverGuid));
 
                 SendTCPData(packet);
@@ -29,8 +22,8 @@ namespace BelowZeroClient
         {
             using (Packet packet = new Packet((int)ClientPackets.SpawnMe))
             {
-                packet.Write(NetworkClient.Instance.m_clientId);
-                packet.Write(NetworkClient.Instance.m_playerName);
+                packet.Write(NetworkClient.m_instance.m_clientId);
+                packet.Write(NetworkClient.m_instance.m_playerName);
 
                 SendTCPData(packet);
             }
@@ -40,7 +33,7 @@ namespace BelowZeroClient
         {
             using (Packet packet = new Packet((int)ClientPackets.TransformUpdate))
             {
-                packet.Write(NetworkClient.Instance.m_clientId);
+                packet.Write(NetworkClient.m_instance.m_clientId);
                 packet.Write(_pos);
                 packet.Write(_rot);
                 packet.Write(_isInside);
@@ -109,7 +102,7 @@ namespace BelowZeroClient
 
             try
             {
-                NetworkClient.Instance.m_tcp.SendPacket(_packet);
+                NetworkClient.m_instance.m_tcp.SendPacket(_packet);
             }
             catch (Exception ex)
             {
@@ -120,7 +113,7 @@ namespace BelowZeroClient
         private static void SendUDPData(Packet _packet)
         {
             _packet.WriteLength();
-            NetworkClient.Instance.m_udp.SendPacket(_packet);
+            NetworkClient.m_instance.m_udp.SendPacket(_packet);
         }
     }
 }

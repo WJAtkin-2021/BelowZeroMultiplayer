@@ -1,13 +1,8 @@
 ﻿using BelowZeroMultiplayerCommon;
-using HarmonyLib;
-using ICSharpCode.SharpZipLib.Zip;
 using System;
 using System.Collections;
 using System.Collections.Generic;
-using System.Linq;
 using System.Net;
-using System.Text;
-using System.Threading.Tasks;
 using UnityEngine;
 
 namespace BelowZeroClient
@@ -15,7 +10,7 @@ namespace BelowZeroClient
     public class NetworkClient : MonoBehaviour
     {
         public const int DATA_BUFF_SIZE = 4096;
-        public static NetworkClient Instance;
+        public static NetworkClient m_instance;
 
         public Action OnAttemptConnection;
         public Action OnConnected;
@@ -37,9 +32,9 @@ namespace BelowZeroClient
 
         void Awake() 
         {
-            if (Instance == null)
+            if (m_instance == null)
             {
-                Instance = this;
+                m_instance = this;
                 DontDestroyOnLoad(gameObject);
                 InitPacketHandlers();
                 StartCoroutine(CheckRemoteViews());
@@ -184,7 +179,7 @@ namespace BelowZeroClient
 
             foreach (KeyValuePair<int, RemotePlayer> entry in m_remotePlayers)
             {
-                if (!entry.Value.spawnedIn)
+                if (!entry.Value.m_spawnedIn)
                 {
                     entry.Value.AttemptSpawn();
                 }

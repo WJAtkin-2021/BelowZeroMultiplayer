@@ -15,6 +15,7 @@ namespace BelowZeroClient
             {
                 m_instance = this;
                 m_playerComp = GetComponent<Player>();
+                NetworkClient.m_instance.SetMapLoaded();
             }
             else
             {
@@ -44,7 +45,7 @@ namespace BelowZeroClient
             groundController.SetEnabled(enabled: false);
             groundController.gravity = 0.0f;
 
-            yield return new WaitForSeconds(2.5f);
+            yield return new WaitForSeconds(2.0f);
             if (m_playerComp.IsUnderwaterForSwimming())
             {
                 underWaterController.SetEnabled(enabled: true);
@@ -58,6 +59,12 @@ namespace BelowZeroClient
             if (_isInside)
             {
                 m_playerComp.currentInterior = GetCurrentSpace(_pos);
+
+                if (m_playerComp.currentInterior.IsValidForRespawn())
+                {
+                    RespawnPoint rp = m_playerComp.currentInterior.GetRespawnPoint();
+                    m_playerComp.SetPosition(rp.GetSpawnPosition());
+                }
             }
             else
             {
@@ -97,7 +104,6 @@ namespace BelowZeroClient
                     distance = testDist;
                 }
             }
-
             return closest;
         }
     }

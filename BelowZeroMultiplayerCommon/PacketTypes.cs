@@ -24,6 +24,7 @@ namespace BelowZeroMultiplayerCommon
         PlayerUpdatedFragmentProgress = 11,
         NewMachineToken = 12,
         UserNameInUse = 13,
+        MessageBroadcast = 14,
     }
 
     /// <summary>

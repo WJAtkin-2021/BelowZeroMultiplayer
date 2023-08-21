@@ -87,6 +87,15 @@ namespace BelowZeroServer
                 Logger.Log("Removing Test Player");
                 NetSend.PlayerDisconnected(420);
             }
+            else if (cmd.Contains("send "))
+            {
+                string messageToClients = cmd.Substring(5);
+                if (messageToClients.Length > 0)
+                {
+                    NetSend.MessageBroadcast(messageToClients);
+                }
+                Logger.SilentLog($"Sending message: {messageToClients}");
+            }
             else
             {
                 Logger.Log($"Invalid Command: {cmd}");

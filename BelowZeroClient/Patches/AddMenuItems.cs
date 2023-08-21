@@ -50,6 +50,10 @@ namespace BelowZeroClient
                             multiplayerMenu.FindChild("Subscribe").GetComponent<Button>().interactable = true;
                         });
 
+                        NetworkClient.m_instance.OnConnectionRefused += (() => {
+                            multiplayerMenu.FindChild("Subscribe").GetComponent<Button>().interactable = true;
+                        });
+
                         multiplayerMenu.FindChild("Subscribe").GetComponent<Button>().onClick.AddListener(() =>
                         {
                             try

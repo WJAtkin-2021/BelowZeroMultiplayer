@@ -15,6 +15,7 @@ namespace BelowZeroClient
         public Action OnAttemptConnection;
         public Action OnConnected;
         public Action OnFailedToConnect;
+        public Action OnConnectionRefused;
 
         public TCP m_tcp;
         public UDP m_udp;
@@ -104,6 +105,11 @@ namespace BelowZeroClient
             m_remotePlayers[_clientId] = player;
         }
 
+        public void SetMapLoaded()
+        {
+            m_isMapLoaded = true;
+        }
+
         public void Disconnect()
         {
             if (m_isConnected)
@@ -145,13 +151,14 @@ namespace BelowZeroClient
                 { (int)ServerPackets.SpawnPlayer, NetReceive.HandleSpawnPlayer },
                 { (int)ServerPackets.SycPlayerList, NetReceive.HandleSycPlayerList },
                 { (int)ServerPackets.PlayerTransformUpdate, NetReceive.HandlePlayerTransformUpdate },
-                { (int)ServerPackets.PlayerDroppedItem, NetReceive.handlePlayerDroppedItem },
-                { (int)ServerPackets.PlayerPickedUpItem, NetReceive.handlePlayerPickedUpItem },
+                { (int)ServerPackets.PlayerDroppedItem, NetReceive.HandlePlayerDroppedItem },
+                { (int)ServerPackets.PlayerPickedUpItem, NetReceive.HandlePlayerPickedUpItem },
                 { (int)ServerPackets.PlayerUnlockedTechKnowledge, NetReceive.HandlePlayerUnlockedTechKnowledge },
                 { (int)ServerPackets.PlayerUnlockedPDAEncyclopedia, NetReceive.HandlePlayerUnlockedPDAEncyclopedia },
                 { (int)ServerPackets.PlayerUpdatedFragmentProgress, NetReceive.HandlePlayerUpdatedFragmentProgress },
                 { (int)ServerPackets.NewMachineToken, NetReceive.HandleNewMachineToken },
                 { (int)ServerPackets.UserNameInUse, NetReceive.HandleUserNameInUse },
+                { (int)ServerPackets.MessageBroadcast, NetReceive.HandleMessageBroadcast },
             };
         }
 

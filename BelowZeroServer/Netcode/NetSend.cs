@@ -174,6 +174,16 @@ namespace BelowZeroServer
             }
         }
 
+        public static void MessageBroadcast(string _message)
+        {
+            using (Packet packet = new Packet((int)ServerPackets.MessageBroadcast))
+            {
+                packet.Write(_message);
+
+                SendTCPDataToAll(packet);
+            }
+        }
+
         private static void SendTCPData(int _toClient, Packet _packet)
         {
             _packet.WriteLength();

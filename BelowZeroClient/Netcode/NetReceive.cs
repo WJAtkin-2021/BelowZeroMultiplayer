@@ -33,6 +33,8 @@ namespace BelowZeroClient
         public static void HandleUserNameInUse(Packet _packet)
         {
             ErrorMessage.AddWarning("Username Is Taken, please try another...");
+
+            NetworkClient.m_instance.OnConnectionRefused.Invoke();
         }
 
         public static void PlayerDisconnected(Packet _packet)
@@ -152,7 +154,7 @@ namespace BelowZeroClient
             ErrorMessage.AddMessage($"Didn't crash :)");
         }
 
-        public static void handlePlayerDroppedItem(Packet _packet)
+        public static void HandlePlayerDroppedItem(Packet _packet)
         {
             string teckName = _packet.ReadString();
             Vector3 pos = _packet.ReadVector3();
@@ -162,7 +164,7 @@ namespace BelowZeroClient
             CoroutineHost.StartCoroutine(CreateTechTypeAsyc.CreateNetworkedTechTypeAsyc(techType, pos, token, null));
         }
 
-        public static void handlePlayerPickedUpItem(Packet _packet)
+        public static void HandlePlayerPickedUpItem(Packet _packet)
         {
             string token = _packet.ReadString();
 
@@ -225,6 +227,13 @@ namespace BelowZeroClient
                 float arg = Mathf.RoundToInt((float)entry.unlocked / (float)totalFragments * 100f);
                 ErrorMessage.AddError(Language.main.GetFormat("ScannerInstanceScanned", Language.main.Get(techType.AsString()), arg, entry.unlocked, totalFragments));
             }
+        }
+
+        public static void HandleMessageBroadcast(Packet _packet)
+        {
+            string msg = _packet.ReadString();
+            string messageToShow = $"Server: {msg}";
+            ErrorMessage.AddMessage(messageToShow);
         }
     }
 }

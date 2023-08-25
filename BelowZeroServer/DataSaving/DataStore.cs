@@ -1,4 +1,5 @@
-﻿using System;
+﻿using BelowZeroMultiplayerCommon;
+using System;
 using System.Collections.Generic;
 using System.Data.SQLite;
 using System.IO;
@@ -228,6 +229,11 @@ namespace BelowZeroServer
             return null;
         }
 
+        public void SaveInventoryData(InventoryData _inventoryData)
+        {
+
+        }
+
         private void OpenConnection()
         {
             m_connection = new SQLiteConnection($"Data Source={DATABASE_NAME}; Version = 3; New = True; Compress = True;");
@@ -258,6 +264,7 @@ namespace BelowZeroServer
             ExecuteNonQuery($"INSERT INTO ServerSettings (ServerGuid) VALUES (\"{m_serverGuid}\")");
             ExecuteNonQuery("CREATE TABLE PlayerToken (PlayerName Text, PlayerGuid TEXT)");
             ExecuteNonQuery("CREATE TABLE PlayerPos (PlayerName TEXT, xPos REAL, yPos REAL, zPos REAL, xRot REAL, yRot REAL, zRot REAL, wRot REAL, isInside INTEGER)");
+            ExecuteNonQuery("CREATE TABLE PlayerInventory (PlayerName TEXT, storage BLOB, quickSlots BLOB, equipment BLOB, equipmentSlots BLOB, pendingItems BLOB)");
             ExecuteNonQuery("CREATE TABLE TechTypeUnlocks (techType INTEGER)");
             ExecuteNonQuery("CREATE TABLE PdaEntryUnlocks (key TEXT)");
             ExecuteNonQuery("CREATE TABLE Fragments (key TEXT, techType INTEGER, current INTERGER)");

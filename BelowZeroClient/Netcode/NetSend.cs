@@ -1,5 +1,6 @@
 ﻿using BelowZeroMultiplayerCommon;
 using System;
+using System.Collections.Generic;
 using UnityEngine;
 
 namespace BelowZeroClient
@@ -104,6 +105,34 @@ namespace BelowZeroClient
             }
         }
 
+        public static void PlayerInventoryUpdated(InventoryData _data)
+        {
+            using (Packet packet = new Packet((int)ClientPackets.PlayerInventoryUpdated))
+            {
+                packet.Write(_data.serializedStorage.Length);
+                packet.Write(_data.serializedStorage);
+                packet.Write(_data.serializedQuickSlots.Length);
+                for (int i = 0; i < _data.serializedQuickSlots.Length; i++)
+                {
+                    packet.Write(_data.serializedQuickSlots[i]);
+                }
+                packet.Write(_data.serializedEquipment.Length);
+                packet.Write(_data.serializedEquipment);
+                packet.Write(_data.serializedEquipmentSlots.Count);
+                foreach (KeyValuePair<string, string> entry in _data.serializedEquipmentSlots)
+                {
+                    packet.Write(entry.Key);
+                    packet.Write(entry.Value);
+                }
+                packet.Write(_data.serializedPendingItems.Length);
+                packet.Write(_data.serializedPendingItems);
+
+                SendTCPData(packet);
+            }
+        }
+
+        #region SendImplementations
+
         private static void SendTCPData(Packet _packet)
         {
             _packet.WriteLength();
@@ -123,5 +152,7 @@ namespace BelowZeroClient
             _packet.WriteLength();
             NetworkClient.m_instance.m_udp.SendPacket(_packet);
         }
+
+        #endregion
     }
 }

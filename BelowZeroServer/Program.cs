@@ -28,7 +28,6 @@ namespace BelowZeroServer
                 }
 
                 UnlockManager.SaveUnlocks();
-                Thread.Sleep(1000);
                 Logger.WriteToFile();
                 Console.WriteLine("Server shutdown, press any key to close console...");
                 Console.ReadKey();

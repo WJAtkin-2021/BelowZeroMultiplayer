@@ -68,7 +68,7 @@
     <Compile Include="Netcode\NetReceive.cs" />
     <Compile Include="Netcode\NetSend.cs" />
     <Compile Include="Netcode\Packet.cs" />
-    <Compile Include="Persistance\DataStore.cs" />
+    <Compile Include="DataSaving\DataStore.cs" />
     <Compile Include="Program.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="Server.cs" />

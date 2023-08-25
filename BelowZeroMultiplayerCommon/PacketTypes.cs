@@ -26,6 +26,7 @@ namespace BelowZeroMultiplayerCommon
         UserNameInUse = 13,
         MessageBroadcast = 14,
         SyncUnlocks = 15,
+        SyncPlayerInventory = 16,
     }
 
     /// <summary>
@@ -41,5 +42,6 @@ namespace BelowZeroMultiplayerCommon
         TechKnowledgeAdded = 6,
         AddedPDAEncyclopedia = 10,
         FragmentProgressUpdated = 11,
+        PlayerInventoryUpdated = 12,
     }
 }

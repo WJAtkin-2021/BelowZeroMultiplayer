@@ -44,6 +44,7 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="InventoryData.cs" />
     <Compile Include="PacketTypes.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
   </ItemGroup>

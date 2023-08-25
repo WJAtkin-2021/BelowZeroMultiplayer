@@ -1,5 +1,6 @@
 ﻿using System.Collections.Generic;
 using System.Threading;
+using System.Xml.Linq;
 using BelowZeroMultiplayerCommon;
 
 namespace BelowZeroServer
@@ -210,6 +211,32 @@ namespace BelowZeroServer
                     packet.Write(fragments[i].parts);
                 }
                 
+                SendTCPData(_toClient, packet);
+            }
+        }
+
+        public static void SyncPlayerInventory(int _toClient, InventoryData _inventory)
+        {
+            using (Packet packet = new Packet((int)ServerPackets.SyncPlayerInventory))
+            {
+                packet.Write(_inventory.serializedStorage.Length);
+                packet.Write(_inventory.serializedStorage);
+                packet.Write(_inventory.serializedQuickSlots.Length);
+                for (int i = 0; i < _inventory.serializedQuickSlots.Length; i++)
+                {
+                    packet.Write(_inventory.serializedQuickSlots[i]);
+                }
+                packet.Write(_inventory.serializedEquipment.Length);
+                packet.Write(_inventory.serializedEquipment);
+                packet.Write(_inventory.serializedEquipmentSlots.Count);
+                foreach (KeyValuePair<string, string> entry in _inventory.serializedEquipmentSlots)
+                {
+                    packet.Write(entry.Key);
+                    packet.Write(entry.Value);
+                }
+                packet.Write(_inventory.serializedPendingItems.Length);
+                packet.Write(_inventory.serializedPendingItems);
+
                 SendTCPData(_toClient, packet);
             }
         }

@@ -171,6 +171,7 @@ namespace BelowZeroServer
                 { (int)ClientPackets.TechKnowledgeAdded, NetReceive.HandleTechKnowledgeAdded },
                 { (int)ClientPackets.AddedPDAEncyclopedia, NetReceive.HandleUnlockedPDAEncyclopedia },
                 { (int)ClientPackets.FragmentProgressUpdated, NetReceive.HandleFragmentProgressUpdated },
+                { (int)ClientPackets.PlayerInventoryUpdated, NetReceive.HandlePlayerInventoryUpdated },
             };
         }
 

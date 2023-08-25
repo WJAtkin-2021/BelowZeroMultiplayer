@@ -43,7 +43,7 @@ namespace BelowZeroClient
                     StartCoroutine(SaveTimer());
                     SyncInventoryToServer();
                 }
-                catch(Exception ex)
+                catch (Exception ex)
                 {
                     FileLog.Log($"{ex}");
                 }
@@ -109,7 +109,7 @@ namespace BelowZeroClient
 
         private IEnumerator LoadInventoryDelayed(InventoryData _data)
         {
-            yield return new WaitForSeconds(5.0f);
+            yield return new WaitForSeconds(2.5f);
 
             Inventory inv = gameObject.GetComponent<Inventory>();
             if (inv != null)
@@ -121,13 +121,6 @@ namespace BelowZeroClient
                 inv.serializedEquipmentSlots = _data.serializedEquipmentSlots;
                 inv.serializedPendingItems = _data.serializedPendingItems;
                 // Create the serializer and ask the inventory to "Load" the data
-
-                foreach (KeyValuePair<string, string> entry in inv.serializedEquipmentSlots)
-                {
-                    ErrorMessage.AddMessage($"Equip slot: {entry.Key} : {entry.Value}");
-                }
-
-
                 ProtobufSerializer serializer = ProtobufSerializerPool.GetProxy();
                 yield return StartCoroutine(inv.OnProtoDeserializeAsync(serializer));
             }

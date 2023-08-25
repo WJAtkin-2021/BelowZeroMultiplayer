@@ -162,6 +162,11 @@ namespace BelowZeroClient
             };
         }
 
+        public string ResolvePlayerName(int _clientId)
+        {
+            return m_remotePlayers[_clientId].m_clientName;
+        }
+
         private void OnApplicationQuit()
         {
             Disconnect();

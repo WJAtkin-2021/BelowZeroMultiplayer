@@ -27,7 +27,7 @@ namespace BelowZeroServer
                     // taken packet to be recived. TODO: add another packet that can
                     // be sent by the client to acknowledge this then we close
                     Thread.Sleep(500);
-                    Server.m_instance.m_clients[_fromClient].Disconnect();
+                    Server.m_instance.m_clients[_fromClient].DisconnectSilent();
                 }
             }
             else
@@ -95,7 +95,7 @@ namespace BelowZeroServer
             // Replicate this
             NetSend.PlayerDroppedItem(_fromClient, techName, position, token);
 
-            Logger.Log($"Client: {_fromClient} Dropped: {techName} With Token: {token} At: {position}");
+            Logger.Log($"{Server.ResolvePlayerName(_fromClient)} Dropped: {techName} With Token: {token} At: {position}");
 
             // TODO: Store this data for late joiners
 
@@ -117,7 +117,7 @@ namespace BelowZeroServer
             bool unlockEncyclopedia = _packet.ReadBool();
             bool verbose = _packet.ReadBool();
 
-            Logger.Log($"Client: {_fromClient} Unlocked tech: {techType}");
+            Logger.Log($"{Server.ResolvePlayerName(_fromClient)} Unlocked tech: {techType}");
 
             // Replicate to all other clients
             NetSend.PlayerUnlockedTechKnowledge(_fromClient, techType, unlockEncyclopedia, verbose);
@@ -134,7 +134,7 @@ namespace BelowZeroServer
             if (string.IsNullOrEmpty(key))
                 return;
 
-            Logger.Log($"Client: {_fromClient} Unlocked PDA Entry: {key}");
+            Logger.Log($"{Server.ResolvePlayerName(_fromClient)} Unlocked PDA Entry: {key}");
 
             // Replicate to all the other clients
             NetSend.PlayerUnlockedPDAEncyclopedia(_fromClient, key);
@@ -145,7 +145,7 @@ namespace BelowZeroServer
             // Read
             int techType = _packet.ReadInt();
 
-            Logger.Log($"Client: {_fromClient} Updated fragment progress: {techType}");
+            Logger.Log($"{Server.ResolvePlayerName(_fromClient)} Updated fragment progress: {techType}");
 
             // Replicate
             NetSend.PlayerUpdatedFragmentProgress(_fromClient, techType);

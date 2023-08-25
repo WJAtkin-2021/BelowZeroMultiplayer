@@ -47,6 +47,15 @@ namespace BelowZeroServer
             m_udp.DisconnectUdp();
         }
 
+        public void DisconnectSilent()
+        {
+            if (m_tcp.m_tcpClient != null)
+            {
+                m_tcp.DisconnectTcp();
+                m_udp.DisconnectUdp();
+            }
+        }
+
         public void SetLastPos(Vector3 _pos, Quaternion _rot, bool _isInside)
         {
             m_lastPos = _pos;

@@ -174,6 +174,11 @@ namespace BelowZeroServer
             };
         }
 
+        public static string ResolvePlayerName(int _clientId)
+        {
+            return m_instance.m_clients[_clientId].m_clientName;
+        }
+
         public bool IsServerShuttingDown()
         {
             return m_isShuttingDown;

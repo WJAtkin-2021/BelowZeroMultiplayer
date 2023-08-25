@@ -72,6 +72,9 @@ namespace BelowZeroServer
                 Array.Copy(m_receivedBuff, data, byteLength);
 
                 m_receivedPacket.Reset(HandleData(data));
+                if (m_receivedBuff == null)
+                    return;
+
                 m_stream.BeginRead(m_receivedBuff, 0, m_dataBuffSize, ReceiveCallback, null);
             }
             catch (Exception ex)
@@ -112,8 +115,10 @@ namespace BelowZeroServer
                         Server.m_instance.m_packetHandlers[packetId](m_clientId, packet);
                     }
 
-                    // Check to see if there is another packet of data waiting
                     packetLength = 0;
+                    if (m_receivedPacket == null)
+                        return true;
+
                     if (m_receivedPacket.UnreadLength() >= 4)
                     {
                         packetLength = m_receivedPacket.ReadInt();

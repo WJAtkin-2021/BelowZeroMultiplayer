@@ -13,6 +13,7 @@ namespace BelowZeroServer
             try
             {
                 DataStore.CreateDataStore();
+                UnlockManager.LoadUnlocks();
                 Logger.Log($"Server GUID is: {DataStore.GetServerGuid()}");
                 m_server = new Server();
                 m_server.StartServer(5000);
@@ -26,6 +27,7 @@ namespace BelowZeroServer
                     }
                 }
 
+                UnlockManager.SaveUnlocks();
                 Thread.Sleep(1000);
                 Logger.WriteToFile();
                 Console.WriteLine("Server shutdown, press any key to close console...");
@@ -72,13 +74,20 @@ namespace BelowZeroServer
                 Logger.Log("Adding Seaglide fragment");
                 currentFrags++;
 
-                UnlockManager.UpdateFragment(1117, currentFrags, 3);
+                UnlockManager.UpdateFragment(1117, currentFrags);
                 NetSend.PlayerUpdatedFragmentProgress(0, 1117, currentFrags);
             }
             else if (cmd == "pdatest")
             {
                 Logger.Log("TwistyBridgesMushroom test");
+                UnlockManager.AddPdaEntry("TwistyBridgesMushroom");
                 NetSend.PlayerUnlockedPDAEncyclopedia(0, "TwistyBridgesMushroom");
+            }
+            else if (cmd == "blueprinttest")
+            {
+                Logger.Log("Seaglide test ride");
+                UnlockManager.AddTechUnlock(751);
+                NetSend.PlayerUnlockedTechKnowledge(0, 751, true, true);
             }
             else if (cmd == "testplayer")
             {
@@ -98,6 +107,10 @@ namespace BelowZeroServer
                     NetSend.MessageBroadcast(messageToClients);
                 }
                 Logger.SilentLog($"Sending message: {messageToClients}");
+            }
+            else if (cmd.Contains("savetest"))
+            {
+                UnlockManager.SaveUnlocks();
             }
             else
             {

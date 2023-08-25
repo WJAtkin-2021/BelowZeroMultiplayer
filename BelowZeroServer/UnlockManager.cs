@@ -50,7 +50,7 @@ namespace BelowZeroServer
             }
         }
 
-        public static void UpdateFragment(int _techType, int _parts, int _totalNeeded)
+        public static void UpdateFragment(int _techType, int _parts)
         {
             string key = _techType.ToString();
             if (!fragments.ContainsKey(key))
@@ -58,12 +58,33 @@ namespace BelowZeroServer
                 FragmentKnowledge newFrag = new FragmentKnowledge();
                 newFrag.techType = _techType;
                 newFrag.parts = _parts;
-                newFrag.totalNeeded = _totalNeeded;
                 fragments.Add(key, newFrag);
             }
             else
             {
                 fragments[key].parts = _parts;
+            }
+        }
+
+        public static void SaveUnlocks()
+        {
+            UnlockData unlockData = new UnlockData();
+            unlockData.techUnlocks = techUnlocks;
+            unlockData.pdaEncyclopedia = pdaEncyclopedia;
+            unlockData.fragments = fragments;
+            DataStore.SaveUnlockData(unlockData);
+        }
+
+        public static void LoadUnlocks()
+        {
+            // Null check as the database might not have any data stored
+            // if it is fresh
+            UnlockData unlockData = DataStore.LoadUnlockData();
+            if (unlockData != null)
+            {
+                techUnlocks = unlockData.techUnlocks;
+                pdaEncyclopedia = unlockData.pdaEncyclopedia;
+                fragments = unlockData.fragments;
             }
         }
     }
@@ -72,6 +93,12 @@ namespace BelowZeroServer
     {
         public int techType;
         public int parts;
-        public int totalNeeded;
+    }
+
+    public class UnlockData
+    {
+        public List<int> techUnlocks = new List<int>();
+        public List<string> pdaEncyclopedia = new List<string>();
+        public Dictionary<string, FragmentKnowledge> fragments = new Dictionary<string, FragmentKnowledge>();
     }
 }

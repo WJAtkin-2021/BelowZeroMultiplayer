@@ -250,8 +250,6 @@ namespace BelowZeroClient
 
         public static void HandleSyncUnlocks(Packet _packet)
         {
-            FileLog.Log($"HandleSyncUnlocks called");
-
             // Extract the techs
             List<int> techs = new List<int>();
             int totalTechs = _packet.ReadInt();
@@ -296,16 +294,13 @@ namespace BelowZeroClient
             {
                 PDAScanner.EntryData entryData = PDAScanner.GetEntryData(entries.Key);
 
-                FileLog.Log($"Got fragment of enum: {entries.Key}");
                 if (PDAScanner.GetPartialEntryByKey(entries.Key, out PDAScanner.Entry entry))
                 {
-                    FileLog.Log($"Has partial entry for {entries.Key}");
                     entry.unlocked = entries.Value;
                     PDAScanner.onProgress.Invoke(entry);
                 }
                 else
                 {
-                    FileLog.Log($"Has no entry for {entries.Key}");
                     // Really horrible but we need to get the PDA's data by serilizing it and then
                     // pass it back to it for it to read
                     PDAScanner.Data data = PDAScanner.Serialize();

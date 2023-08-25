@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Collections.Generic;
 using System.Data.SQLite;
 using System.IO;
 
@@ -158,6 +159,75 @@ namespace BelowZeroServer
             ExecuteNonQuery($"INSERT INTO PlayerPos (PlayerName, xPos, yPos, zPos, xRot, yRot, zRot, wRot, isInside) VALUES (\"{_userName}\", {pos.x}, {pos.y}, {pos.z}, {rot.x}, {rot.y}, {rot.z}, {rot.w}, {_playerSaveData.IsInside})");
         }
 
+        public static void SaveUnlockData(UnlockData _unlockData)
+        {
+            for (int i = 0; i < _unlockData.techUnlocks.Count; i++)
+            {
+                ExecuteNonQuery($"DELETE FROM TechTypeUnlocks WHERE techType = {_unlockData.techUnlocks[i]}");
+                ExecuteNonQuery($"INSERT INTO TechTypeUnlocks (techType) VALUES ({_unlockData.techUnlocks[i]})");
+            }
+
+            for (int i = 0; i < _unlockData.pdaEncyclopedia.Count; i++)
+            {
+                ExecuteNonQuery($"DELETE FROM PdaEntryUnlocks WHERE key = \"{_unlockData.pdaEncyclopedia[i]}\"");
+                ExecuteNonQuery($"INSERT INTO PdaEntryUnlocks (key) VALUES (\"{_unlockData.pdaEncyclopedia[i]}\")");
+            }
+
+            foreach(KeyValuePair<string, FragmentKnowledge> entry in _unlockData.fragments)
+            {
+                ExecuteNonQuery($"DELETE FROM Fragments WHERE key = \"{entry.Key}\"");
+                ExecuteNonQuery($"INSERT INTO Fragments (key, techType, current) VALUES (\"{entry.Key}\", {entry.Value.techType}, {entry.Value.parts})");
+            }
+        }
+
+        public static UnlockData LoadUnlockData()
+        {
+            UnlockData unlockData = new UnlockData();
+
+            try
+            {
+                SQLiteCommand selectTechCmd = m_connection.CreateCommand();
+                selectTechCmd.CommandText = $"select * from TechTypeUnlocks";
+                using (var reader = selectTechCmd.ExecuteReader())
+                {
+                    while (reader.Read())
+                    {
+                        unlockData.techUnlocks.Add(Int32.Parse(reader["techType"].ToString()));
+                    }
+                }
+
+                SQLiteCommand selectPdaCmd = m_connection.CreateCommand();
+                selectPdaCmd.CommandText = $"select * from PdaEntryUnlocks";
+                using (var reader = selectPdaCmd.ExecuteReader())
+                {
+                    while (reader.Read())
+                    {
+                        unlockData.pdaEncyclopedia.Add(reader["key"].ToString());
+                    }
+                }
+
+                SQLiteCommand selectFragmentsCmd = m_connection.CreateCommand();
+                selectFragmentsCmd.CommandText = $"select * from Fragments";
+                using (var reader = selectFragmentsCmd.ExecuteReader())
+                {
+                    while (reader.Read())
+                    {
+                        string key = reader.GetString(0);
+                        int techType = reader.GetInt32(1);
+                        int current = reader.GetInt32(2);
+                    }
+                }
+
+                return unlockData;
+            }
+            catch (Exception ex)
+            {
+                Logger.Log($"SQL Error: {ex}");
+            }
+
+            return null;
+        }
+
         private void OpenConnection()
         {
             m_connection = new SQLiteConnection($"Data Source={DATABASE_NAME}; Version = 3; New = True; Compress = True;");
@@ -188,6 +258,9 @@ namespace BelowZeroServer
             ExecuteNonQuery($"INSERT INTO ServerSettings (ServerGuid) VALUES (\"{m_serverGuid}\")");
             ExecuteNonQuery("CREATE TABLE PlayerToken (PlayerName Text, PlayerGuid TEXT)");
             ExecuteNonQuery("CREATE TABLE PlayerPos (PlayerName TEXT, xPos REAL, yPos REAL, zPos REAL, xRot REAL, yRot REAL, zRot REAL, wRot REAL, isInside INTEGER)");
+            ExecuteNonQuery("CREATE TABLE TechTypeUnlocks (techType INTEGER)");
+            ExecuteNonQuery("CREATE TABLE PdaEntryUnlocks (key TEXT)");
+            ExecuteNonQuery("CREATE TABLE Fragments (key TEXT, techType INTEGER, current INTERGER)");
         }
 
         private static void ExecuteNonQuery(string _nonQuery)

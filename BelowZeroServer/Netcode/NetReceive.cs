@@ -154,7 +154,7 @@ namespace BelowZeroServer
             Logger.Log($"{Server.ResolvePlayerName(_fromClient)} Updated fragment progress: {techType} ({currentFragments}/{totalFragments})");
 
             // Store for players joining later
-            UnlockManager.UpdateFragment(techType, currentFragments, totalFragments);
+            UnlockManager.UpdateFragment(techType, currentFragments);
 
             // Replicate
             NetSend.PlayerUpdatedFragmentProgress(_fromClient, techType, currentFragments);

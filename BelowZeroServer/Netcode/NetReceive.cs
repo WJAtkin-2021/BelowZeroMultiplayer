@@ -1,5 +1,8 @@
 ﻿using System;
+using System.Collections.Generic;
+using System.Diagnostics;
 using System.Threading;
+using BelowZeroMultiplayerCommon;
 
 namespace BelowZeroServer
 {
@@ -159,6 +162,35 @@ namespace BelowZeroServer
             // Replicate
             NetSend.PlayerUpdatedFragmentProgress(_fromClient, techType, currentFragments);
 
+        }
+
+        public static void HandlePlayerInventoryUpdated(int _fromClient, Packet _packet)
+        {
+            Logger.Log($"Handing inventory data from: {Server.ResolvePlayerName(_fromClient)}");
+
+            // Read the inventory data
+            InventoryData data = new InventoryData();
+            int storageLen = _packet.ReadInt();
+            data.serializedStorage = _packet.ReadBytes(storageLen);
+            int numOfQuickSlots = _packet.ReadInt();
+            string[] quickSlots = new string[numOfQuickSlots];
+            for (int i = 0; i < numOfQuickSlots; i++)
+            {
+                quickSlots[i] = _packet.ReadString();
+            }
+            data.serializedQuickSlots = quickSlots;
+            int equipmentLen = _packet.ReadInt();
+            data.serializedEquipment = _packet.ReadBytes(equipmentLen);
+            int numEquipmentSlots = _packet.ReadInt();
+            data.serializedEquipmentSlots = new Dictionary<string, string>();
+            for (int i = 0; i < numEquipmentSlots; i++)
+            {
+                string key = _packet.ReadString();
+                string value = _packet.ReadString();
+                data.serializedEquipmentSlots[key] = value;
+            }
+            int pendingItemsLen = _packet.ReadInt();
+            data.serializedPendingItems = _packet.ReadBytes(pendingItemsLen);
         }
     }
 }

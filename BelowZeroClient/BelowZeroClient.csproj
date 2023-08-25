@@ -90,6 +90,7 @@
     <Compile Include="Patches\OnKnownTechAdd.cs" />
     <Compile Include="Patches\PDAScannerPatches.cs" />
     <Compile Include="Patches\TurnOffMainSubscriptionPatch.cs" />
+    <Compile Include="Player\ReplicateInventory.cs" />
     <Compile Include="Utill\ApplicationSettings.cs" />
     <Compile Include="Player\ReplicatePlayer.cs" />
     <Compile Include="Main.cs" />
@@ -127,6 +128,7 @@
     <PostBuildEvent>if not exist "$(SubnauticaRootPath)\QMods\BelowZeroMultiplayer" mkdir "$(SubnauticaRootPath)\QMods\BelowZeroMultiplayer"
 
 copy /Y "$(SolutionDir)BelowZeroClient\$(OutDir)BelowZeroClient.dll" "$(SubnauticaRootPath)\QMods\BelowZeroMultiplayer\BelowZeroClient.dll"
+copy /Y "$(SolutionDir)BelowZeroClient\$(OutDir)BelowZeroMultiplayerCommon.dll" "$(SubnauticaRootPath)\QMods\BelowZeroMultiplayer\BelowZeroMultiplayerCommon.dll"
 copy /Y "$(SolutionDir)Configs\Client\mod.json" "$(SubnauticaRootPath)\QMods\BelowZeroMultiplayer\mod.json"
 
 start "" "$(SubnauticaRootPath)\SubnauticaZero.exe"</PostBuildEvent>

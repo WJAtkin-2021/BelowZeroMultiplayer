@@ -15,6 +15,8 @@ namespace BelowZeroClient
 
             // Tell the server we dropped it
             NetSend.DroppedItem(pickupable, token);
+
+            ReplicateInventory.m_instance.MarkInventoryAsDirty();
         }
     }
 
@@ -30,6 +32,8 @@ namespace BelowZeroClient
             {
                 NetSend.PickupItem(pickupable.gameObject.GetComponent<NetToken>().guid);
             }
+
+            ReplicateInventory.m_instance.MarkInventoryAsDirty();
         }
     }
 }

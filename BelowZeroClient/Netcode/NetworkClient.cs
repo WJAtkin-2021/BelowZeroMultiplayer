@@ -1,4 +1,5 @@
 ﻿using BelowZeroMultiplayerCommon;
+using HarmonyLib;
 using System;
 using System.Collections;
 using System.Collections.Generic;
@@ -160,6 +161,7 @@ namespace BelowZeroClient
                 { (int)ServerPackets.UserNameInUse, NetReceive.HandleUserNameInUse },
                 { (int)ServerPackets.MessageBroadcast, NetReceive.HandleMessageBroadcast },
                 { (int)ServerPackets.SyncUnlocks, NetReceive.HandleSyncUnlocks },
+                { (int)ServerPackets.SyncPlayerInventory, NetReceive.SyncPlayerInventory },
             };
         }
 

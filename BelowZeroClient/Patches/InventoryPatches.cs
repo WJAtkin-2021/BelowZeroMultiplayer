@@ -36,4 +36,64 @@ namespace BelowZeroClient
             ReplicateInventory.m_instance.MarkInventoryAsDirty();
         }
     }
+
+    [HarmonyPatch(typeof(Inventory), "ResetInventory")]
+    class InventoryResetInventoryPatch
+    {
+        [HarmonyPostfix]
+        static void Postfix()
+        {
+            ReplicateInventory.m_instance.MarkInventoryAsDirty();
+        }
+    }
+
+    [HarmonyPatch(typeof(Inventory), "AddPending")]
+    class InventoryAddPendingPatch
+    {
+        [HarmonyPostfix]
+        static void Postfix(Pickupable pickupable)
+        {
+            ReplicateInventory.m_instance.MarkInventoryAsDirty();
+        }
+    }
+
+    [HarmonyPatch(typeof(Inventory), "OnEquip")]
+    class InventoryOnEquipPatch
+    {
+        [HarmonyPostfix]
+        static void Postfix(string slot, InventoryItem item)
+        {
+            ReplicateInventory.m_instance.MarkInventoryAsDirty();
+        }
+    }
+
+    [HarmonyPatch(typeof(Inventory), "OnUnequip")]
+    class InventoryOnUnequipPatch
+    {
+        [HarmonyPostfix]
+        static void Postfix(string slot, InventoryItem item)
+        {
+            ReplicateInventory.m_instance.MarkInventoryAsDirty();
+        }
+    }
+
+    [HarmonyPatch(typeof(Inventory), "OnAddItem")]
+    class InventoryOnAddItemPatch
+    {
+        [HarmonyPostfix]
+        static void Postfix(InventoryItem item)
+        {
+            ReplicateInventory.m_instance.MarkInventoryAsDirty();
+        }
+    }
+
+    [HarmonyPatch(typeof(Inventory), "OnRemoveItem")]
+    class InventoryOnRemoveItemPatch
+    {
+        [HarmonyPostfix]
+        static void Postfix(InventoryItem item)
+        {
+            ReplicateInventory.m_instance.MarkInventoryAsDirty();
+        }
+    }
 }

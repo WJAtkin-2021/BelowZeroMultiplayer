@@ -3,6 +3,8 @@ using System;
 using System.Collections.Generic;
 using System.Data.SQLite;
 using System.IO;
+using System.Runtime.Serialization.Formatters.Binary;
+using System.Text;
 
 namespace BelowZeroServer
 {
@@ -229,9 +231,98 @@ namespace BelowZeroServer
             return null;
         }
 
-        public void SaveInventoryData(InventoryData _inventoryData)
+        public static void SaveInventoryData(InventoryData _inventoryData, string _userName)
         {
+            List<string> quickSlots = new List<string>();
+            for (int i = 0; i < _inventoryData.serializedQuickSlots.Length; i++)
+            {
+                quickSlots.Add(_inventoryData.serializedQuickSlots[i]);
+            }
+            string quickSlotsAsCSV = string.Join(",", quickSlots);
 
+            List<string> equipMentSlots = new List<string>();
+            foreach (KeyValuePair<string, string> entry in _inventoryData.serializedEquipmentSlots)
+            {
+                equipMentSlots.Add(entry.Key);
+                equipMentSlots.Add(entry.Value);
+            }
+            string equipMentSlotsAsCSV = string.Join(",", equipMentSlots);
+
+            ExecuteNonQuery($"DELETE FROM PlayerInventory WHERE PlayerName = \"{_userName}\"");
+
+            SQLiteCommand cmd = m_connection.CreateCommand();
+            cmd.CommandText =
+            @"
+                INSERT INTO PlayerInventory (PlayerName, storage, quickSlots, equipment, equipmentSlots, pendingItems)
+                VALUES ($PlayerName, $storage, $quickSlots, $equipment, $equipmentSlots, $pendingItems)
+            ";
+            cmd.Parameters.AddWithValue("$PlayerName", _userName);
+            cmd.Parameters.AddWithValue("$storage", Convert.ToBase64String(_inventoryData.serializedStorage));
+            cmd.Parameters.AddWithValue("$quickSlots", quickSlotsAsCSV);
+            cmd.Parameters.AddWithValue("$equipment", Convert.ToBase64String(_inventoryData.serializedEquipment));
+            cmd.Parameters.AddWithValue("$equipmentSlots", equipMentSlotsAsCSV);
+            cmd.Parameters.AddWithValue("$pendingItems", Convert.ToBase64String(_inventoryData.serializedPendingItems));
+            ExecuteCommand(cmd);
+        }
+
+        public static InventoryData LoadInventoryData(string _userName)
+        {
+            try
+            {
+                SQLiteCommand cmd = m_connection.CreateCommand();
+                cmd.CommandText = @"
+                    select *
+                    from PlayerInventory
+                    WHERE PlayerName = $PlayerName
+                ";
+                cmd.Parameters.AddWithValue("$PlayerName", _userName);
+
+                //cmd.CommandText = $"select * from PlayerInventory WHERE PlayerName = \"{_userName}\"";
+                using (var reader = cmd.ExecuteReader(System.Data.CommandBehavior.KeyInfo))
+                {
+                    while (reader.Read())
+                    {
+                        // Read in all the data
+                        string storage = reader.GetString(1);
+                        string quickSlots = reader.GetString(2);
+                        string equipment = reader.GetString(3);
+                        string equipmentSlots = reader.GetString(4);
+                        string pendingItems = reader.GetString(5);
+
+                        // Put the data back into the original format
+                        byte[] storageAsBytes = Convert.FromBase64String(storage);
+                        string[] quickSlotsAsArray = quickSlots.Split(',');
+                        byte[] equipmentAsBytes = Convert.FromBase64String(equipment);
+                        byte[] pendingItemsAsBytes = Convert.FromBase64String(pendingItems);
+                        string[] equipmentSlotsAsKeyPair = equipmentSlots.Split(',');
+                        Dictionary<string, string> equipmentSlotsAsDictionary = new Dictionary<string, string>();
+                        for (int i = 0; i < equipmentSlotsAsKeyPair.Length; i++)
+                        {
+                            string key = equipmentSlotsAsKeyPair[i];
+                            i++;
+                            string value = equipmentSlotsAsKeyPair[i];
+                            equipmentSlotsAsDictionary.Add(key, value);
+                        }
+
+                        // Store in the inventory data
+                        InventoryData data = new InventoryData();
+                        data.serializedStorage = storageAsBytes;
+                        data.serializedQuickSlots = quickSlotsAsArray;
+                        data.serializedEquipment = equipmentAsBytes;
+                        data.serializedEquipmentSlots = equipmentSlotsAsDictionary;
+                        data.serializedPendingItems = pendingItemsAsBytes;
+                        return data;
+                    }
+                }
+
+                return null;
+            }
+            catch (Exception ex)
+            {
+                Logger.Log($"SQL Error: {ex}");
+            }
+
+            return null;
         }
 
         private void OpenConnection()
@@ -264,10 +355,22 @@ namespace BelowZeroServer
             ExecuteNonQuery($"INSERT INTO ServerSettings (ServerGuid) VALUES (\"{m_serverGuid}\")");
             ExecuteNonQuery("CREATE TABLE PlayerToken (PlayerName Text, PlayerGuid TEXT)");
             ExecuteNonQuery("CREATE TABLE PlayerPos (PlayerName TEXT, xPos REAL, yPos REAL, zPos REAL, xRot REAL, yRot REAL, zRot REAL, wRot REAL, isInside INTEGER)");
-            ExecuteNonQuery("CREATE TABLE PlayerInventory (PlayerName TEXT, storage BLOB, quickSlots BLOB, equipment BLOB, equipmentSlots BLOB, pendingItems BLOB)");
+            ExecuteNonQuery("CREATE TABLE PlayerInventory (PlayerName TEXT PRIMARY KEY, storage TEXT, quickSlots TEXT, equipment TEXT, equipmentSlots TEXT, pendingItems TEXT)");
             ExecuteNonQuery("CREATE TABLE TechTypeUnlocks (techType INTEGER)");
             ExecuteNonQuery("CREATE TABLE PdaEntryUnlocks (key TEXT)");
             ExecuteNonQuery("CREATE TABLE Fragments (key TEXT, techType INTEGER, current INTERGER)");
+        }
+
+        private static void ExecuteCommand(SQLiteCommand _cmd)
+        {
+            try
+            {
+                _cmd.ExecuteNonQuery();
+            }
+            catch (Exception ex)
+            {
+                Logger.Log($"SQL Error: {ex}");
+            }
         }
 
         private static void ExecuteNonQuery(string _nonQuery)

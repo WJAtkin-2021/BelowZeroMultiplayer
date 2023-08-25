@@ -60,10 +60,12 @@ namespace BelowZeroServer
 
             Server.m_instance.m_clients[_fromClient].m_clientName = clientName;
             PlayerSaveData data = DataStore.GetPlayerData(clientName);
+            InventoryData invData = DataStore.LoadInventoryData(clientName);
 
             NetSend.PlayerSpawned(clientId, clientName, data.Pos, data.Rot, data.IsInside);
             NetSend.SycPlayerList(clientId);
             NetSend.SyncUnlocks(clientId);
+            NetSend.SyncPlayerInventory(clientId, invData);
         }
 
         public static void HandleTranformUpdate(int _fromClient, Packet _packet)
@@ -161,7 +163,6 @@ namespace BelowZeroServer
 
             // Replicate
             NetSend.PlayerUpdatedFragmentProgress(_fromClient, techType, currentFragments);
-
         }
 
         public static void HandlePlayerInventoryUpdated(int _fromClient, Packet _packet)
@@ -191,6 +192,8 @@ namespace BelowZeroServer
             }
             int pendingItemsLen = _packet.ReadInt();
             data.serializedPendingItems = _packet.ReadBytes(pendingItemsLen);
+
+            DataStore.SaveInventoryData(data, Server.ResolvePlayerName(_fromClient));
         }
     }
 }

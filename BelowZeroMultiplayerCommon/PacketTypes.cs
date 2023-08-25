@@ -26,7 +26,7 @@ namespace BelowZeroMultiplayerCommon
         UserNameInUse = 13,
         MessageBroadcast = 14,
         SyncUnlocks = 15,
-        SyncPlayerInventory = 12,
+        SyncPlayerInventory = 16,
     }
 
     /// <summary>

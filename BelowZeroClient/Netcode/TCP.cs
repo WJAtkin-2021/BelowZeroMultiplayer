@@ -1,4 +1,5 @@
-﻿using System;
+﻿using HarmonyLib;
+using System;
 using System.Net.Sockets;
 using UnityEngine;
 
@@ -120,6 +121,7 @@ namespace BelowZeroClient
                     using (Packet packet = new Packet(packetBytes))
                     {
                         int packetId = packet.ReadInt();
+
                         NetworkClient.m_instance.GetPacketHandlers()[packetId](packet);
                     }
                 });

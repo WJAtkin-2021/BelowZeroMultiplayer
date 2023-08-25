@@ -8,6 +8,7 @@ using System.Threading.Tasks;
 using UnityEngine;
 using BelowZeroMultiplayerCommon;
 using System.Collections;
+using System.Dynamic;
 
 namespace BelowZeroClient
 {
@@ -60,28 +61,23 @@ namespace BelowZeroClient
         {
             try
             {
-                FileLog.Log($"SyncInventoryToServer");
                 Inventory inv = gameObject.GetComponent<Inventory>();
                 if (inv != null)
                 {
-                    FileLog.Log($"got Inventory");
                     // Create the serializer and ask the inventory to "Save" their data
                     ProtobufSerializer serializer = ProtobufSerializerPool.GetProxy();
                     inv.OnProtoSerialize(serializer);
 
                     // Grab this data
-                    FileLog.Log($"created serializer");
                     InventoryData data = new InventoryData();
                     data.serializedStorage = inv.serializedStorage;
                     data.serializedQuickSlots = inv.serializedQuickSlots;
                     data.serializedEquipment = inv.serializedEquipment;
                     data.serializedEquipmentSlots = inv.serializedEquipmentSlots;
                     data.serializedPendingItems = inv.serializedPendingItems;
-                    FileLog.Log($"got all data calling PlayerInventoryUpdated");
 
                     // Send to the server
                     NetSend.PlayerInventoryUpdated(data);
-                    FileLog.Log($"Called PlayerInventoryUpdated");
                 }
                 else
                 {
@@ -97,25 +93,7 @@ namespace BelowZeroClient
 
         public void LoadInventoryData(InventoryData _data)
         {
-            Inventory inv = gameObject.GetComponent<Inventory>();
-            if (inv != null)
-            {
-                // Set the data on the serialized data members
-                inv.serializedStorage = _data.serializedStorage;
-                inv.serializedQuickSlots = _data.serializedQuickSlots;
-                inv.serializedEquipment = _data.serializedEquipment;
-                inv.serializedEquipmentSlots = _data.serializedEquipmentSlots;
-                inv.serializedPendingItems = _data.serializedPendingItems;
-
-                // Create the serializer and ask the inventory to "Load" the data
-                ProtobufSerializer serializer = ProtobufSerializerPool.GetProxy();
-                StartCoroutine(inv.OnProtoDeserializeAsync(serializer));
-            }
-            else
-            {
-                ErrorMessage.AddError("[ReplicateInventory] Unable to load inventory from server as Inventory component could not be found!");
-                FileLog.Log("[ReplicateInventory] Unable to load inventory from server as Inventory component could not be found!");
-            }
+            StartCoroutine(LoadInventoryDelayed(_data));
         }
 
         private IEnumerator SaveTimer()
@@ -125,6 +103,39 @@ namespace BelowZeroClient
             yield return new WaitForSeconds(MIN_TIME_BETWEEN_INVENTORY_UPLOAD);
 
             m_canSave = true;
+
+            yield return null;
+        }
+
+        private IEnumerator LoadInventoryDelayed(InventoryData _data)
+        {
+            yield return new WaitForSeconds(5.0f);
+
+            Inventory inv = gameObject.GetComponent<Inventory>();
+            if (inv != null)
+            {
+                // Set the data on the serialized data members
+                inv.serializedStorage = _data.serializedStorage;
+                inv.serializedQuickSlots = _data.serializedQuickSlots;
+                inv.serializedEquipment = _data.serializedEquipment;
+                inv.serializedEquipmentSlots = _data.serializedEquipmentSlots;
+                inv.serializedPendingItems = _data.serializedPendingItems;
+                // Create the serializer and ask the inventory to "Load" the data
+
+                foreach (KeyValuePair<string, string> entry in inv.serializedEquipmentSlots)
+                {
+                    ErrorMessage.AddMessage($"Equip slot: {entry.Key} : {entry.Value}");
+                }
+
+
+                ProtobufSerializer serializer = ProtobufSerializerPool.GetProxy();
+                yield return StartCoroutine(inv.OnProtoDeserializeAsync(serializer));
+            }
+            else
+            {
+                ErrorMessage.AddError("[ReplicateInventory] Unable to load inventory from server as Inventory component could not be found!");
+                FileLog.Log("[ReplicateInventory] Unable to load inventory from server as Inventory component could not be found!");
+            }
 
             yield return null;
         }

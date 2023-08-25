@@ -60,6 +60,7 @@ namespace BelowZeroServer
 
             NetSend.PlayerSpawned(clientId, clientName, data.Pos, data.Rot, data.IsInside);
             NetSend.SycPlayerList(clientId);
+            NetSend.SyncUnlocks(clientId);
         }
 
         public static void HandleTranformUpdate(int _fromClient, Packet _packet)
@@ -119,11 +120,11 @@ namespace BelowZeroServer
 
             Logger.Log($"{Server.ResolvePlayerName(_fromClient)} Unlocked tech: {techType}");
 
+            // Store for players joining later
+            UnlockManager.AddTechUnlock(techType);
+
             // Replicate to all other clients
             NetSend.PlayerUnlockedTechKnowledge(_fromClient, techType, unlockEncyclopedia, verbose);
-
-            // TODO: Store this in a data base
-
         }
 
         public static void HandleUnlockedPDAEncyclopedia(int _fromClient, Packet _packet)
@@ -136,21 +137,28 @@ namespace BelowZeroServer
 
             Logger.Log($"{Server.ResolvePlayerName(_fromClient)} Unlocked PDA Entry: {key}");
 
+            // Store for players joining later
+            UnlockManager.AddPdaEntry(key);
+
             // Replicate to all the other clients
             NetSend.PlayerUnlockedPDAEncyclopedia(_fromClient, key);
         }
 
-        public static void HandleFramentProgressUpdated(int _fromClient, Packet _packet)
+        public static void HandleFragmentProgressUpdated(int _fromClient, Packet _packet)
         {
             // Read
             int techType = _packet.ReadInt();
+            int currentFragments = _packet.ReadInt();
+            int totalFragments = _packet.ReadInt();
 
-            Logger.Log($"{Server.ResolvePlayerName(_fromClient)} Updated fragment progress: {techType}");
+            Logger.Log($"{Server.ResolvePlayerName(_fromClient)} Updated fragment progress: {techType} ({currentFragments}/{totalFragments})");
+
+            // Store for players joining later
+            UnlockManager.UpdateFragment(techType, currentFragments, totalFragments);
 
             // Replicate
-            NetSend.PlayerUpdatedFragmentProgress(_fromClient, techType);
+            NetSend.PlayerUpdatedFragmentProgress(_fromClient, techType, currentFragments);
 
-            // TODO: Store in database
         }
     }
 }

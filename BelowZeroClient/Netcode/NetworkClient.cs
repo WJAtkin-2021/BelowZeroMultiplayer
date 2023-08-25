@@ -159,6 +159,7 @@ namespace BelowZeroClient
                 { (int)ServerPackets.NewMachineToken, NetReceive.HandleNewMachineToken },
                 { (int)ServerPackets.UserNameInUse, NetReceive.HandleUserNameInUse },
                 { (int)ServerPackets.MessageBroadcast, NetReceive.HandleMessageBroadcast },
+                { (int)ServerPackets.SyncUnlocks, NetReceive.HandleSyncUnlocks },
             };
         }
 

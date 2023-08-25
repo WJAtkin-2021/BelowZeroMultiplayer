@@ -86,11 +86,19 @@ namespace BelowZeroClient
             }
         }
 
-        public static void FramentProgressUpdated(PDAScanner.Entry entry)
+        public static void FragmentProgressUpdated(PDAScanner.Entry entry)
         {
-            using (Packet packet = new Packet((int)ClientPackets.FramentProgressUpdated))
+            using (Packet packet = new Packet((int)ClientPackets.FragmentProgressUpdated))
             {
-                packet.Write((int)entry.techType);
+                PDAScanner.EntryData entryData = PDAScanner.GetEntryData(entry.techType);
+
+                int techType = (int)entry.techType;
+                int currentFragments = entry.unlocked;
+                int totalFragments = entryData.totalFragments;
+
+                packet.Write(techType);
+                packet.Write(currentFragments);
+                packet.Write(totalFragments);
 
                 SendTCPData(packet);
             }

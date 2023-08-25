@@ -74,6 +74,7 @@
     <Compile Include="Server.cs" />
     <Compile Include="Netcode\TCP.cs" />
     <Compile Include="Netcode\UDP.cs" />
+    <Compile Include="UnlockManager.cs" />
   </ItemGroup>
   <ItemGroup>
     <None Include="App.config" />

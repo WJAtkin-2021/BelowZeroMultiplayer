@@ -38,6 +38,7 @@ namespace BelowZeroServer
             }
         }
 
+        private static int currentFrags = 0;
         static void HandleConsoleCommand(string cmd)
         {
             cmd = cmd.ToLower();
@@ -69,8 +70,10 @@ namespace BelowZeroServer
             else if (cmd == "fragtest")
             {
                 Logger.Log("Adding Seaglide fragment");
+                currentFrags++;
 
-                NetSend.PlayerUpdatedFragmentProgress(0, 1117);
+                UnlockManager.UpdateFragment(1117, currentFrags, 3);
+                NetSend.PlayerUpdatedFragmentProgress(0, 1117, currentFrags);
             }
             else if (cmd == "pdatest")
             {

@@ -20,7 +20,7 @@ namespace BelowZeroClient
         [HarmonyPostfix]
         static void PostFix(PDAScanner.Entry entry)
         {
-            NetSend.FramentProgressUpdated(entry);
+            NetSend.FragmentProgressUpdated(entry);
         }
     }
 }

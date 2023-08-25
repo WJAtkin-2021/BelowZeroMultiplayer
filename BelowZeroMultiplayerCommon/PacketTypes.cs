@@ -25,6 +25,7 @@ namespace BelowZeroMultiplayerCommon
         NewMachineToken = 12,
         UserNameInUse = 13,
         MessageBroadcast = 14,
+        SyncUnlocks = 15,
     }
 
     /// <summary>
@@ -39,6 +40,6 @@ namespace BelowZeroMultiplayerCommon
         PickupItem = 5,
         TechKnowledgeAdded = 6,
         AddedPDAEncyclopedia = 10,
-        FramentProgressUpdated = 11,
+        FragmentProgressUpdated = 11,
     }
 }

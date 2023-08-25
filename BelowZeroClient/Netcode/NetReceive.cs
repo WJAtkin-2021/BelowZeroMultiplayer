@@ -3,6 +3,8 @@ using System;
 using UnityEngine;
 using UWE;
 using BelowZeroClient.Utill;
+using System.Collections.Generic;
+using HarmonyLib;
 
 namespace BelowZeroClient
 {
@@ -202,12 +204,22 @@ namespace BelowZeroClient
         public static void HandlePlayerUpdatedFragmentProgress(Packet _packet)
         {
             TechType techType = (TechType)_packet.ReadInt();
+            int currentFragments = _packet.ReadInt();
 
             PDAScanner.EntryData entryData = PDAScanner.GetEntryData(techType);
+            
             if (PDAScanner.GetPartialEntryByKey(techType, out PDAScanner.Entry entry))
             {
-                entry.unlocked++;
-                PDAScanner.onProgress.Invoke(entry);
+                // Only do anything if this progresses us
+                if (currentFragments > entry.unlocked)
+                {
+                    entry.unlocked = currentFragments;
+                    PDAScanner.onProgress.Invoke(entry);
+                }
+                else
+                {
+                    return;
+                }
             }
             else
             {
@@ -216,7 +228,7 @@ namespace BelowZeroClient
                 PDAScanner.Data data = PDAScanner.Serialize();
                 entry = new PDAScanner.Entry();
                 entry.techType = techType;
-                entry.unlocked = 1;
+                entry.unlocked = currentFragments;
                 data.partial.Add(entry);
                 PDAScanner.onAdd.Invoke(entry);
             }
@@ -234,6 +246,76 @@ namespace BelowZeroClient
             string msg = _packet.ReadString();
             string messageToShow = $"Server: {msg}";
             ErrorMessage.AddMessage(messageToShow);
+        }
+
+        public static void HandleSyncUnlocks(Packet _packet)
+        {
+            FileLog.Log($"HandleSyncUnlocks called");
+
+            // Extract the techs
+            List<int> techs = new List<int>();
+            int totalTechs = _packet.ReadInt();
+            for (int i = 0; i < totalTechs; i++)
+            {
+                techs.Add(_packet.ReadInt());
+            }
+
+            // Extract the PDA entries
+            List<string> pdaEntries = new List<string>();
+            int totalPdaEntries = _packet.ReadInt();
+            for (int i = 0; i < totalPdaEntries; i++)
+            {
+                pdaEntries.Add(_packet.ReadString());
+            }
+
+            // Extract the fragments
+            Dictionary<TechType, int> fragments = new Dictionary<TechType, int>();
+            int totalFragments = _packet.ReadInt();
+            for (int i = 0; i < totalFragments; i++)
+            {
+                TechType fragKey = (TechType)_packet.ReadInt();
+                int fragCount = _packet.ReadInt();
+                fragments.Add(fragKey, fragCount); 
+            }
+
+            // Handle the tech unlocks
+            for (int i = 0; i < techs.Count; i++)
+            {
+                TechType techType = (TechType)techs[i];
+                KnownTech.Add(techType, false, false);
+            }
+
+            // Handle the PDA entries
+            for (int i = 0; i < pdaEntries.Count; i++)
+            {
+                PDAEncyclopedia.Add(pdaEntries[i], false, false);
+            }
+
+            // Handle the fragments
+            foreach (KeyValuePair<TechType, int> entries in fragments)
+            {
+                PDAScanner.EntryData entryData = PDAScanner.GetEntryData(entries.Key);
+
+                FileLog.Log($"Got fragment of enum: {entries.Key}");
+                if (PDAScanner.GetPartialEntryByKey(entries.Key, out PDAScanner.Entry entry))
+                {
+                    FileLog.Log($"Has partial entry for {entries.Key}");
+                    entry.unlocked = entries.Value;
+                    PDAScanner.onProgress.Invoke(entry);
+                }
+                else
+                {
+                    FileLog.Log($"Has no entry for {entries.Key}");
+                    // Really horrible but we need to get the PDA's data by serilizing it and then
+                    // pass it back to it for it to read
+                    PDAScanner.Data data = PDAScanner.Serialize();
+                    entry = new PDAScanner.Entry();
+                    entry.techType = entries.Key;
+                    entry.unlocked = entries.Value;
+                    data.partial.Add(entry);
+                    PDAScanner.onAdd.Invoke(entry);
+                }
+            }
         }
     }
 }

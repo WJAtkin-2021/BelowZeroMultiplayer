@@ -1,4 +1,5 @@
 ﻿using System.Collections.Generic;
+using System.Threading;
 using BelowZeroMultiplayerCommon;
 
 namespace BelowZeroServer
@@ -164,11 +165,12 @@ namespace BelowZeroServer
             }
         }
 
-        public static void PlayerUpdatedFragmentProgress(int _client, int _techType)
+        public static void PlayerUpdatedFragmentProgress(int _client, int _techType, int _parts)
         {
             using (Packet packet = new Packet((int)ServerPackets.PlayerUpdatedFragmentProgress))
             {
                 packet.Write(_techType);
+                packet.Write(_parts);
 
                 SendTCPDataToAll(_client, packet);
             }
@@ -183,6 +185,36 @@ namespace BelowZeroServer
                 SendTCPDataToAll(packet);
             }
         }
+
+        public static void SyncUnlocks(int _toClient)
+        {
+            using (Packet packet = new Packet((int)ServerPackets.SyncUnlocks))
+            {
+                // Serialize the data
+                // Write the tech unlocks
+                List<int> techs = UnlockManager.GetAllUnlockedTech();
+                packet.Write(techs.Count);
+                for (int i = 0; i < techs.Count; i++)
+                    packet.Write(techs[i]);
+                // Write the PDA Entries
+                List<string> pdaEntries = UnlockManager.GetAllPdaEncyclopedia();
+                packet.Write(pdaEntries.Count);
+                for (int i = 0; i < pdaEntries.Count; i++)
+                    packet.Write(pdaEntries[i]);
+                // Write the fragment counts
+                List<FragmentKnowledge> fragments = UnlockManager.GetAllFragments();
+                packet.Write(fragments.Count);
+                for (int i = 0; i < fragments.Count; i++)
+                {
+                    packet.Write(fragments[i].techType);
+                    packet.Write(fragments[i].parts);
+                }
+                
+                SendTCPData(_toClient, packet);
+            }
+        }
+
+        #region SendImplementations
 
         private static void SendTCPData(int _toClient, Packet _packet)
         {
@@ -261,5 +293,7 @@ namespace BelowZeroServer
                 }
             }
         }
+
+        #endregion
     }
 }

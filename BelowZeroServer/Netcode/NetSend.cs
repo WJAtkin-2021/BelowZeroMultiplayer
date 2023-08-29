@@ -217,6 +217,9 @@ namespace BelowZeroServer
 
         public static void SyncPlayerInventory(int _toClient, InventoryData _inventory)
         {
+            if (_inventory == null)
+                return;
+
             using (Packet packet = new Packet((int)ServerPackets.SyncPlayerInventory))
             {
                 packet.Write(_inventory.serializedStorage.Length);

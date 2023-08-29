@@ -6,6 +6,7 @@ using BelowZeroClient.Utill;
 using System.Collections.Generic;
 using HarmonyLib;
 using BelowZeroMultiplayerCommon;
+using System.IO;
 
 namespace BelowZeroClient
 {
@@ -262,10 +263,15 @@ namespace BelowZeroClient
             // Extract the PDA entries
             List<string> pdaEntries = new List<string>();
             int totalPdaEntries = _packet.ReadInt();
+            FileLog.Log($"Total entries: {totalPdaEntries}");
             for (int i = 0; i < totalPdaEntries; i++)
             {
-                pdaEntries.Add(_packet.ReadString());
+                string entry = _packet.ReadString();
+
+                FileLog.Log($"Reading PDA Entry: {entry}");
+                pdaEntries.Add(entry);
             }
+            FileLog.Log("Finished read");
 
             // Extract the fragments
             Dictionary<TechType, int> fragments = new Dictionary<TechType, int>();
@@ -288,6 +294,7 @@ namespace BelowZeroClient
             for (int i = 0; i < pdaEntries.Count; i++)
             {
                 PDAEncyclopedia.Add(pdaEntries[i], false, false);
+                PDAUnlockQueue.m_instance.EnsureEntryIsComplete(pdaEntries[i]);
             }
 
             // Handle the fragments

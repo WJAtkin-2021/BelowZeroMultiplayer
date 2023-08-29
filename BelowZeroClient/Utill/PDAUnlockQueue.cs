@@ -1,4 +1,5 @@
-﻿using System.Collections;
+﻿using HarmonyLib;
+using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
@@ -60,6 +61,9 @@ namespace BelowZeroClient
             m_unlockedKeys.Add(nextEntry);
             PDAEncyclopedia.Add(nextEntry, true, true);
 
+            // Ensure it is in the completed list on the PDA scanner
+            EnsureEntryIsComplete(nextEntry);
+
             m_isCoroutineRunning = false;
 
             // Restart the unlock runner if there is still
@@ -68,6 +72,24 @@ namespace BelowZeroClient
                 StartCoroutine(UnlockRunner());
 
             yield return null;
+        }
+
+        public void EnsureEntryIsComplete(string key)
+        {
+            TechType type = TechType.None;
+            TechTypeExtensions.FromString(key, out type, true);
+            if (type != TechType.None)
+            {
+                ErrorMessage.AddMessage($"Adding TechType: {type} to PDA");
+                FileLog.Log($"Adding TechType: {type} to PDA");
+                PDAScanner.Data data = PDAScanner.Serialize();
+                data.complete.Add(type);
+                PDAScanner.Deserialize(data);
+            }
+            else
+            {
+                FileLog.Log($"Could not resolve TechType: {key}");
+            }
         }
     }
 }

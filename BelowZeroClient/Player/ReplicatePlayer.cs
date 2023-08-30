@@ -37,25 +37,12 @@ namespace BelowZeroClient
         {
             yield return new WaitForSeconds(0.5f);
 
-            m_playerComp.SetPosition(_pos, _rot);
-
             UnderwaterMotor underWaterController = m_playerComp.GetComponent<UnderwaterMotor>(); 
             GroundMotor groundController = m_playerComp.GetComponent<GroundMotor>();
             underWaterController.SetEnabled(enabled: false);
             groundController.SetEnabled(enabled: false);
             groundController.gravity = 0.0f;
 
-            yield return new WaitForSeconds(2.0f);
-            if (m_playerComp.IsUnderwaterForSwimming())
-            {
-                underWaterController.SetEnabled(enabled: true);
-            }
-            else
-            {
-                groundController.airAcceleration = 0f;
-                groundController.SetEnabled(enabled: true);
-                groundController.gravity = 12.0f;
-            }
             if (_isInside)
             {
                 m_playerComp.currentInterior = GetCurrentSpace(_pos);
@@ -68,7 +55,22 @@ namespace BelowZeroClient
             }
             else
             {
+                m_playerComp.SetPosition(_pos, _rot);
+
                 m_playerComp.currentInterior = null;
+
+                yield return new WaitForSeconds(2.0f);
+            }
+
+            groundController.gravity = 12.0f;
+
+            if (m_playerComp.IsUnderwaterForSwimming())
+            {
+                underWaterController.SetEnabled(enabled: true);
+            }
+            else
+            {
+                groundController.SetEnabled(enabled: true);
             }
 
             yield return null;

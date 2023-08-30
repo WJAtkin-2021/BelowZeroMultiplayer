@@ -9,8 +9,8 @@ namespace BelowZeroClient
         [HarmonyPrefix]
         static void PreFix(string key, bool verbose, bool postNotification)
         {
-            NetSend.AddedPDAEncyclopedia(key);
-            PDAUnlockQueue.m_instance.ResetTimer();
+            //NetSend.AddedPDAEncyclopedia(key);
+            //PDAUnlockQueue.m_instance.ResetTimer();
         }
     }
 
@@ -21,6 +21,23 @@ namespace BelowZeroClient
         static void PostFix(PDAScanner.Entry entry)
         {
             NetSend.FragmentProgressUpdated(entry);
+        }
+    }
+
+    [HarmonyPatch(typeof(PDAScanner), "Unlock")]
+    class OnUnlock
+    {
+        [HarmonyPostfix]
+        static void PostFix(PDAScanner.EntryData entryData, bool unlockBlueprint, bool unlockEncyclopedia, bool verbose = true)
+        {
+            ErrorMessage.AddMessage($"Scanned TechType: {entryData.key}");
+            PDAUnlockQueue.m_instance.ResetTimer();
+
+            if (!PDAScanner.ContainsCompleteEntry(entryData.key) && unlockEncyclopedia)
+            {
+                ErrorMessage.AddMessage($"Scanned TechType: {entryData.key} will be replicated");
+                NetSend.AddedPDAEncyclopedia(entryData);
+            }
         }
     }
 }

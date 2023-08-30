@@ -77,11 +77,12 @@ namespace BelowZeroClient
             }
         }
 
-        public static void AddedPDAEncyclopedia(string _key)
+        public static void AddedPDAEncyclopedia(PDAScanner.EntryData entryData)
         {
             using (Packet packet = new Packet((int)ClientPackets.AddedPDAEncyclopedia))
             {
-                packet.Write(_key);
+                packet.Write(entryData.encyclopedia);
+                packet.Write((int)entryData.key);
 
                 SendTCPData(packet);
             }

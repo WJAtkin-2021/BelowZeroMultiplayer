@@ -156,11 +156,12 @@ namespace BelowZeroServer
             }
         }
 
-        public static void PlayerUnlockedPDAEncyclopedia(int _toClient, string _key)
+        public static void PlayerUnlockedPDAEncyclopedia(int _toClient, string _key, int _techType)
         {
             using (Packet packet = new Packet((int)ServerPackets.PlayerUnlockedPDAEncyclopedia))
             {
                 packet.Write(_key);
+                packet.Write(_techType);
 
                 SendTCPDataToAll(_toClient, packet);
             }
@@ -198,10 +199,14 @@ namespace BelowZeroServer
                 for (int i = 0; i < techs.Count; i++)
                     packet.Write(techs[i]);
                 // Write the PDA Entries
-                List<string> pdaEntries = UnlockManager.GetAllPdaEncyclopedia();
+                Dictionary<string, int> pdaEntries = UnlockManager.GetAllPdaEncyclopedia();
                 packet.Write(pdaEntries.Count);
-                for (int i = 0; i < pdaEntries.Count; i++)
-                    packet.Write(pdaEntries[i]);
+                foreach (KeyValuePair<string, int> entry in pdaEntries)
+                {
+                    packet.Write(entry.Key);
+                    packet.Write(entry.Value);
+                }
+
                 // Write the fragment counts
                 List<FragmentKnowledge> fragments = UnlockManager.GetAllFragments();
                 packet.Write(fragments.Count);

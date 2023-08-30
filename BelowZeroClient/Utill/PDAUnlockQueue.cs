@@ -15,7 +15,7 @@ namespace BelowZeroClient
 
         public static PDAUnlockQueue m_instance = null;
 
-        private Queue<string> m_unlockQueue = new Queue<string>();
+        private Queue<PDAKeyTechTypePair> m_unlockQueue = new Queue<PDAKeyTechTypePair>();
         private List<string> m_unlockedKeys = new List<string>();
         private bool m_isCoroutineRunning = false;
 
@@ -31,12 +31,14 @@ namespace BelowZeroClient
             }
         }
 
-        public void UnlockDelayed(string _key)
+        public void UnlockDelayed(string _key, TechType _techType)
         {
             // We perform a quick check here before adding it to the list
             if (!m_unlockedKeys.Contains(_key))
             {
-                m_unlockQueue.Enqueue(_key);
+                PDAKeyTechTypePair entry = new PDAKeyTechTypePair(_key, _techType);
+
+                m_unlockQueue.Enqueue(entry);
 
                 if (!m_isCoroutineRunning)
                     StartCoroutine(UnlockRunner());
@@ -57,12 +59,12 @@ namespace BelowZeroClient
             m_isCoroutineRunning = true;
             yield return new WaitForSeconds(UNLOCK_DELAY);
 
-            string nextEntry = m_unlockQueue.Dequeue();
-            m_unlockedKeys.Add(nextEntry);
-            PDAEncyclopedia.Add(nextEntry, true, true);
+            PDAKeyTechTypePair nextEntry = m_unlockQueue.Dequeue();
+            m_unlockedKeys.Add(nextEntry.key);
+            PDAEncyclopedia.Add(nextEntry.key, true, true);
 
             // Ensure it is in the completed list on the PDA scanner
-            EnsureEntryIsComplete(nextEntry);
+            EnsureEntryIsComplete(nextEntry.techType);
 
             m_isCoroutineRunning = false;
 
@@ -74,22 +76,28 @@ namespace BelowZeroClient
             yield return null;
         }
 
-        public void EnsureEntryIsComplete(string key)
+        public void EnsureEntryIsComplete(TechType _techType)
         {
-            TechType type = TechType.None;
-            TechTypeExtensions.FromString(key, out type, true);
-            if (type != TechType.None)
+            if (_techType != TechType.None)
             {
-                ErrorMessage.AddMessage($"Adding TechType: {type} to PDA");
-                FileLog.Log($"Adding TechType: {type} to PDA");
                 PDAScanner.Data data = PDAScanner.Serialize();
-                data.complete.Add(type);
+                data.complete.Add(_techType);
                 PDAScanner.Deserialize(data);
             }
-            else
-            {
-                FileLog.Log($"Could not resolve TechType: {key}");
-            }
+        }
+    }
+
+    public class PDAKeyTechTypePair
+    {
+        public string key;
+        public TechType techType;
+
+        public PDAKeyTechTypePair() { }
+
+        public PDAKeyTechTypePair(string _key, TechType _techType)
+        {
+            key = _key;
+            techType = _techType;
         }
     }
 }

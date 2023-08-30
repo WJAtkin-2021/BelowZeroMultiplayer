@@ -170,10 +170,10 @@ namespace BelowZeroServer
                 ExecuteNonQuery($"INSERT INTO TechTypeUnlocks (techType) VALUES ({_unlockData.techUnlocks[i]})");
             }
 
-            for (int i = 0; i < _unlockData.pdaEncyclopedia.Count; i++)
+            foreach (KeyValuePair<string, int> entry in _unlockData.pdaEncyclopedia)
             {
-                ExecuteNonQuery($"DELETE FROM PdaEntryUnlocks WHERE key = \"{_unlockData.pdaEncyclopedia[i]}\"");
-                ExecuteNonQuery($"INSERT INTO PdaEntryUnlocks (key) VALUES (\"{_unlockData.pdaEncyclopedia[i]}\")");
+                ExecuteNonQuery($"DELETE FROM PdaEntryUnlocks WHERE key = \"{entry.Key}\"");
+                ExecuteNonQuery($"INSERT INTO PdaEntryUnlocks (key, techType) VALUES (\"{entry.Key}\", {entry.Value})");
             }
 
             foreach(KeyValuePair<string, FragmentKnowledge> entry in _unlockData.fragments)
@@ -205,7 +205,9 @@ namespace BelowZeroServer
                 {
                     while (reader.Read())
                     {
-                        unlockData.pdaEncyclopedia.Add(reader["key"].ToString());
+                        string key = reader.GetString(0);
+                        int techType = reader.GetInt32(1);
+                        unlockData.pdaEncyclopedia.Add(key, techType);
                     }
                 }
 
@@ -218,6 +220,10 @@ namespace BelowZeroServer
                         string key = reader.GetString(0);
                         int techType = reader.GetInt32(1);
                         int current = reader.GetInt32(2);
+                        FragmentKnowledge fragmentKnowledge = new FragmentKnowledge();
+                        fragmentKnowledge.techType = techType;
+                        fragmentKnowledge.parts = current;
+                        unlockData.fragments.Add(key, fragmentKnowledge);
                     }
                 }
 
@@ -357,7 +363,7 @@ namespace BelowZeroServer
             ExecuteNonQuery("CREATE TABLE PlayerPos (PlayerName TEXT, xPos REAL, yPos REAL, zPos REAL, xRot REAL, yRot REAL, zRot REAL, wRot REAL, isInside INTEGER)");
             ExecuteNonQuery("CREATE TABLE PlayerInventory (PlayerName TEXT PRIMARY KEY, storage TEXT, quickSlots TEXT, equipment TEXT, equipmentSlots TEXT, pendingItems TEXT)");
             ExecuteNonQuery("CREATE TABLE TechTypeUnlocks (techType INTEGER)");
-            ExecuteNonQuery("CREATE TABLE PdaEntryUnlocks (key TEXT)");
+            ExecuteNonQuery("CREATE TABLE PdaEntryUnlocks (key TEXT, techType INTEGER)");
             ExecuteNonQuery("CREATE TABLE Fragments (key TEXT, techType INTEGER, current INTERGER)");
         }
 

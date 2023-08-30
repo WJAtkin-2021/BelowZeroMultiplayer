@@ -9,7 +9,7 @@ namespace BelowZeroServer
     public class UnlockManager
     {
         private static List<int> techUnlocks = new List<int>();
-        private static List<string> pdaEncyclopedia = new List<string>();
+        private static Dictionary<string, int> pdaEncyclopedia = new Dictionary<string, int>();
         private static Dictionary<string, FragmentKnowledge> fragments = new Dictionary<string, FragmentKnowledge>();
 
         public static List<int> GetAllUnlockedTech()
@@ -17,7 +17,7 @@ namespace BelowZeroServer
             return techUnlocks;
         }
 
-        public static List<string> GetAllPdaEncyclopedia()
+        public static Dictionary<string, int> GetAllPdaEncyclopedia()
         {
             return pdaEncyclopedia;
         }
@@ -42,11 +42,11 @@ namespace BelowZeroServer
             }
         }
 
-        public static void AddPdaEntry(string _key)
+        public static void AddPdaEntry(string _key, int _techType)
         {
-            if (!pdaEncyclopedia.Contains(_key))
+            if (!pdaEncyclopedia.ContainsKey(_key))
             {
-                pdaEncyclopedia.Add(_key);
+                pdaEncyclopedia.Add(_key, _techType);
             }
         }
 
@@ -98,7 +98,7 @@ namespace BelowZeroServer
     public class UnlockData
     {
         public List<int> techUnlocks = new List<int>();
-        public List<string> pdaEncyclopedia = new List<string>();
+        public Dictionary<string, int> pdaEncyclopedia = new Dictionary<string, int>();
         public Dictionary<string, FragmentKnowledge> fragments = new Dictionary<string, FragmentKnowledge>();
     }
 }

@@ -1,14 +1,8 @@
 ﻿using HarmonyLib;
-using Newtonsoft.Json.Bson;
 using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 using UnityEngine;
 using BelowZeroMultiplayerCommon;
 using System.Collections;
-using System.Dynamic;
 
 namespace BelowZeroClient
 {
@@ -19,7 +13,7 @@ namespace BelowZeroClient
         public static ReplicateInventory m_instance;
 
         private bool m_inventoryIsDirty = false;
-        private bool m_canSave = true;
+        private bool m_canSave = false;
 
 
         public void Awake()
@@ -27,6 +21,7 @@ namespace BelowZeroClient
             if (m_instance == null)
             {
                 m_instance = this;
+                StartCoroutine(EnableSaving());
             }
             else
             {
@@ -129,6 +124,15 @@ namespace BelowZeroClient
                 ErrorMessage.AddError("[ReplicateInventory] Unable to load inventory from server as Inventory component could not be found!");
                 FileLog.Log("[ReplicateInventory] Unable to load inventory from server as Inventory component could not be found!");
             }
+
+            yield return null;
+        }
+
+        private IEnumerator EnableSaving()
+        {
+            yield return new WaitForSeconds(5.0f);
+
+            m_canSave = true;
 
             yield return null;
         }

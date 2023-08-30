@@ -34,20 +34,26 @@ namespace BelowZeroServer
             return unknownFragments;
         }
 
-        public static void AddTechUnlock(int _techType)
+        public static bool AddTechUnlock(int _techType)
         {
             if (!techUnlocks.Contains(_techType))
             {
                 techUnlocks.Add(_techType);
+                return true;
             }
+
+            return false;
         }
 
-        public static void AddPdaEntry(string _key, int _techType)
+        public static bool AddPdaEntry(string _key, int _techType)
         {
             if (!pdaEncyclopedia.ContainsKey(_key))
             {
                 pdaEncyclopedia.Add(_key, _techType);
+                return true;
             }
+
+            return false;
         }
 
         public static void UpdateFragment(int _techType, int _parts)

@@ -264,17 +264,14 @@ namespace BelowZeroClient
             // Extract the PDA entries
             List<PDAKeyTechTypePair> pdaEntries = new List<PDAKeyTechTypePair>();
             int totalPdaEntries = _packet.ReadInt();
-            FileLog.Log($"Total entries: {totalPdaEntries}");
             for (int i = 0; i < totalPdaEntries; i++)
             {
                 string key = _packet.ReadString();
                 TechType techType = (TechType)_packet.ReadInt();
                 PDAKeyTechTypePair entry = new PDAKeyTechTypePair(key, techType);
 
-                FileLog.Log($"Reading PDA Entry: {key}:{techType}");
                 pdaEntries.Add(entry);
             }
-            FileLog.Log("Finished read");
 
             // Extract the fragments
             Dictionary<TechType, int> fragments = new Dictionary<TechType, int>();

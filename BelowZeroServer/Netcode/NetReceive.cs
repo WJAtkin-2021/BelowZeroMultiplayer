@@ -123,13 +123,14 @@ namespace BelowZeroServer
             bool unlockEncyclopedia = _packet.ReadBool();
             bool verbose = _packet.ReadBool();
 
-            Logger.Log($"{Server.ResolvePlayerName(_fromClient)} Unlocked tech: {techType}");
-
             // Store for players joining later
-            UnlockManager.AddTechUnlock(techType);
+            if (UnlockManager.AddTechUnlock(techType))
+            {
+                Logger.Log($"{Server.ResolvePlayerName(_fromClient)} Unlocked tech: {techType}");
 
-            // Replicate to all other clients
-            NetSend.PlayerUnlockedTechKnowledge(_fromClient, techType, unlockEncyclopedia, verbose);
+                // Replicate to all other clients
+                NetSend.PlayerUnlockedTechKnowledge(_fromClient, techType, unlockEncyclopedia, verbose);
+            }
         }
 
         public static void HandleUnlockedPDAEncyclopedia(int _fromClient, Packet _packet)
@@ -141,13 +142,14 @@ namespace BelowZeroServer
             if (string.IsNullOrEmpty(encyclopediaKey))
                 return;
 
-            Logger.Log($"{Server.ResolvePlayerName(_fromClient)} Unlocked PDA Entry: {encyclopediaKey}");
-
             // Store for players joining later
-            UnlockManager.AddPdaEntry(encyclopediaKey, techType);
+            if (UnlockManager.AddPdaEntry(encyclopediaKey, techType))
+            {
+                Logger.Log($"{Server.ResolvePlayerName(_fromClient)} Unlocked PDA Entry: {encyclopediaKey}");
 
-            // Replicate to all the other clients
-            NetSend.PlayerUnlockedPDAEncyclopedia(_fromClient, encyclopediaKey, techType);
+                // Replicate to all the other clients
+                NetSend.PlayerUnlockedPDAEncyclopedia(_fromClient, encyclopediaKey, techType);
+            }
         }
 
         public static void HandleFragmentProgressUpdated(int _fromClient, Packet _packet)

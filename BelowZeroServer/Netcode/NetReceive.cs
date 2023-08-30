@@ -135,18 +135,19 @@ namespace BelowZeroServer
         public static void HandleUnlockedPDAEncyclopedia(int _fromClient, Packet _packet)
         {
             // Read the packet
-            string key = _packet.ReadString();
+            string encyclopediaKey = _packet.ReadString();
+            int techType = _packet.ReadInt();
 
-            if (string.IsNullOrEmpty(key))
+            if (string.IsNullOrEmpty(encyclopediaKey))
                 return;
 
-            Logger.Log($"{Server.ResolvePlayerName(_fromClient)} Unlocked PDA Entry: {key}");
+            Logger.Log($"{Server.ResolvePlayerName(_fromClient)} Unlocked PDA Entry: {encyclopediaKey}");
 
             // Store for players joining later
-            UnlockManager.AddPdaEntry(key);
+            UnlockManager.AddPdaEntry(encyclopediaKey, techType);
 
             // Replicate to all the other clients
-            NetSend.PlayerUnlockedPDAEncyclopedia(_fromClient, key);
+            NetSend.PlayerUnlockedPDAEncyclopedia(_fromClient, encyclopediaKey, techType);
         }
 
         public static void HandleFragmentProgressUpdated(int _fromClient, Packet _packet)

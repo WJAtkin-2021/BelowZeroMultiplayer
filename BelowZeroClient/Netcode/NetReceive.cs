@@ -6,6 +6,7 @@ using BelowZeroClient.Utill;
 using System.Collections.Generic;
 using HarmonyLib;
 using BelowZeroMultiplayerCommon;
+using System.IO;
 
 namespace BelowZeroClient
 {
@@ -199,7 +200,8 @@ namespace BelowZeroClient
         public static void HandlePlayerUnlockedPDAEncyclopedia(Packet _packet)
         {
             string key = _packet.ReadString();
-            PDAUnlockQueue.m_instance.UnlockDelayed(key);
+            TechType techType = (TechType)_packet.ReadInt();
+            PDAUnlockQueue.m_instance.UnlockDelayed(key, techType);
         }
 
         public static void HandlePlayerUpdatedFragmentProgress(Packet _packet)
@@ -260,12 +262,19 @@ namespace BelowZeroClient
             }
 
             // Extract the PDA entries
-            List<string> pdaEntries = new List<string>();
+            List<PDAKeyTechTypePair> pdaEntries = new List<PDAKeyTechTypePair>();
             int totalPdaEntries = _packet.ReadInt();
+            FileLog.Log($"Total entries: {totalPdaEntries}");
             for (int i = 0; i < totalPdaEntries; i++)
             {
-                pdaEntries.Add(_packet.ReadString());
+                string key = _packet.ReadString();
+                TechType techType = (TechType)_packet.ReadInt();
+                PDAKeyTechTypePair entry = new PDAKeyTechTypePair(key, techType);
+
+                FileLog.Log($"Reading PDA Entry: {key}:{techType}");
+                pdaEntries.Add(entry);
             }
+            FileLog.Log("Finished read");
 
             // Extract the fragments
             Dictionary<TechType, int> fragments = new Dictionary<TechType, int>();
@@ -287,7 +296,8 @@ namespace BelowZeroClient
             // Handle the PDA entries
             for (int i = 0; i < pdaEntries.Count; i++)
             {
-                PDAEncyclopedia.Add(pdaEntries[i], false, false);
+                PDAEncyclopedia.Add(pdaEntries[i].key, false, false);
+                PDAUnlockQueue.m_instance.EnsureEntryIsComplete(pdaEntries[i].techType);
             }
 
             // Handle the fragments

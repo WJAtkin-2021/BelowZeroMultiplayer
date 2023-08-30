@@ -3,6 +3,8 @@
 namespace BelowZeroClient
 {
     // Kinda gross but serves as a good example on how to patch overloaded methods
+    // NOTE: Currently deperecated and sucessed by OnUnlock but leaving the patch here
+    // as an example
     [HarmonyPatch(typeof(PDAEncyclopedia), nameof(PDAEncyclopedia.Add), new[] { typeof(string), typeof(bool), typeof(bool) })]
     class OnPDAEncyclopedia
     {
@@ -27,16 +29,18 @@ namespace BelowZeroClient
     [HarmonyPatch(typeof(PDAScanner), "Unlock")]
     class OnUnlock
     {
-        [HarmonyPostfix]
-        static void PostFix(PDAScanner.EntryData entryData, bool unlockBlueprint, bool unlockEncyclopedia, bool verbose = true)
+        [HarmonyPrefix]
+        static void PreFix(PDAScanner.EntryData entryData, bool unlockBlueprint, bool unlockEncyclopedia, bool verbose = true)
         {
-            ErrorMessage.AddMessage($"Scanned TechType: {entryData.key}");
             PDAUnlockQueue.m_instance.ResetTimer();
 
-            if (!PDAScanner.ContainsCompleteEntry(entryData.key) && unlockEncyclopedia)
+            PDAEncyclopedia.EntryData encyclopediaEntry = null;
+            if (PDAEncyclopedia.GetEntryData(entryData.encyclopedia, out encyclopediaEntry))
             {
-                ErrorMessage.AddMessage($"Scanned TechType: {entryData.key} will be replicated");
-                NetSend.AddedPDAEncyclopedia(entryData);
+                if (!encyclopediaEntry.unlocked)
+                {
+                    NetSend.AddedPDAEncyclopedia(entryData);
+                }
             }
         }
     }

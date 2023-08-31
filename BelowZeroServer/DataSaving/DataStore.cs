@@ -207,7 +207,7 @@ namespace BelowZeroServer
                     {
                         string key = reader.GetString(0);
                         int techType = reader.GetInt32(1);
-                        unlockData.pdaEncyclopedia.Add(key, techType);
+                        unlockData.pdaEncyclopedia[key] = techType;
                     }
                 }
 
@@ -223,7 +223,7 @@ namespace BelowZeroServer
                         FragmentKnowledge fragmentKnowledge = new FragmentKnowledge();
                         fragmentKnowledge.techType = techType;
                         fragmentKnowledge.parts = current;
-                        unlockData.fragments.Add(key, fragmentKnowledge);
+                        unlockData.fragments[key] = fragmentKnowledge;
                     }
                 }
 

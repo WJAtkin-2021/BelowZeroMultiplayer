@@ -1,4 +1,6 @@
-﻿using System.Collections.Generic;
+﻿using System.Collections.Concurrent;
+using System.Collections.Generic;
+using System.Diagnostics;
 using System.Threading;
 using System.Xml.Linq;
 using BelowZeroMultiplayerCommon;
@@ -61,7 +63,11 @@ namespace BelowZeroServer
                 // Data
                 packet.Write(mapData);
 
+                Stopwatch performanceTimer = Stopwatch.StartNew();
                 SendTCPData(_client, packet);
+                performanceTimer.Stop();
+
+                Logger.Log($"Took: {performanceTimer.ElapsedMilliseconds}ms to upload map to client {_client}");
             }
         }
 
@@ -199,7 +205,7 @@ namespace BelowZeroServer
                 for (int i = 0; i < techs.Count; i++)
                     packet.Write(techs[i]);
                 // Write the PDA Entries
-                Dictionary<string, int> pdaEntries = UnlockManager.GetAllPdaEncyclopedia();
+                ConcurrentDictionary<string, int> pdaEntries = UnlockManager.GetAllPdaEncyclopedia();
                 packet.Write(pdaEntries.Count);
                 foreach (KeyValuePair<string, int> entry in pdaEntries)
                 {

@@ -1,23 +1,21 @@
-﻿using System;
-using System.Collections.Generic;
+﻿using System.Collections.Generic;
 using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
+using System.Collections.Concurrent;
 
 namespace BelowZeroServer
 {
     public class UnlockManager
     {
-        private static List<int> techUnlocks = new List<int>();
-        private static Dictionary<string, int> pdaEncyclopedia = new Dictionary<string, int>();
-        private static Dictionary<string, FragmentKnowledge> fragments = new Dictionary<string, FragmentKnowledge>();
+        private static ConcurrentBag<int> techUnlocks = new ConcurrentBag<int>();
+        private static ConcurrentDictionary<string, int> pdaEncyclopedia = new ConcurrentDictionary<string, int>();
+        private static ConcurrentDictionary<string, FragmentKnowledge> fragments = new ConcurrentDictionary<string, FragmentKnowledge>();
 
         public static List<int> GetAllUnlockedTech()
         {
-            return techUnlocks;
+            return techUnlocks.ToList();
         }
 
-        public static Dictionary<string, int> GetAllPdaEncyclopedia()
+        public static ConcurrentDictionary<string, int> GetAllPdaEncyclopedia()
         {
             return pdaEncyclopedia;
         }
@@ -49,7 +47,7 @@ namespace BelowZeroServer
         {
             if (!pdaEncyclopedia.ContainsKey(_key))
             {
-                pdaEncyclopedia.Add(_key, _techType);
+                pdaEncyclopedia[_key] = _techType;
                 return true;
             }
 
@@ -64,7 +62,7 @@ namespace BelowZeroServer
                 FragmentKnowledge newFrag = new FragmentKnowledge();
                 newFrag.techType = _techType;
                 newFrag.parts = _parts;
-                fragments.Add(key, newFrag);
+                fragments[key] = newFrag;
             }
             else
             {
@@ -75,7 +73,7 @@ namespace BelowZeroServer
         public static void SaveUnlocks()
         {
             UnlockData unlockData = new UnlockData();
-            unlockData.techUnlocks = techUnlocks;
+            unlockData.techUnlocks = techUnlocks.ToList();
             unlockData.pdaEncyclopedia = pdaEncyclopedia;
             unlockData.fragments = fragments;
             DataStore.SaveUnlockData(unlockData);
@@ -88,7 +86,7 @@ namespace BelowZeroServer
             UnlockData unlockData = DataStore.LoadUnlockData();
             if (unlockData != null)
             {
-                techUnlocks = unlockData.techUnlocks;
+                techUnlocks = new ConcurrentBag<int>(unlockData.techUnlocks);
                 pdaEncyclopedia = unlockData.pdaEncyclopedia;
                 fragments = unlockData.fragments;
             }
@@ -104,7 +102,7 @@ namespace BelowZeroServer
     public class UnlockData
     {
         public List<int> techUnlocks = new List<int>();
-        public Dictionary<string, int> pdaEncyclopedia = new Dictionary<string, int>();
-        public Dictionary<string, FragmentKnowledge> fragments = new Dictionary<string, FragmentKnowledge>();
+        public ConcurrentDictionary<string, int> pdaEncyclopedia = new ConcurrentDictionary<string, int>();
+        public ConcurrentDictionary<string, FragmentKnowledge> fragments = new ConcurrentDictionary<string, FragmentKnowledge>();
     }
 }

@@ -180,6 +180,47 @@ namespace BelowZeroServer
             return m_instance.m_clients[_clientId].m_clientName;
         }
 
+        public static string ResolvePartialPlayerName(string _partialClientName)
+        {
+            // NOTE: This implementation will have a limitation where if multiple players have a similar name
+            // i.e. BillyBob vs. BillNile and only Bill is supplied to the function it will only retrieve
+            // the first match it comes across. What we really should do at some point is TODO: change the return
+            // type to something like NameResolveResult that return the full name of every player that matches
+            // this
+            foreach (KeyValuePair<int, ClientConnection> entry in m_instance.m_clients)
+            {
+                if (entry.Value.m_clientName.StartsWith(_partialClientName, StringComparison.OrdinalIgnoreCase))
+                {
+                    return entry.Value.m_clientName;
+                }
+            }
+
+            // Fall back if no player is found to start with this name
+            string lowercaseName = _partialClientName.ToLower();
+            foreach (KeyValuePair<int, ClientConnection> entry in m_instance.m_clients)
+            {
+                if (entry.Value.m_clientName.ToLower().Contains(lowercaseName))
+                {
+                    return entry.Value.m_clientName;
+                }
+            }
+
+            return null;
+        }
+
+        public static int ResolveClientId(string _fullPlayerName)
+        {
+            foreach (KeyValuePair<int, ClientConnection> entry in m_instance.m_clients)
+            {
+                if (entry.Value.m_clientName == _fullPlayerName)
+                {
+                    return entry.Value.m_clientId;
+                }
+            }
+
+            return -1;
+        }
+
         public bool IsServerShuttingDown()
         {
             return m_isShuttingDown;

@@ -1,10 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-
-namespace BelowZeroMultiplayerCommon
+﻿namespace BelowZeroMultiplayerCommon
 {
     /// <summary>
     /// Sent from the server to the client
@@ -27,6 +21,8 @@ namespace BelowZeroMultiplayerCommon
         MessageBroadcast = 14,
         SyncUnlocks = 15,
         SyncPlayerInventory = 16,
+        AddInventoryItem = 17,
+        ForceTechUnlock = 18,
     }
 
     /// <summary>

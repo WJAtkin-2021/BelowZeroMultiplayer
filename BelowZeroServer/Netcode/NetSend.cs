@@ -255,6 +255,27 @@ namespace BelowZeroServer
             }
         }
 
+        public static void AddInventoryItem(int _toClient, int _techType, int _qty)
+        {
+            using (Packet packet = new Packet((int)ServerPackets.AddInventoryItem))
+            {
+                packet.Write(_techType);
+                packet.Write(_qty);
+
+                SendTCPData(_toClient, packet);
+            }
+        }
+
+        public static void ForceTechUnlock(int _techType)
+        {
+            using (Packet packet = new Packet((int)ServerPackets.ForceTechUnlock))
+            {
+                packet.Write(_techType);
+
+                SendTCPDataToAll(packet);
+            }
+        }
+
         #region SendImplementations
 
         private static void SendTCPData(int _toClient, Packet _packet)

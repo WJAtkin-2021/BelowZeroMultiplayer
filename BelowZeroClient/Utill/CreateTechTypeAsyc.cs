@@ -1,9 +1,9 @@
 ﻿using System.Collections;
 using UnityEngine;
 
-namespace BelowZeroClient.Utill
+namespace BelowZeroClient
 {
-    public class CreateTechTypeAsyc
+    public class CreateTechType
     {
         public static IEnumerator CreateNetworkedTechTypeAsyc(TechType objectTechType, Vector3 pos, string guid, System.Action<GameObject> callback = null)
         {
@@ -12,7 +12,7 @@ namespace BelowZeroClient.Utill
             GameObject gameObjectPrefab = task.GetResult();
 
             Vector3 toDirection = Vector3.up;
-            GameObject gameObject = UnityEngine.Object.Instantiate<GameObject>(gameObjectPrefab, pos, Quaternion.FromToRotation(Vector3.up, toDirection));
+            GameObject gameObject = Object.Instantiate(gameObjectPrefab, pos, Quaternion.FromToRotation(Vector3.up, toDirection));
             gameObject.AddComponent<NetToken>();
             gameObject.GetComponent<NetToken>().guid = guid;
             gameObject.SetActive(true);
@@ -24,6 +24,21 @@ namespace BelowZeroClient.Utill
             CrafterLogic.NotifyCraftEnd(gameObject, objectTechType);
             gameObject.SendMessage("StartConstruction", 1);
             if (callback != null) { callback.Invoke(gameObjectPrefab); }
+        }
+
+        public static IEnumerator CreateTechTypeAndGiveToInventory(TechType _TechType, int _qty)
+        {
+            CoroutineTask<GameObject> task = CraftData.GetPrefabForTechTypeAsync(_TechType, true);
+            yield return task;
+            GameObject gameObjectPrefab = task.GetResult();
+
+            for (int i = 0; i < _qty; i++)
+            {
+                GameObject gameObject = Object.Instantiate(gameObjectPrefab, Vector3.zero, Quaternion.identity);
+                gameObject.SetActive(true);
+                Pickupable pickupable = gameObject.GetComponent<Pickupable>();
+                Inventory.main.ForcePickup(pickupable);
+            }
         }
     }
 }

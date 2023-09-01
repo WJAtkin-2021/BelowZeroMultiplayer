@@ -2,7 +2,6 @@
 using System;
 using UnityEngine;
 using UWE;
-using BelowZeroClient.Utill;
 using System.Collections.Generic;
 using HarmonyLib;
 using BelowZeroMultiplayerCommon;
@@ -165,7 +164,7 @@ namespace BelowZeroClient
             string token = _packet.ReadString();
             TechType techType = (TechType)Enum.Parse(typeof(TechType), teckName);
 
-            CoroutineHost.StartCoroutine(CreateTechTypeAsyc.CreateNetworkedTechTypeAsyc(techType, pos, token, null));
+            CoroutineHost.StartCoroutine(CreateTechType.CreateNetworkedTechTypeAsyc(techType, pos, token, null));
         }
 
         public static void HandlePlayerPickedUpItem(Packet _packet)
@@ -349,6 +348,24 @@ namespace BelowZeroClient
 
             // Set our inventory
             ReplicateInventory.m_instance.LoadInventoryData(data);
+        }
+
+        public static void HandleAddInventoryItem(Packet _packet)
+        {
+            // Read the packet data
+            TechType techType = (TechType)_packet.ReadInt();
+            int qty = _packet.ReadInt();
+
+            // Call the factory function for creating items
+            CoroutineHost.StartCoroutine(CreateTechType.CreateTechTypeAndGiveToInventory(techType, qty));
+        }
+
+        public static void HandleForceTechUnlock(Packet _packet)
+        {
+            // Read the data
+            TechType techType = (TechType)_packet.ReadInt();
+
+            KnownTech.Add(techType, false, true);
         }
     }
 }

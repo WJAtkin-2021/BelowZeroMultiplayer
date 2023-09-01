@@ -87,6 +87,7 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="Patches\MobileVehicleBay.cs" />
     <Compile Include="Patches\OnKnownTechAdd.cs" />
     <Compile Include="Patches\PDAScannerPatches.cs" />
     <Compile Include="Patches\TurnOffMainSubscriptionPatch.cs" />

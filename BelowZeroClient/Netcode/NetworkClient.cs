@@ -162,6 +162,8 @@ namespace BelowZeroClient
                 { (int)ServerPackets.MessageBroadcast, NetReceive.HandleMessageBroadcast },
                 { (int)ServerPackets.SyncUnlocks, NetReceive.HandleSyncUnlocks },
                 { (int)ServerPackets.SyncPlayerInventory, NetReceive.SyncPlayerInventory },
+                { (int)ServerPackets.AddInventoryItem, NetReceive.HandleAddInventoryItem },
+                { (int)ServerPackets.ForceTechUnlock, NetReceive.HandleForceTechUnlock },
             };
         }
 

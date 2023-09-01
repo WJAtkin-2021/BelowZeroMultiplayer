@@ -198,5 +198,28 @@ namespace BelowZeroServer
 
             DataStore.SaveInventoryData(data, Server.ResolvePlayerName(_fromClient));
         }
+
+        public static void HandlePlayerCreateToken(int _fromClient, Packet _packet)
+        {
+            string guid = _packet.ReadString();
+            Vector3 intialPosition = _packet.ReadVector3();
+
+            TokenExchange.CreateToken(guid, _fromClient, intialPosition);
+        }
+
+        public static void HandlePlayerUpdateToken(int _fromClient, Packet _packet)
+         {
+            string guid = _packet.ReadString();
+            Vector3 position = _packet.ReadVector3();
+
+            TokenExchange.UpdateToken(guid, _fromClient, position);
+        }
+
+        public static void HandlePlayerDestroyToken(int _fromClient, Packet _packet)
+        {
+            string guid = _packet.ReadString();
+
+            TokenExchange.DestroyToken(guid, _fromClient);
+        }
     }
 }

@@ -186,6 +186,25 @@ namespace BelowZeroServer
 
                     NetSend.ForceTechUnlock(itemTechType);
                 }
+                else if (cmd == "runtestunlocks")
+                {
+                    // Blueprints
+                    NetSend.ForceTechUnlock(509);
+                    NetSend.ForceTechUnlock(1001);
+                    NetSend.ForceTechUnlock(1044);
+
+                    foreach (var client in Server.m_instance.m_clients)
+                    {
+                        if (client.Value.IsConnected())
+                        {
+                            // Items
+                            NetSend.AddInventoryItem(client.Value.m_clientId, 751, 1);
+                            NetSend.AddInventoryItem(client.Value.m_clientId, 752, 1);
+                            NetSend.AddInventoryItem(client.Value.m_clientId, 509, 1);
+                            NetSend.AddInventoryItem(client.Value.m_clientId, 504, 2);
+                        }
+                    }
+                }
                 else
                 {
                     Logger.Log($"Invalid Command: {cmd}");

@@ -23,6 +23,19 @@ namespace BelowZeroServer
             m_udp = new UDP(m_clientId);
         }
 
+        public bool IsConnected()
+        {
+            if (m_tcp.m_tcpClient != null)
+            {
+                if (m_tcp.m_tcpClient.Connected)
+                {
+                    return true;
+                }
+            }
+
+            return false;
+        }
+
         public void Disconnect()
         {
             if (m_tcp.m_tcpClient != null)

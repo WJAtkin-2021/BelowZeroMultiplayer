@@ -39,5 +39,8 @@
         AddedPDAEncyclopedia = 10,
         FragmentProgressUpdated = 11,
         PlayerInventoryUpdated = 12,
+        PlayerCreateToken = 13,
+        PlayerUpdateToken = 14,
+        PlayerDestroyToken = 15,
     }
 }

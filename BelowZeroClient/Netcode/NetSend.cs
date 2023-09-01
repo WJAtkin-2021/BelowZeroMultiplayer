@@ -132,6 +132,38 @@ namespace BelowZeroClient
             }
         }
 
+        public static void PlayerCreateToken(string _tokenGuid, Vector3 _initialTokenPos)
+        {
+            using (Packet packet = new Packet((int)ClientPackets.PlayerCreateToken))
+            {
+                packet.Write(_tokenGuid);
+                packet.Write(_initialTokenPos);
+
+                SendTCPData(packet);
+            }
+        }
+
+        public static void PlayerUpdateToken(string _tokenGuid, Vector3 _tokenPos)
+        {
+            using (Packet packet = new Packet((int)ClientPackets.PlayerUpdateToken))
+            {
+                packet.Write(_tokenGuid);
+                packet.Write(_tokenPos);
+
+                SendTCPData(packet);
+            }
+        }
+
+        public static void PlayerDestroyToken(string _tokenGuid)
+        {
+            using (Packet packet = new Packet((int)ClientPackets.PlayerDestroyToken))
+            {
+                packet.Write(_tokenGuid);
+
+                SendTCPData(packet);
+            }
+        }
+
         #region SendImplementations
 
         private static void SendTCPData(Packet _packet)

@@ -13,10 +13,14 @@ namespace BelowZeroClient
         private Packet m_receivedPacket;
         private byte[] m_receiveBuffer;
         private int m_dataBufferSize;
+        public bool m_isConnectingToLocalHost = false;
 
         public void Connect(string _ip, int _port, int _dataBuffSize)
         {
             Debug.Log($"Connecting to: {_ip}:{_port}");
+
+            if (_ip == "127.0.0.1")
+                m_isConnectingToLocalHost = true;
 
             m_tcpClient = new TcpClient
             {
@@ -26,13 +30,21 @@ namespace BelowZeroClient
 
             m_dataBufferSize = _dataBuffSize;
             m_receiveBuffer = new byte[m_dataBufferSize];
-            m_tcpClient.BeginConnect(_ip, _port, ConnectCallback, m_tcpClient);
+
+             m_tcpClient.BeginConnect(_ip, _port, ConnectCallback, null);
         }
 
         private void ConnectCallback(IAsyncResult _result)
         {
             if (!m_tcpClient.Connected)
             {
+                if (m_isConnectingToLocalHost)
+                {
+                    NetworkClient.m_instance.OnLocalHostConnectFailed?.Invoke();
+                    m_isConnectingToLocalHost = false;
+                    return;
+                }
+
                 ThreadManager.ExecuteOnMainThread(() =>
                 {
                     NetworkClient.m_instance.OnFailedToConnect?.Invoke();
@@ -42,6 +54,7 @@ namespace BelowZeroClient
                 return;
             }
 
+            NetworkClient.m_instance.m_isConnected = true;
             m_tcpClient.EndConnect(_result);
             m_stream = m_tcpClient.GetStream();
             m_receivedPacket = new Packet();

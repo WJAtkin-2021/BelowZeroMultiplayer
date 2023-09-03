@@ -65,14 +65,14 @@ namespace BelowZeroServer
                         return;
                     }
 
-                    Logger.Log($"Client: {Server.ResolvePlayerName(_client)} remove token with GUID: {_token}");
+                    Logger.Log($"Client: {Server.ResolvePlayerName(_client)} removed token with GUID: {_token}");
 
                     // TODO: Propagate this to other clients
 
                 }
                 else
                 {
-                    Logger.Log($"Client: {Server.ResolvePlayerName(_client)} tried to removed token: {_token} that no longer exists!");
+                    Logger.Log($"Client: {Server.ResolvePlayerName(_client)} tried to remove token: {_token} that no longer exists!");
                 }
             }
             else

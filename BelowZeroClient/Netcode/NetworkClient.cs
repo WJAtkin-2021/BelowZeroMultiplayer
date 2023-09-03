@@ -17,6 +17,7 @@ namespace BelowZeroClient
         public Action OnConnected;
         public Action OnFailedToConnect;
         public Action OnConnectionRefused;
+        public Action OnLocalHostConnectFailed;
 
         public TCP m_tcp;
         public UDP m_udp;
@@ -24,7 +25,7 @@ namespace BelowZeroClient
         public int m_clientId;
         public string m_playerName;
         
-        private bool m_isConnected = false;
+        public bool m_isConnected = false;
         private bool m_isMapLoaded = false;
 
         public delegate void PacketHandler(Packet packet);
@@ -93,11 +94,29 @@ namespace BelowZeroClient
 
             OnAttemptConnection?.Invoke();
 
+#if DEBUG
+            // We try to connect on local host first if this is a debug build
+            m_tcp = new TCP();
+            m_udp = new UDP("127.0.0.1", _port);
+
+            if (OnLocalHostConnectFailed == null)
+            {
+                OnLocalHostConnectFailed += (() => {
+                    ErrorMessage.AddMessage("Failed to connect to local host");
+                    m_tcp = new TCP();
+                    m_udp = new UDP(_ip, _port);
+
+                    m_tcp.Connect(_ip, _port, DATA_BUFF_SIZE);
+                });
+            }
+
+            m_tcp.Connect("127.0.0.1", _port, DATA_BUFF_SIZE);
+#else
             m_tcp = new TCP();
             m_udp = new UDP(_ip, _port);
 
-            m_isConnected = true;
             m_tcp.Connect(_ip, _port, DATA_BUFF_SIZE);
+#endif
         }
 
         public void AddRemotePlayer(int _clientId, string _clientName, Vector3 _pos)

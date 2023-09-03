@@ -200,8 +200,10 @@ namespace BelowZeroServer
                             // Items
                             NetSend.AddInventoryItem(client.Value.m_clientId, 751, 1);
                             NetSend.AddInventoryItem(client.Value.m_clientId, 752, 1);
-                            NetSend.AddInventoryItem(client.Value.m_clientId, 509, 1);
                             NetSend.AddInventoryItem(client.Value.m_clientId, 504, 2);
+                            NetSend.AddInventoryItem(client.Value.m_clientId, 509, 1);
+                            NetSend.AddInventoryItem(client.Value.m_clientId, 805, 1);
+                            NetSend.AddInventoryItem(client.Value.m_clientId, 804, 1);
                         }
                     }
                 }

@@ -1,4 +1,5 @@
-﻿using System;
+﻿using BelowZeroMultiplayerCommon;
+using System;
 using System.Collections.Concurrent;
 using System.Collections.Generic;
 using System.Linq;
@@ -100,5 +101,6 @@ namespace BelowZeroServer
         public string tokenGuid = string.Empty;
         public int clientWithToken = 0; // Zero == Server
         public Vector3 position = new Vector3();
+        public TokenExchangePolicy tokenExchangePolicy = TokenExchangePolicy.None;
     }
 }

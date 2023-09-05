@@ -45,8 +45,10 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="InventoryData.cs" />
+    <Compile Include="NetworkedEntityType.cs" />
     <Compile Include="PacketTypes.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
+    <Compile Include="TokenExchangePolicy.cs" />
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <PropertyGroup>

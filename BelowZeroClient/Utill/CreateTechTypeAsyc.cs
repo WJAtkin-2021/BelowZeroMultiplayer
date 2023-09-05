@@ -13,8 +13,8 @@ namespace BelowZeroClient
 
             Vector3 toDirection = Vector3.up;
             GameObject gameObject = Object.Instantiate(gameObjectPrefab, pos, Quaternion.FromToRotation(Vector3.up, toDirection));
-            gameObject.AddComponent<NetToken>();
-            gameObject.GetComponent<NetToken>().guid = guid;
+            NetToken nt = gameObject.AddComponent<NetToken>();
+            //nt.GenerateExistingToken();
             gameObject.SetActive(true);
 
             Pickupable pickupable = gameObject.GetComponent<Pickupable>();

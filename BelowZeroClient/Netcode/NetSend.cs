@@ -132,33 +132,63 @@ namespace BelowZeroClient
             }
         }
 
-        public static void PlayerCreateToken(string _tokenGuid, Vector3 _initialTokenPos)
+        public static void PlayerCreateToken(NetToken _token)
         {
             using (Packet packet = new Packet((int)ClientPackets.PlayerCreateToken))
             {
-                packet.Write(_tokenGuid);
-                packet.Write(_initialTokenPos);
+                packet.Write(_token.guid);
+                packet.Write((int)_token.tokenExchangePolicy);
+                packet.Write((int)_token.associatedTechType);
+                packet.Write((int)_token.networkedEntityType);
+                packet.Write(_token.tickRate);
+                packet.Write(_token.transform.localPosition);
+                packet.Write(_token.transform.localRotation);
+                packet.Write(_token.transform.localScale);
 
                 SendTCPData(packet);
             }
         }
 
-        public static void PlayerUpdateToken(string _tokenGuid, Vector3 _tokenPos)
+        public static void PlayerUpdateToken(NetToken _token)
         {
             using (Packet packet = new Packet((int)ClientPackets.PlayerUpdateToken))
             {
-                packet.Write(_tokenGuid);
-                packet.Write(_tokenPos);
+                packet.Write(_token.guid);
+                packet.Write(_token.transform.localPosition);
+                packet.Write(_token.transform.localRotation);
+                packet.Write(_token.transform.localScale);
 
                 SendTCPData(packet);
             }
         }
 
-        public static void PlayerDestroyToken(string _tokenGuid)
+        public static void PlayerUpdatedTokenData(NetToken _token)
+        {
+            using (Packet packet = new Packet((int)ClientPackets.PlayedUpdateTokenData))
+            {
+                packet.Write(_token.guid);
+                packet.Write((int)_token.tokenExchangePolicy);
+                packet.Write(_token.tickRate);
+
+                SendTCPData(packet);
+            }
+        }
+
+        public static void TryAcquireToken(NetToken _token)
+        {
+            using (Packet packet = new Packet((int)ClientPackets.PlayerAcquireToken))
+            {
+                packet.Write(_token.guid);
+
+                SendTCPData(packet);
+            }
+        }
+
+        public static void PlayerDestroyToken(NetToken _token)
         {
             using (Packet packet = new Packet((int)ClientPackets.PlayerDestroyToken))
             {
-                packet.Write(_tokenGuid);
+                packet.Write(_token.guid);
 
                 SendTCPData(packet);
             }

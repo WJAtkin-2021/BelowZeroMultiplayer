@@ -17,7 +17,8 @@ namespace BelowZeroClient
                     if (netToken == null)
                     {
                         netToken = __instance.gameObject.AddComponent<NetToken>();
-                        netToken.GenerateNewToken();
+                        netToken.GenerateNewToken(BelowZeroMultiplayerCommon.TokenExchangePolicy.OnClientRequest, TechType.Constructor, 
+                                                  BelowZeroMultiplayerCommon.NetworkedEntityType.MobileVehicleBay, 5.0f);
                     }
                     else
                     {

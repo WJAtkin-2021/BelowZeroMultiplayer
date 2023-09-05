@@ -13,6 +13,7 @@ namespace BelowZeroClient
                 __instance.gameObject.AddComponent<ReplicatePlayer>();
                 __instance.gameObject.AddComponent<ReplicateInventory>();
                 __instance.gameObject.AddComponent<PDAUnlockQueue>();
+                __instance.gameObject.AddComponent<TokenManager>();
 
                 NetSend.SpawnMe();
             }

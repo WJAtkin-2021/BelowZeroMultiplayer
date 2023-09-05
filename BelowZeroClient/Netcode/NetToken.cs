@@ -26,7 +26,7 @@ namespace BelowZeroClient
         private Quaternion rotation1;
         private Quaternion rotation2;
         private float lastUpdateTimer;
-        private Rigidbody rigidbody;
+        private Rigidbody rigidBody;
 
         public NetToken()
         {
@@ -40,10 +40,10 @@ namespace BelowZeroClient
             rotation1 = rotation2 = Quaternion.identity;
             lastUpdateTimer = 0.0f;
 
-            rigidbody = gameObject.GetComponent<Rigidbody>();
-            if (rigidbody == null)
+            rigidBody = gameObject.GetComponent<Rigidbody>();
+            if (rigidBody == null)
             {
-                rigidbody = gameObject.GetComponentInChildren<Rigidbody>();
+                rigidBody = gameObject.GetComponentInChildren<Rigidbody>();
             }
         }
 
@@ -51,7 +51,7 @@ namespace BelowZeroClient
         {
             lastUpdateTimer += Time.deltaTime;
 
-            if (!HasToken())
+            if (!HasToken() && tickRate != 0.0f)
             {
                 // Perform linear interpolation
                 float t = Mathf.Clamp(lastUpdateTimer * tickRate, 0.0f, 1.0f);
@@ -90,8 +90,8 @@ namespace BelowZeroClient
             transform.rotation = _tokenDescriptor.rotation;
             transform.localScale = _tokenDescriptor.scale;
 
-            if (rigidbody != null)
-                rigidbody.isKinematic = true;
+            if (rigidBody != null)
+                rigidBody.isKinematic = true;
         }
 
         public bool HasToken()
@@ -108,19 +108,13 @@ namespace BelowZeroClient
 
         public void AcquireToken()
         {
-            // TODO:
-        }
-
-        public void SendTokenUpdate()
-        {
-            // Send position of acquired token so server can perform
-            // handover if necessary
-            //NetSend.PlayerUpdateToken(guid, gameObject.transform.position);
+            if (!HasToken())
+                NetSend.TryAcquireToken(this);
         }
 
         public void DestroyToken()
         {
-            //NetSend.PlayerDestroyToken(guid);
+            NetSend.PlayerDestroyToken(this);
             if (updateCoroutineIsRunning && coroutine != null)
             {
                 CoroutineHost.StopCoroutine(coroutine);
@@ -133,12 +127,27 @@ namespace BelowZeroClient
         {
             if (HasToken())
             {
-                // TODO: Send packet with new policy
+                tokenExchangePolicy = _tokenExchangePolicy;
+                NetSend.PlayerUpdatedTokenData(this);
             }
             else
             {
                 ErrorMessage.AddMessage($"[NetToken] Tired to change exchange policy of: {associatedTechType} with guid: {guid} but we do not own it");
                 FileLog.Log($"[NetToken] Tired to change exchange policy of: {associatedTechType} with guid: {guid} but we do not own it");
+            }
+        }
+
+        public void ChangeTickRate(float _newRate)
+        {
+            if (HasToken())
+            {
+                tickRate = _newRate;
+                NetSend.PlayerUpdatedTokenData(this);
+            }
+            else
+            {
+                ErrorMessage.AddMessage($"[NetToken] Tired to change tick rate of: {associatedTechType} with guid: {guid} but we do not own it");
+                FileLog.Log($"[NetToken] Tired to change tick rate of: {associatedTechType} with guid: {guid} but we do not own it");
             }
         }
 
@@ -152,7 +161,7 @@ namespace BelowZeroClient
             {
                 if (HasToken())
                 {
-                    SendTokenUpdate();
+                    NetSend.PlayerUpdateToken(this);
 
                     coroutine = CoroutineHost.StartCoroutine(SendUpdate());
                 }
@@ -175,8 +184,8 @@ namespace BelowZeroClient
             clientWithToken = NetworkClient.m_instance.m_clientId;
             tokenExchangePolicy = _tokenExchangePolicy;
 
-            if (rigidbody != null)
-                rigidbody.isKinematic = true;
+            if (rigidBody != null)
+                rigidBody.isKinematic = true;
 
             if (!updateCoroutineIsRunning)
             {

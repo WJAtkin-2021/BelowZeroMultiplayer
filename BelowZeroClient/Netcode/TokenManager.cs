@@ -13,21 +13,20 @@ namespace BelowZeroClient
     // Manages the update / exchange of tokens client side
     public class TokenManager : MonoBehaviour
     {
+        public static TokenManager m_instance;
+
         public Dictionary<string, NetToken> Tokens = new Dictionary<string, NetToken>();
         
-        public void Start()
+        public void Awake()
         {
-            TokenDescriptor descriptor = new TokenDescriptor();
-            descriptor.associatedTechType = TechType.Titanium;
-            descriptor.position = new Vector3(-274.8f, -11.0f, -27.1f);
-            descriptor.rotation = Quaternion.identity;
-            descriptor.scale = Vector3.one;
-            descriptor.clientWithToken = 0; // TEST: 0 is server
-            descriptor.guid = Guid.NewGuid().ToString();
-            descriptor.networkedEntityType = NetworkedEntityType.Pickupable;
-            descriptor.tokenExchangePolicy = TokenExchangePolicy.DoNotYield;
-            descriptor.tickRate = 1.0f;
-            HandleTokenCreation(descriptor);
+            if (m_instance == null)
+            {
+                m_instance = this;
+            }
+            else
+            {
+                Destroy(this);
+            }
         }
 
         public void HandleTokenCreation(TokenDescriptor _tokenDescriptor)
@@ -64,8 +63,6 @@ namespace BelowZeroClient
 
         private IEnumerator FactoryCreatePickupable(TokenDescriptor _tokenDescriptor)
         {
-            yield return new WaitForSeconds(5.0f);
-
             CoroutineTask<GameObject> task = CraftData.GetPrefabForTechTypeAsync(_tokenDescriptor.associatedTechType, true);
             yield return task;
             GameObject gameObjectPrefab = task.GetResult();

@@ -1,4 +1,5 @@
-﻿using System;
+﻿using BelowZeroMultiplayerCommon;
+using System;
 using System.Threading;
 
 namespace BelowZeroServer
@@ -206,6 +207,20 @@ namespace BelowZeroServer
                             NetSend.AddInventoryItem(client.Value.m_clientId, 804, 1);
                         }
                     }
+                }
+                else if (cmd == "tokentest")
+                {
+                    TokenData data = new TokenData();
+                    data.associatedTechType = 16;
+                    data.position = new Vector3(-274.8f, -11.0f, -27.1f);
+                    data.rotation = new Quaternion();
+                    data.scale = new Vector3(1.0f, 1.0f, 1.0f);
+                    data.clientWithToken = 0; // TEST: 0 is server
+                    data.tokenGuid = Guid.NewGuid().ToString();
+                    data.networkedEntity = NetworkedEntityType.Pickupable;
+                    data.tokenExchangePolicy = TokenExchangePolicy.DoNotYield;
+                    data.tickRate = 0.0f;
+                    NetSend.PlayerAddedNewToken(data);
                 }
                 else
                 {

@@ -43,16 +43,17 @@ namespace BelowZeroClient
             }
         }
 
+        [Obsolete("Obsolete, now done automatically by token")]
         public static void DroppedItem(Pickupable dropable, string token)
         {
-            using (Packet packet = new Packet((int)ClientPackets.DroppedItem))
-            {
-                packet.Write(dropable.GetTechName());
-                packet.Write(dropable.gameObject.transform.position);
-                packet.Write(token);
-
-                SendTCPData(packet);
-            }
+            //using (Packet packet = new Packet((int)ClientPackets.DroppedItem))
+            //{
+            //    packet.Write(dropable.GetTechName());
+            //    packet.Write(dropable.gameObject.transform.position);
+            //    packet.Write(token);
+            //
+            //    SendTCPData(packet);
+            //}
         }
 
         public static void PickupItem(string token)

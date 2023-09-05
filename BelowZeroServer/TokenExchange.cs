@@ -100,7 +100,12 @@ namespace BelowZeroServer
     {
         public string tokenGuid = string.Empty;
         public int clientWithToken = 0; // Zero == Server
-        public Vector3 position = new Vector3();
         public TokenExchangePolicy tokenExchangePolicy = TokenExchangePolicy.None;
+        public int associatedTechType = 0;
+        public NetworkedEntityType networkedEntity = NetworkedEntityType.None;
+        public float tickRate = 0.0f;
+        public Vector3 position = new Vector3();
+        public Quaternion rotation = new Quaternion();
+        public Vector3 scale = new Vector3();
     }
 }

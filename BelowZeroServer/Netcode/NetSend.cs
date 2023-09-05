@@ -276,6 +276,24 @@ namespace BelowZeroServer
             }
         }
 
+        public static void PlayerAddedNewToken(TokenData _tokenData)
+        {
+            using (Packet packet = new Packet((int)ServerPackets.PlayerCreatedNewToken))
+            {
+                packet.Write(_tokenData.tokenGuid);
+                packet.Write(_tokenData.clientWithToken);
+                packet.Write((int)_tokenData.tokenExchangePolicy);
+                packet.Write(_tokenData.associatedTechType);
+                packet.Write((int)_tokenData.networkedEntity);
+                packet.Write(_tokenData.tickRate);
+                packet.Write(_tokenData.position);
+                packet.Write(_tokenData.rotation);
+                packet.Write(_tokenData.scale);
+
+                SendTCPDataToAll(_tokenData.clientWithToken, packet);
+            }
+        }
+
         #region SendImplementations
 
         private static void SendTCPData(int _toClient, Packet _packet)

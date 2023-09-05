@@ -167,20 +167,21 @@ namespace BelowZeroClient
             CoroutineHost.StartCoroutine(CreateTechType.CreateNetworkedTechTypeAsyc(techType, pos, token, null));
         }
 
+        [Obsolete("Done automatically by token")]
         public static void HandlePlayerPickedUpItem(Packet _packet)
         {
-            string token = _packet.ReadString();
-
-            // TODO: Refactor this so that we store all networked pickupables in a list
-            NetToken[] tokens = GameObject.FindObjectsOfType<NetToken>();
-            foreach (NetToken tok in tokens)
-            {
-                if (tok.guid == token)
-                {
-                    UnityEngine.Object.Destroy(tok.gameObject);
-                    return;
-                }
-            }
+            //string token = _packet.ReadString();
+            //
+            //// TODO: Refactor this so that we store all networked pickupables in a list
+            //NetToken[] tokens = GameObject.FindObjectsOfType<NetToken>();
+            //foreach (NetToken tok in tokens)
+            //{
+            //    if (tok.guid == token)
+            //    {
+            //        UnityEngine.Object.Destroy(tok.gameObject);
+            //        return;
+            //    }
+            //}
         }
 
         public static void HandlePlayerUnlockedTechKnowledge(Packet _packet)
@@ -366,6 +367,41 @@ namespace BelowZeroClient
             TechType techType = (TechType)_packet.ReadInt();
 
             KnownTech.Add(techType, false, true);
+        }
+
+        public static void HandlePlayerCreatedNewToken(Packet _packet)
+        {
+            TokenDescriptor descriptor = new TokenDescriptor();
+            descriptor.guid = _packet.ReadString();
+            descriptor.clientWithToken = _packet.ReadInt();
+            descriptor.tokenExchangePolicy = (TokenExchangePolicy)_packet.ReadInt();
+            descriptor.associatedTechType = (TechType)_packet.ReadInt();
+            descriptor.networkedEntityType = (NetworkedEntityType)_packet.ReadInt();
+            descriptor.tickRate = _packet.ReadFloat();
+            descriptor.position = _packet.ReadVector3();
+            descriptor.rotation = _packet.ReadQuaternoin();
+            descriptor.scale = _packet.ReadVector3();
+            TokenManager.m_instance.HandleTokenCreation(descriptor);
+        }
+
+        public static void HandlePlayerUpdatedToken(Packet _packet)
+        {
+
+        }
+
+        public static void HandlePlayerUpdatedTokenData(Packet _packet)
+        {
+
+        }
+
+        public static void HandlePlayerAcquiredToken(Packet _packet)
+        {
+
+        }
+
+        public static void HandlePlayerDestroyedToken(Packet _packet)
+        {
+
         }
     }
 }

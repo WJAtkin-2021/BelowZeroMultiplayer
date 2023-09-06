@@ -1,10 +1,5 @@
-﻿using BelowZeroMultiplayerCommon;
-using System;
-using System.Collections.Concurrent;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
+﻿using System.Collections.Concurrent;
+using BelowZeroMultiplayerCommon;
 
 namespace BelowZeroServer
 {
@@ -12,34 +7,32 @@ namespace BelowZeroServer
     {
         private static ConcurrentDictionary<string, TokenData> m_tokens = new ConcurrentDictionary<string, TokenData>();
 
-        public static void CreateToken(string _guid, int _client, Vector3 _initalPos)
+        public static void CreateToken(TokenData tokenData)
         {
-            TokenData data = new TokenData();
-            data.tokenGuid = _guid;
-            data.clientWithToken = _client;
-            data.position = _initalPos;
-            bool added = m_tokens.TryAdd(_guid, data);
+            bool added = m_tokens.TryAdd(tokenData.tokenGuid, tokenData);
 
             if (!added)
             {
-                Logger.Log($"Could not add token with GUID: {_guid} as it already exists!");
+                Logger.Log($"Could not add token with GUID: {tokenData.tokenGuid} as it already exists!");
                 return;
             }
 
-            Logger.Log($"Client: {Server.ResolvePlayerName(_client)} added token with GUID: {_guid}");
+            Logger.Log($"Client: {Server.ResolvePlayerName(tokenData.clientWithToken)} added token with GUID: {tokenData.tokenGuid}");
         }
 
-        public static void UpdateToken(string _token, int _client, Vector3 _pos)
+        public static void UpdateToken(string _token, int _client, Vector3 _pos, Quaternion _rot, Vector3 _scale)
         {
             if (DoesClientHaveToken(_token, _client))
             {
                 if (m_tokens.ContainsKey(_token))
                 {
                     m_tokens[_token].position = _pos;
+                    m_tokens[_token].rotation = _rot;
+                    m_tokens[_token].scale = _scale;
 
-                    Logger.Log($"Client: {Server.ResolvePlayerName(_client)} updated token: {_token} to pos: {_pos}");
+                    //Logger.Log($"Client: {Server.ResolvePlayerName(_client)} updated token: {_token} to pos: {_pos}");
 
-                    // TODO: Propagate this to other clients
+                    NetSend.PlayerUpdatedToken(m_tokens[_token]);
                 }
                 else
                 {
@@ -49,6 +42,19 @@ namespace BelowZeroServer
             else
             {
                 Logger.Log($"Client: {Server.ResolvePlayerName(_client)} tried to update token that they do not own!");
+            }
+        }
+
+        public static int FindOwnerOfToken(string _token)
+        {
+            if (m_tokens.ContainsKey(_token))
+            {
+                return m_tokens[_token].clientWithToken;
+            }
+            else
+            {
+                Logger.Log($"Tried to resolve owner of token: {_token} that no longer exists!");
+                return 0;
             }
         }
 
@@ -68,7 +74,7 @@ namespace BelowZeroServer
 
                     Logger.Log($"Client: {Server.ResolvePlayerName(_client)} removed token with GUID: {_token}");
 
-                    // TODO: Propagate this to other clients
+                    NetSend.PlayerDestroyedToken(m_tokens[_token]);
 
                 }
                 else
@@ -82,11 +88,11 @@ namespace BelowZeroServer
             }
         }
 
-        public static bool DoesClientHaveToken(string _guid, int _client)
+        public static bool DoesClientHaveToken(string _token, int _client)
         {
-            if (m_tokens.ContainsKey(_guid))
+            if (m_tokens.ContainsKey(_token))
             {
-                if (m_tokens[_guid].clientWithToken == _client)
+                if (m_tokens[_token].clientWithToken == _client)
                 {
                     return true;
                 }

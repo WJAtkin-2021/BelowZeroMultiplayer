@@ -1,5 +1,6 @@
 ﻿using BelowZeroMultiplayerCommon;
 using System;
+using System.Data.Entity.SqlServer;
 using System.Threading;
 
 namespace BelowZeroServer
@@ -221,6 +222,30 @@ namespace BelowZeroServer
                     data.tokenExchangePolicy = TokenExchangePolicy.DoNotYield;
                     data.tickRate = 0.0f;
                     NetSend.PlayerAddedNewToken(data);
+                }
+                else if (cmd.StartsWith("removetoken"))
+                {
+                    string[] subparts = cmd.Split(null);
+                    string playerName = subparts[1];
+                    string fullPlayerName = Server.ResolvePartialPlayerName(playerName);
+                    int clientId;
+                    if (!string.IsNullOrEmpty(fullPlayerName))
+                    {
+                        clientId = Server.ResolveClientId(fullPlayerName);
+                        if (clientId == -1)
+                        {
+                            // This should never happen but we will guard against it anyways...
+                            Logger.Log($"Error! Unable to resolve player name: {fullPlayerName} to client ID!");
+                            return;
+                        }
+                    }
+                    else
+                    {
+                        Logger.Log($"Error! Unable to resolve player name: {playerName}");
+                        return;
+                    }
+                    string token = subparts[2];
+                    NetSend.DestroyToken(clientId, token);
                 }
                 else
                 {

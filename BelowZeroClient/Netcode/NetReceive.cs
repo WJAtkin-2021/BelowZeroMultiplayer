@@ -386,7 +386,12 @@ namespace BelowZeroClient
 
         public static void HandlePlayerUpdatedToken(Packet _packet)
         {
+            string guid = _packet.ReadString();
+            Vector3 position = _packet.ReadVector3();
+            Quaternion rotation = _packet.ReadQuaternoin();
+            Vector3 scale = _packet.ReadVector3();
 
+            TokenManager.m_instance.HandleTokenUpdate(guid, position, rotation, scale);
         }
 
         public static void HandlePlayerUpdatedTokenData(Packet _packet)
@@ -401,7 +406,14 @@ namespace BelowZeroClient
 
         public static void HandlePlayerDestroyedToken(Packet _packet)
         {
+            string guid = _packet.ReadString();
+            TokenManager.m_instance.HandleTokenDestroyed(guid);
+        }
 
+        public static void HandleDestroyToken(Packet _packet)
+        {
+            string tokenGuid = _packet.ReadString();
+            TokenManager.m_instance.HandleServerRequestedTokenDestruction(tokenGuid);
         }
     }
 }

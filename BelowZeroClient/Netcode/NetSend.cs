@@ -142,8 +142,8 @@ namespace BelowZeroClient
                 packet.Write((int)_token.associatedTechType);
                 packet.Write((int)_token.networkedEntityType);
                 packet.Write(_token.tickRate);
-                packet.Write(_token.transform.localPosition);
-                packet.Write(_token.transform.localRotation);
+                packet.Write(_token.transform.position);
+                packet.Write(_token.transform.rotation);
                 packet.Write(_token.transform.localScale);
 
                 SendTCPData(packet);
@@ -155,8 +155,8 @@ namespace BelowZeroClient
             using (Packet packet = new Packet((int)ClientPackets.PlayerUpdateToken))
             {
                 packet.Write(_token.guid);
-                packet.Write(_token.transform.localPosition);
-                packet.Write(_token.transform.localRotation);
+                packet.Write(_token.transform.position);
+                packet.Write(_token.transform.rotation);
                 packet.Write(_token.transform.localScale);
 
                 SendTCPData(packet);

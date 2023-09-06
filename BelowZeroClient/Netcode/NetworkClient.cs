@@ -188,6 +188,7 @@ namespace BelowZeroClient
                 { (int)ServerPackets.PlayerUpdatedTokenData, NetReceive.HandlePlayerUpdatedTokenData },
                 { (int)ServerPackets.PlayerAcquiredToken, NetReceive.HandlePlayerAcquiredToken },
                 { (int)ServerPackets.PlayerDestroyedToken, NetReceive.HandlePlayerDestroyedToken },
+                { (int)ServerPackets.DestroyToken, NetReceive.HandleDestroyToken },
             };
         }
 

@@ -114,7 +114,9 @@ namespace BelowZeroClient
 
         public void DestroyToken()
         {
-            NetSend.PlayerDestroyToken(this);
+            if (HasToken())
+                NetSend.PlayerDestroyToken(this);
+
             if (updateCoroutineIsRunning && coroutine != null)
             {
                 CoroutineHost.StopCoroutine(coroutine);

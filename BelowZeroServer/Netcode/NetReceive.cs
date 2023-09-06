@@ -111,10 +111,9 @@ namespace BelowZeroServer
         {
             string itemToken = _packet.ReadString();
 
-            // Replicate this
-            NetSend.PlayerPickedUpItem(_fromClient, itemToken);
-
-            // TODO: Un-Store this data for late joiners
+            // Tell the owner to remove the node with the token
+            int owner = TokenExchange.FindOwnerOfToken(itemToken);
+            NetSend.DestroyToken(owner, itemToken);
         }
 
         public static void HandleTechKnowledgeAdded(int _fromClient, Packet _packet)
@@ -201,18 +200,41 @@ namespace BelowZeroServer
 
         public static void HandlePlayerCreateToken(int _fromClient, Packet _packet)
         {
-            string guid = _packet.ReadString();
-            Vector3 intialPosition = _packet.ReadVector3();
+            TokenData tokenData = new TokenData();
 
-            TokenExchange.CreateToken(guid, _fromClient, intialPosition);
+            tokenData.tokenGuid = _packet.ReadString();
+            tokenData.clientWithToken = _fromClient;
+            tokenData.tokenExchangePolicy = (TokenExchangePolicy)_packet.ReadInt();
+            tokenData.associatedTechType = _packet.ReadInt();
+            tokenData.networkedEntity = (NetworkedEntityType)_packet.ReadInt();
+            tokenData.tickRate = _packet.ReadFloat();
+            tokenData.position = _packet.ReadVector3();
+            tokenData.rotation = _packet.ReadQuaternoin();
+            tokenData.scale = _packet.ReadVector3();
+
+            TokenExchange.CreateToken(tokenData);
+
+            NetSend.PlayerAddedNewToken(tokenData);
         }
 
         public static void HandlePlayerUpdateToken(int _fromClient, Packet _packet)
          {
             string guid = _packet.ReadString();
             Vector3 position = _packet.ReadVector3();
+            Quaternion rotation = _packet.ReadQuaternoin();
+            Vector3 scale = _packet.ReadVector3();
+            
+            TokenExchange.UpdateToken(guid, _fromClient, position, rotation, scale);
+        }
 
-            TokenExchange.UpdateToken(guid, _fromClient, position);
+        public static void HandlePlayedUpdateTokenData(int _fromClient, Packet _packet)
+        {
+
+        }
+
+        public static void HandlePlayerAcquireToken(int _fromClient, Packet _packet)
+        {
+
         }
 
         public static void HandlePlayerDestroyToken(int _fromClient, Packet _packet)

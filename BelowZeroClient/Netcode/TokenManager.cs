@@ -1,4 +1,5 @@
 ﻿using BelowZeroMultiplayerCommon;
+using HarmonyLib;
 using System;
 using System.Collections;
 using System.Collections.Generic;
@@ -29,21 +30,58 @@ namespace BelowZeroClient
             }
         }
 
+        public void AddToken(NetToken _token)
+        {
+            if (!Tokens.ContainsKey(_token.guid))
+            {
+                Tokens.Add(_token.guid, _token);
+            }
+            else
+            {
+                ErrorMessage.AddMessage($"[TokenManager] Received request to generate node for token: {_token.guid} but this already exists");
+                FileLog.Log($"[TokenManager] Received request to generate node for token: {_token.guid} but this already exists");
+            }
+        }
+
         public void HandleTokenCreation(TokenDescriptor _tokenDescriptor)
         {
             if (!Tokens.ContainsKey(_tokenDescriptor.guid))
             {
+                ErrorMessage.AddMessage($"[TokenManager] Received request to generate node for token: {_tokenDescriptor.guid}");
+
+                FileLog.Log($"-----TOKEN------");
+                FileLog.Log($"guid: {_tokenDescriptor.guid}");
+                FileLog.Log($"clientWithToken: {_tokenDescriptor.clientWithToken}");
+                FileLog.Log($"tokenExchangePolicy: {_tokenDescriptor.tokenExchangePolicy}");
+                FileLog.Log($"associatedTechType: {_tokenDescriptor.associatedTechType}");
+                FileLog.Log($"networkedEntityType: {_tokenDescriptor.networkedEntityType}");
+                FileLog.Log($"tickRate:  {_tokenDescriptor.tickRate}");
+                FileLog.Log($"position:  {_tokenDescriptor.position}");
+                FileLog.Log($"rotation:  {_tokenDescriptor.rotation}");
+                FileLog.Log($"scale:  {_tokenDescriptor.scale}");
+                FileLog.Log($"------EOF-------");
+
                 CoroutineHost.StartCoroutine(FactoryCreatePickupable(_tokenDescriptor));
             }
             else
             {
                 ErrorMessage.AddMessage($"[TokenManager] Received request to generate node for token: {_tokenDescriptor.guid} but this already exists");
+                FileLog.Log($"[TokenManager] Received request to generate node for token: {_tokenDescriptor.guid} but this already exists");
             }
         }
 
         public void HandleTokenUpdate(string _tokenGuid, Vector3 _pos, Quaternion _rot, Vector3 _scale)
         {
-
+            if (Tokens.ContainsKey(_tokenGuid))
+            {
+                NetToken token = Tokens[_tokenGuid];
+                token.HandleTokenUpdate(_pos, _rot, _scale);
+            }
+            else
+            {
+                ErrorMessage.AddMessage($"[TokenManager] Received request to update node: {_tokenGuid} but this doesn't exist");
+                FileLog.Log($"[TokenManager] Received request to update node: {_tokenGuid} but this doesn't exist");
+            }
         }
 
         public void HandleTokenDataUpdated(TokenDescriptor _tokenDescriptor)
@@ -58,7 +96,33 @@ namespace BelowZeroClient
 
         public void HandleTokenDestroyed(string _tokenGuid)
         {
+            if (Tokens.ContainsKey(_tokenGuid))
+            {
+                NetToken token = Tokens[_tokenGuid];
+                token.DestroyToken();
+            }
+            else
+            {
+                ErrorMessage.AddMessage($"[TokenManager] Received request to destroy token: {_tokenGuid} but this doesn't exist");
+                FileLog.Log($"[TokenManager] Received request to destroy token: {_tokenGuid} but this doesn't exist");
+            }
+        }
 
+        public void HandleServerRequestedTokenDestruction(string _tokenGuid)
+        {
+            if (Tokens.ContainsKey(_tokenGuid))
+            {
+                ErrorMessage.AddMessage($"[TokenManager] Server requested destruction of token: {_tokenGuid}");
+                NetToken token = Tokens[_tokenGuid];
+                GameObject tokenGo = token.gameObject;
+                token.DestroyToken();
+                Destroy(tokenGo);
+            }
+            else
+            {
+                ErrorMessage.AddMessage($"[TokenManager] Received request to destroy node: {_tokenGuid} but this doesn't exist");
+                FileLog.Log($"[TokenManager] Received request to destroy node: {_tokenGuid} but this doesn't exist");
+            }
         }
 
         private IEnumerator FactoryCreatePickupable(TokenDescriptor _tokenDescriptor)

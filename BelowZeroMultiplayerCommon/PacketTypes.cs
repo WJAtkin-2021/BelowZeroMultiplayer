@@ -28,6 +28,7 @@
         PlayerUpdatedTokenData = 21,
         PlayerAcquiredToken = 22,
         PlayerDestroyedToken = 23,
+        DestroyToken = 24,
     }
 
     /// <summary>

@@ -9,6 +9,7 @@ namespace BelowZeroServerGui
     {
         private Server m_server;
         private int m_longestItem = 0;
+        private int m_prevCommandFetchIndex = 0;
 
         public BelowZeroServerGui()
         {
@@ -17,6 +18,7 @@ namespace BelowZeroServerGui
             InitializeComponent();
             AcceptButton = SendCmdButton;
             ConsoleOutput.Resize += HandleResizeEvent;
+            CommandTextBox.KeyDown += HandleKeyPress;
 
             RunServerProgram();
         }
@@ -41,7 +43,7 @@ namespace BelowZeroServerGui
             m_longestItem = 0;
         }
 
-        public void HandleResizeEvent(object sender, System.EventArgs e)
+        public void HandleResizeEvent(object sender, EventArgs e)
         {
             int newExtentSize = Math.Max(0, m_longestItem - (int)(ConsoleOutput.Size.Width / 2.0f));
             ConsoleOutput.HorizontalExtent = newExtentSize;
@@ -55,6 +57,22 @@ namespace BelowZeroServerGui
             // Send command
             CommandRunner.RunCommand(CommandTextBox.Text);
             CommandTextBox.Text = "";
+            m_prevCommandFetchIndex = 0;
+        }
+
+        private void HandleKeyPress(object sender, KeyEventArgs e)
+        {
+            if (e.KeyCode == Keys.Up)
+                m_prevCommandFetchIndex++;
+            else if (e.KeyCode == Keys.Down)
+                m_prevCommandFetchIndex--;
+            else
+                return;
+
+            m_prevCommandFetchIndex = Math.Max(1, m_prevCommandFetchIndex);
+            m_prevCommandFetchIndex = Math.Min(m_prevCommandFetchIndex, CommandRunner.NumOfPrevCommands());
+
+            CommandTextBox.Text = CommandRunner.FetchPrevCommand(m_prevCommandFetchIndex);
         }
 
         private async void RunServerProgram()

@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Collections.Generic;
 using BelowZeroMultiplayerCommon;
 
 namespace BelowZeroServer
@@ -6,9 +7,12 @@ namespace BelowZeroServer
     public static class CommandRunner
     {
         private static int Debug_currentFragments = 0;
+        private static List<string> m_prevCommands = new List<string>();
 
         public static void RunCommand(string _cmd)
         {
+            m_prevCommands.Add(_cmd);
+
             try
             {
                 _cmd = _cmd.ToLower();
@@ -84,6 +88,19 @@ namespace BelowZeroServer
             {
                 Logger.Log($"[CommandRunner] Error while running command: {ex}");
             }
+        }
+
+        public static string FetchPrevCommand(int _reverseIndex)
+        {
+            int index = m_prevCommands.Count - _reverseIndex;
+            index = Math.Max(0, index);
+            index = Math.Min(index, m_prevCommands.Count - 1);
+            return m_prevCommands[index];
+        }
+
+        public static int NumOfPrevCommands()
+        {
+            return m_prevCommands.Count;
         }
 
         #region NormalCommands

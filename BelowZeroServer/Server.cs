@@ -12,7 +12,7 @@ namespace BelowZeroServer
         public const int MAX_PLAYERS = 8;
 
         private int m_port;
-        private bool m_isShuttingDown = false;
+        public bool m_isShuttingDown = false;
         public delegate void PacketHandler(int _fromClient, Packet _packet);
         public Dictionary<int, PacketHandler> m_packetHandlers;
         public Dictionary<int, ClientConnection> m_clients = new Dictionary<int, ClientConnection>();

@@ -62,6 +62,7 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="CommandRunner.cs" />
     <Compile Include="Netcode\ClientConnection.cs" />
     <Compile Include="Logger.cs" />
     <Compile Include="Maths.cs" />

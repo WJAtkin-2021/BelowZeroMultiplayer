@@ -1,4 +1,5 @@
-﻿using HarmonyLib;
+﻿using BelowZeroMultiplayerCommon;
+using HarmonyLib;
 using System;
 using System.Collections.Generic;
 using System.Text;
@@ -33,6 +34,18 @@ namespace BelowZeroClient
             m_readPos = 0;
 
             Write(_id);
+        }
+
+        /// <summary>
+        /// Creates a new packet with the enum. Used for sending data.
+        /// </summary>
+        /// <param name="_id"></param>
+        public Packet(ClientPackets _type)
+        {
+            m_buffer = new List<byte>();
+            m_readPos = 0;
+
+            Write((int)_type);
         }
 
         /// <summary>
@@ -223,6 +236,33 @@ namespace BelowZeroClient
             Write(_value.y);
             Write(_value.z);
             Write(_value.w);
+        }
+
+        /// <summary>
+        /// Writes a TechType to the packet
+        /// </summary>
+        /// <param name="_value"></param>
+        public void Write(TechType _value)
+        {
+            Write((int)_value);
+        }
+
+        /// <summary>
+        /// Writes a TokenExchangePolicy to the packet
+        /// </summary>
+        /// <param name="_value"></param>
+        public void Write(TokenExchangePolicy _value)
+        {
+            Write((int)_value);
+        }
+
+        /// <summary>
+        /// Writes a NetworkedEntityType to the packet
+        /// </summary>
+        /// <param name="_value"></param>
+        public void Write(NetworkedEntityType _value)
+        {
+            Write((int)_value);
         }
 
         #endregion
@@ -471,9 +511,39 @@ namespace BelowZeroClient
         /// </summary>
         /// <param name="_moveReadPos"></param>
         /// <returns></returns>
-        public Quaternion ReadQuaternoin(bool _moveReadPos = true)
+        public Quaternion ReadQuaternion(bool _moveReadPos = true)
         {
             return new Quaternion(ReadFloat(_moveReadPos), ReadFloat(_moveReadPos), ReadFloat(_moveReadPos), ReadFloat(_moveReadPos));
+        }
+
+        /// <summary>
+        /// Reads a TechType from a packet
+        /// </summary>
+        /// <param name="_moveReadPos"></param>
+        /// <returns></returns>
+        public TechType ReadTechType(bool _moveReadPos = true)
+        {
+            return (TechType)ReadInt();
+        }
+
+        /// <summary>
+        /// Reads a TokenExchangePolicy from a packet
+        /// </summary>
+        /// <param name="_moveReadPos"></param>
+        /// <returns></returns>
+        public TokenExchangePolicy ReadTokenExchangePolicy(bool _moveReadPos = true)
+        {
+            return (TokenExchangePolicy)ReadInt();
+        }
+
+        /// <summary>
+        /// Reads a NetworkedEntityType from a packet
+        /// </summary>
+        /// <param name="_moveReadPos"></param>
+        /// <returns></returns>
+        public NetworkedEntityType ReadNetworkedEntityType(bool _moveReadPos = true)
+        {
+            return (NetworkedEntityType)ReadInt();
         }
 
         #endregion

@@ -81,7 +81,7 @@ namespace BelowZeroServer
             }
 
             Vector3 position = _packet.ReadVector3();
-            Quaternion rotation = _packet.ReadQuaternoin();
+            Quaternion rotation = _packet.ReadQuaternion();
             bool isInside = _packet.ReadBool();
 
             //Logger.Log($"Client: {clientId}: Transform: {position} : {rotation}");
@@ -204,12 +204,12 @@ namespace BelowZeroServer
 
             tokenData.tokenGuid = _packet.ReadString();
             tokenData.clientWithToken = _fromClient;
-            tokenData.tokenExchangePolicy = (TokenExchangePolicy)_packet.ReadInt();
+            tokenData.tokenExchangePolicy = _packet.ReadTokenExchangePolicy();
             tokenData.associatedTechType = _packet.ReadInt();
-            tokenData.networkedEntity = (NetworkedEntityType)_packet.ReadInt();
+            tokenData.networkedEntity = _packet.ReadNetworkedEntityType();
             tokenData.tickRate = _packet.ReadFloat();
             tokenData.position = _packet.ReadVector3();
-            tokenData.rotation = _packet.ReadQuaternoin();
+            tokenData.rotation = _packet.ReadQuaternion();
             tokenData.scale = _packet.ReadVector3();
 
             TokenExchange.CreateToken(tokenData);
@@ -221,7 +221,7 @@ namespace BelowZeroServer
          {
             string guid = _packet.ReadString();
             Vector3 position = _packet.ReadVector3();
-            Quaternion rotation = _packet.ReadQuaternoin();
+            Quaternion rotation = _packet.ReadQuaternion();
             Vector3 scale = _packet.ReadVector3();
             
             TokenExchange.UpdateToken(guid, _fromClient, position, rotation, scale);

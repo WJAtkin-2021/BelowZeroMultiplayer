@@ -74,7 +74,7 @@ namespace BelowZeroServer
 
                     Logger.Log($"Client: {Server.ResolvePlayerName(_client)} removed token with GUID: {_token}");
 
-                    NetSend.PlayerDestroyedToken(m_tokens[_token]);
+                    NetSend.PlayerDestroyedToken(tokenData);
 
                 }
                 else

@@ -53,7 +53,7 @@ namespace BelowZeroClient
             int newClientId = _packet.ReadInt();
             string newClientName = _packet.ReadString();
             Vector3 newClientPos = _packet.ReadVector3();
-            Quaternion newClientRot = _packet.ReadQuaternoin();
+            Quaternion newClientRot = _packet.ReadQuaternion();
             bool newClientIsInside = _packet.ReadBool();
 
             if (newClientId != NetworkClient.m_instance.m_clientId)
@@ -87,7 +87,7 @@ namespace BelowZeroClient
         {
             int clientId = _packet.ReadInt();
             Vector3 pos = _packet.ReadVector3();
-            Quaternion rot = _packet.ReadQuaternoin();
+            Quaternion rot = _packet.ReadQuaternion();
 
             if (NetworkClient.m_instance.m_remotePlayers.ContainsKey(clientId))
             {
@@ -186,7 +186,7 @@ namespace BelowZeroClient
 
         public static void HandlePlayerUnlockedTechKnowledge(Packet _packet)
         {
-            TechType techType = (TechType)_packet.ReadInt();
+            TechType techType = _packet.ReadTechType();
             bool unlockEncyclopedia = _packet.ReadBool();
             bool verbose = _packet.ReadBool();
 
@@ -200,13 +200,13 @@ namespace BelowZeroClient
         public static void HandlePlayerUnlockedPDAEncyclopedia(Packet _packet)
         {
             string key = _packet.ReadString();
-            TechType techType = (TechType)_packet.ReadInt();
+            TechType techType = _packet.ReadTechType();
             PDAUnlockQueue.m_instance.UnlockDelayed(key, techType);
         }
 
         public static void HandlePlayerUpdatedFragmentProgress(Packet _packet)
         {
-            TechType techType = (TechType)_packet.ReadInt();
+            TechType techType = _packet.ReadTechType();
             int currentFragments = _packet.ReadInt();
 
             PDAScanner.EntryData entryData = PDAScanner.GetEntryData(techType);
@@ -254,11 +254,11 @@ namespace BelowZeroClient
         public static void HandleSyncUnlocks(Packet _packet)
         {
             // Extract the techs
-            List<int> techs = new List<int>();
+            List<TechType> techs = new List<TechType>();
             int totalTechs = _packet.ReadInt();
             for (int i = 0; i < totalTechs; i++)
             {
-                techs.Add(_packet.ReadInt());
+                techs.Add(_packet.ReadTechType());
             }
 
             // Extract the PDA entries
@@ -267,7 +267,7 @@ namespace BelowZeroClient
             for (int i = 0; i < totalPdaEntries; i++)
             {
                 string key = _packet.ReadString();
-                TechType techType = (TechType)_packet.ReadInt();
+                TechType techType = _packet.ReadTechType();
                 PDAKeyTechTypePair entry = new PDAKeyTechTypePair(key, techType);
 
                 pdaEntries.Add(entry);
@@ -278,7 +278,7 @@ namespace BelowZeroClient
             int totalFragments = _packet.ReadInt();
             for (int i = 0; i < totalFragments; i++)
             {
-                TechType fragKey = (TechType)_packet.ReadInt();
+                TechType fragKey = _packet.ReadTechType();
                 int fragCount = _packet.ReadInt();
                 fragments.Add(fragKey, fragCount); 
             }
@@ -286,7 +286,7 @@ namespace BelowZeroClient
             // Handle the tech unlocks
             for (int i = 0; i < techs.Count; i++)
             {
-                TechType techType = (TechType)techs[i];
+                TechType techType = techs[i];
                 KnownTech.Add(techType, false, false);
             }
 
@@ -354,7 +354,7 @@ namespace BelowZeroClient
         public static void HandleAddInventoryItem(Packet _packet)
         {
             // Read the packet data
-            TechType techType = (TechType)_packet.ReadInt();
+            TechType techType = _packet.ReadTechType();
             int qty = _packet.ReadInt();
 
             // Call the factory function for creating items
@@ -364,7 +364,7 @@ namespace BelowZeroClient
         public static void HandleForceTechUnlock(Packet _packet)
         {
             // Read the data
-            TechType techType = (TechType)_packet.ReadInt();
+            TechType techType = _packet.ReadTechType();
 
             KnownTech.Add(techType, false, true);
         }
@@ -379,7 +379,7 @@ namespace BelowZeroClient
             descriptor.networkedEntityType = (NetworkedEntityType)_packet.ReadInt();
             descriptor.tickRate = _packet.ReadFloat();
             descriptor.position = _packet.ReadVector3();
-            descriptor.rotation = _packet.ReadQuaternoin();
+            descriptor.rotation = _packet.ReadQuaternion();
             descriptor.scale = _packet.ReadVector3();
             TokenManager.m_instance.HandleTokenCreation(descriptor);
         }
@@ -388,7 +388,7 @@ namespace BelowZeroClient
         {
             string guid = _packet.ReadString();
             Vector3 position = _packet.ReadVector3();
-            Quaternion rotation = _packet.ReadQuaternoin();
+            Quaternion rotation = _packet.ReadQuaternion();
             Vector3 scale = _packet.ReadVector3();
 
             TokenManager.m_instance.HandleTokenUpdate(guid, position, rotation, scale);

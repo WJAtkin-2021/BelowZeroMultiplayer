@@ -11,7 +11,7 @@ namespace BelowZeroServer
     {
         public static void Connected(int _client)
         {
-            using (Packet packet = new Packet((int)ServerPackets.Connected))
+            using (Packet packet = new Packet(ServerPackets.Connected))
             {
                 packet.Write(_client);
                 packet.Write(DataStore.GetServerGuid());
@@ -22,7 +22,7 @@ namespace BelowZeroServer
 
         public static void SendNewMachineToken(int _client, string _machineToken)
         {
-            using (Packet packet = new Packet((int)ServerPackets.NewMachineToken))
+            using (Packet packet = new Packet(ServerPackets.NewMachineToken))
             {
                 packet.Write(DataStore.GetServerGuid());
                 packet.Write(_machineToken);
@@ -33,7 +33,7 @@ namespace BelowZeroServer
 
         public static void SendUserNameTakenMessage(int _client)
         {
-            using (Packet packet = new Packet((int)ServerPackets.UserNameInUse))
+            using (Packet packet = new Packet(ServerPackets.UserNameInUse))
             {
                 packet.Write(_client);
 
@@ -43,7 +43,7 @@ namespace BelowZeroServer
 
         public static void PlayerDisconnected(int _client)
         {
-            using (Packet packet = new Packet((int)ServerPackets.PlayerDisconnected))
+            using (Packet packet = new Packet(ServerPackets.PlayerDisconnected))
             {
                 packet.Write(_client);
 
@@ -53,7 +53,7 @@ namespace BelowZeroServer
 
         public static void UploadMapToClient(int _client)
         {
-            using (Packet packet = new Packet((int)ServerPackets.MapDownload))
+            using (Packet packet = new Packet(ServerPackets.MapDownload))
             {
                 byte[] mapData = Server.m_instance.GetMapData();
 
@@ -73,7 +73,7 @@ namespace BelowZeroServer
 
         public static void PlayerSpawned(int _client, string _playerName, Vector3 _spawnPos, Quaternion _spawnRot, bool _isInside)
         {
-            using (Packet packet = new Packet((int)ServerPackets.SpawnPlayer))
+            using (Packet packet = new Packet(ServerPackets.SpawnPlayer))
             {
                 // Write the client ID of the new client
                 packet.Write(_client);
@@ -88,7 +88,7 @@ namespace BelowZeroServer
 
         public static void SycPlayerList(int _client)
         {
-            using (Packet packet = new Packet((int)ServerPackets.SycPlayerList))
+            using (Packet packet = new Packet(ServerPackets.SycPlayerList))
             {
                 // Generate a list of players currently in
                 List<int> spawnedPlayers = new List<int>();
@@ -118,7 +118,7 @@ namespace BelowZeroServer
 
         public static void PlayerTransformUpdate(int _client, Vector3 _pos, Quaternion _rot)
         {
-            using (Packet packet = new Packet((int)ServerPackets.PlayerTransformUpdate))
+            using (Packet packet = new Packet(ServerPackets.PlayerTransformUpdate))
             {
                 packet.Write(_client);
                 packet.Write(_pos);
@@ -130,7 +130,7 @@ namespace BelowZeroServer
 
         public static void PlayerDroppedItem(int _client, string _techName, Vector3 _pos, string token)
         {
-            using (Packet packet = new Packet((int)ServerPackets.PlayerDroppedItem))
+            using (Packet packet = new Packet(ServerPackets.PlayerDroppedItem))
             {
                 packet.Write(_techName);
                 packet.Write(_pos);
@@ -142,7 +142,7 @@ namespace BelowZeroServer
 
         public static void PlayerPickedUpItem(int _client, string token)
         {
-            using (Packet packet = new Packet((int)ServerPackets.PlayerPickedUpItem))
+            using (Packet packet = new Packet(ServerPackets.PlayerPickedUpItem))
             {
                 packet.Write(token);
 
@@ -152,7 +152,7 @@ namespace BelowZeroServer
 
         public static void PlayerUnlockedTechKnowledge(int _toClient, int techType, bool unlockEncyclopedia, bool verbose)
         {
-            using (Packet packet = new Packet((int)ServerPackets.PlayerUnlockedTechKnowledge))
+            using (Packet packet = new Packet(ServerPackets.PlayerUnlockedTechKnowledge))
             {
                 packet.Write(techType);
                 packet.Write(unlockEncyclopedia);
@@ -164,7 +164,7 @@ namespace BelowZeroServer
 
         public static void PlayerUnlockedPDAEncyclopedia(int _toClient, string _key, int _techType)
         {
-            using (Packet packet = new Packet((int)ServerPackets.PlayerUnlockedPDAEncyclopedia))
+            using (Packet packet = new Packet(ServerPackets.PlayerUnlockedPDAEncyclopedia))
             {
                 packet.Write(_key);
                 packet.Write(_techType);
@@ -175,7 +175,7 @@ namespace BelowZeroServer
 
         public static void PlayerUpdatedFragmentProgress(int _client, int _techType, int _parts)
         {
-            using (Packet packet = new Packet((int)ServerPackets.PlayerUpdatedFragmentProgress))
+            using (Packet packet = new Packet(ServerPackets.PlayerUpdatedFragmentProgress))
             {
                 packet.Write(_techType);
                 packet.Write(_parts);
@@ -186,7 +186,7 @@ namespace BelowZeroServer
 
         public static void MessageBroadcast(string _message)
         {
-            using (Packet packet = new Packet((int)ServerPackets.MessageBroadcast))
+            using (Packet packet = new Packet(ServerPackets.MessageBroadcast))
             {
                 packet.Write(_message);
 
@@ -196,7 +196,7 @@ namespace BelowZeroServer
 
         public static void SyncUnlocks(int _toClient)
         {
-            using (Packet packet = new Packet((int)ServerPackets.SyncUnlocks))
+            using (Packet packet = new Packet(ServerPackets.SyncUnlocks))
             {
                 // Serialize the data
                 // Write the tech unlocks
@@ -231,7 +231,7 @@ namespace BelowZeroServer
             if (_inventory == null)
                 return;
 
-            using (Packet packet = new Packet((int)ServerPackets.SyncPlayerInventory))
+            using (Packet packet = new Packet(ServerPackets.SyncPlayerInventory))
             {
                 packet.Write(_inventory.serializedStorage.Length);
                 packet.Write(_inventory.serializedStorage);
@@ -257,7 +257,7 @@ namespace BelowZeroServer
 
         public static void AddInventoryItem(int _toClient, int _techType, int _qty)
         {
-            using (Packet packet = new Packet((int)ServerPackets.AddInventoryItem))
+            using (Packet packet = new Packet(ServerPackets.AddInventoryItem))
             {
                 packet.Write(_techType);
                 packet.Write(_qty);
@@ -268,7 +268,7 @@ namespace BelowZeroServer
 
         public static void ForceTechUnlock(int _techType)
         {
-            using (Packet packet = new Packet((int)ServerPackets.ForceTechUnlock))
+            using (Packet packet = new Packet(ServerPackets.ForceTechUnlock))
             {
                 packet.Write(_techType);
 
@@ -278,13 +278,13 @@ namespace BelowZeroServer
 
         public static void PlayerAddedNewToken(TokenData _tokenData)
         {
-            using (Packet packet = new Packet((int)ServerPackets.PlayerCreatedNewToken))
+            using (Packet packet = new Packet(ServerPackets.PlayerCreatedNewToken))
             {
                 packet.Write(_tokenData.tokenGuid);
                 packet.Write(_tokenData.clientWithToken);
-                packet.Write((int)_tokenData.tokenExchangePolicy);
+                packet.Write(_tokenData.tokenExchangePolicy);
                 packet.Write(_tokenData.associatedTechType);
-                packet.Write((int)_tokenData.networkedEntity);
+                packet.Write(_tokenData.networkedEntity);
                 packet.Write(_tokenData.tickRate);
                 packet.Write(_tokenData.position);
                 packet.Write(_tokenData.rotation);
@@ -296,7 +296,7 @@ namespace BelowZeroServer
 
         public static void PlayerUpdatedToken(TokenData _tokenData)
         {
-            using (Packet packet = new Packet((int)ServerPackets.PlayerUpdatedToken))
+            using (Packet packet = new Packet(ServerPackets.PlayerUpdatedToken))
             {
                 packet.Write(_tokenData.tokenGuid);
                 packet.Write(_tokenData.position);
@@ -319,7 +319,7 @@ namespace BelowZeroServer
 
         public static void PlayerDestroyedToken(TokenData _tokenData)
         {
-            using (Packet packet = new Packet((int)ServerPackets.PlayerDestroyedToken))
+            using (Packet packet = new Packet(ServerPackets.PlayerDestroyedToken))
             {
                 packet.Write(_tokenData.tokenGuid);
 
@@ -329,7 +329,7 @@ namespace BelowZeroServer
 
         public static void DestroyToken(int _toClient, string _tokenGuid)
         {
-            using (Packet packet = new Packet((int)ServerPackets.DestroyToken))
+            using (Packet packet = new Packet(ServerPackets.DestroyToken))
             {
                 packet.Write(_tokenGuid);
 

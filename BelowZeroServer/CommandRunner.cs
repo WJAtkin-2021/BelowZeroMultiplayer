@@ -95,8 +95,8 @@ namespace BelowZeroServer
         }
 
         private static void ClearConsole()
-        { 
-            Console.Clear();
+        {
+            Logger.OnClearLogs?.Invoke();
         }
 
         private static void GiveItem(string _cmd)

@@ -49,17 +49,17 @@ namespace BelowZeroClient
             {
                 ErrorMessage.AddMessage($"[TokenManager] Received request to generate node for token: {_tokenDescriptor.guid}");
 
-                FileLog.Log($"-----TOKEN------");
-                FileLog.Log($"guid: {_tokenDescriptor.guid}");
-                FileLog.Log($"clientWithToken: {_tokenDescriptor.clientWithToken}");
-                FileLog.Log($"tokenExchangePolicy: {_tokenDescriptor.tokenExchangePolicy}");
-                FileLog.Log($"associatedTechType: {_tokenDescriptor.associatedTechType}");
-                FileLog.Log($"networkedEntityType: {_tokenDescriptor.networkedEntityType}");
-                FileLog.Log($"tickRate:  {_tokenDescriptor.tickRate}");
-                FileLog.Log($"position:  {_tokenDescriptor.position}");
-                FileLog.Log($"rotation:  {_tokenDescriptor.rotation}");
-                FileLog.Log($"scale:  {_tokenDescriptor.scale}");
-                FileLog.Log($"------EOF-------");
+                //FileLog.Log($"-----TOKEN------");
+                //FileLog.Log($"guid: {_tokenDescriptor.guid}");
+                //FileLog.Log($"clientWithToken: {_tokenDescriptor.clientWithToken}");
+                //FileLog.Log($"tokenExchangePolicy: {_tokenDescriptor.tokenExchangePolicy}");
+                //FileLog.Log($"associatedTechType: {_tokenDescriptor.associatedTechType}");
+                //FileLog.Log($"networkedEntityType: {_tokenDescriptor.networkedEntityType}");
+                //FileLog.Log($"tickRate:  {_tokenDescriptor.tickRate}");
+                //FileLog.Log($"position:  {_tokenDescriptor.position}");
+                //FileLog.Log($"rotation:  {_tokenDescriptor.rotation}");
+                //FileLog.Log($"scale:  {_tokenDescriptor.scale}");
+                //FileLog.Log($"------EOF-------");
 
                 CoroutineHost.StartCoroutine(FactoryCreatePickupable(_tokenDescriptor));
             }
@@ -99,7 +99,9 @@ namespace BelowZeroClient
             if (Tokens.ContainsKey(_tokenGuid))
             {
                 NetToken token = Tokens[_tokenGuid];
+                GameObject tokenGo = token.gameObject;
                 token.DestroyToken();
+                Destroy(tokenGo);
             }
             else
             {

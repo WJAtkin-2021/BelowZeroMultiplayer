@@ -406,12 +406,16 @@ namespace BelowZeroClient
 
         public static void HandlePlayerDestroyedToken(Packet _packet)
         {
+            ErrorMessage.AddMessage("Received packet HandlePlayerDestroyedToken");
+
             string guid = _packet.ReadString();
             TokenManager.m_instance.HandleTokenDestroyed(guid);
         }
 
         public static void HandleDestroyToken(Packet _packet)
         {
+            ErrorMessage.AddMessage("Received packet HandleDestroyToken");
+
             string tokenGuid = _packet.ReadString();
             TokenManager.m_instance.HandleServerRequestedTokenDestruction(tokenGuid);
         }

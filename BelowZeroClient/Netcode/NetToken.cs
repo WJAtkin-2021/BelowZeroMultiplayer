@@ -159,24 +159,31 @@ namespace BelowZeroClient
 
             yield return new WaitForSeconds(1.0f / tickRate);
 
-            try
+            if (this == null)
             {
-                if (HasToken())
+                updateCoroutineIsRunning = false;
+            }
+            else
+            {
+                try
                 {
-                    NetSend.PlayerUpdateToken(this);
+                    if (HasToken())
+                    {
+                        NetSend.PlayerUpdateToken(this);
 
-                    coroutine = CoroutineHost.StartCoroutine(SendUpdate());
+                        coroutine = CoroutineHost.StartCoroutine(SendUpdate());
+                    }
+                    else
+                    {
+                        updateCoroutineIsRunning = false;
+                    }
                 }
-                else
+                catch (Exception ex)
                 {
-                    updateCoroutineIsRunning = false;
+                    ErrorMessage.AddMessage($"[NetToken] Error: {ex}");
+                    FileLog.Log($"[NetToken] Error: {ex}");
                 }
-            }
-            catch (Exception ex)
-            {
-                ErrorMessage.AddMessage($"[NetToken] Error: {ex}");
-                FileLog.Log($"[NetToken] Error: {ex}");
-            }
+            }    
 
             yield return null;
         }

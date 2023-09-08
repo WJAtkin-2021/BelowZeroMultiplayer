@@ -155,7 +155,7 @@ namespace BelowZeroClient
                 packet.Write(_token.transform.rotation);
                 packet.Write(_token.transform.localScale);
 
-                SendTCPData(packet);
+                SendUDPData(packet);
             }
         }
 
@@ -183,6 +183,8 @@ namespace BelowZeroClient
 
         public static void PlayerDestroyToken(NetToken _token)
         {
+            ErrorMessage.AddMessage("Sending packet PlayerDestroyToken");
+
             using (Packet packet = new Packet(ClientPackets.PlayerDestroyToken))
             {
                 packet.Write(_token.guid);

@@ -113,6 +113,7 @@ namespace BelowZeroServer
 
             // Tell the owner to remove the node with the token
             int owner = TokenExchange.FindOwnerOfToken(itemToken);
+            Logger.Log($"Telling: {Server.ResolvePlayerName(owner)} to remove token with GUID: {itemToken}");
             NetSend.DestroyToken(owner, itemToken);
         }
 

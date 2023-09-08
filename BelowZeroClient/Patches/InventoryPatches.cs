@@ -1,5 +1,6 @@
 ﻿using BelowZeroMultiplayerCommon;
 using HarmonyLib;
+using UnityEngine;
 
 namespace BelowZeroClient
 {
@@ -13,11 +14,6 @@ namespace BelowZeroClient
             NetToken nt = pickupable.gameObject.AddComponent<NetToken>();
             nt.GenerateNewToken(TokenExchangePolicy.AutomaticHandover, pickupable.GetTechType(), NetworkedEntityType.Pickupable, 1.0f);
             TokenManager.m_instance.AddToken(nt);
-
-            //ErrorMessage.AddMessage($"POS: {pickupable.gameObject.transform.position}");
-
-            // Tell the server we dropped it
-            //NetSend.DroppedItem(pickupable, token);
 
             ReplicateInventory.m_instance.MarkInventoryAsDirty();
         }
@@ -34,7 +30,14 @@ namespace BelowZeroClient
             NetToken token = pickupable.gameObject.GetComponent<NetToken>();
             if (token != null)
             {
-                NetSend.PickupItem(token.guid);
+                string tokenGuid = token.guid;
+                Component.Destroy(token);
+                NetSend.PickupItem(tokenGuid);
+                ErrorMessage.AddMessage($"TOKEN WAS DESTROY!");
+            }
+            else
+            {
+                ErrorMessage.AddMessage($"TOKEN WAS NULL!");
             }
 
             ReplicateInventory.m_instance.MarkInventoryAsDirty();

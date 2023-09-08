@@ -30,7 +30,7 @@ namespace BelowZeroServer
                     m_tokens[_token].rotation = _rot;
                     m_tokens[_token].scale = _scale;
 
-                    //Logger.Log($"Client: {Server.ResolvePlayerName(_client)} updated token: {_token} to pos: {_pos}");
+                    Logger.Log($"Client: {Server.ResolvePlayerName(_client)} updated token: {_token} to pos: {_pos}");
 
                     NetSend.PlayerUpdatedToken(m_tokens[_token]);
                 }

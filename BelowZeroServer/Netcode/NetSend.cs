@@ -303,7 +303,7 @@ namespace BelowZeroServer
                 packet.Write(_tokenData.rotation);
                 packet.Write(_tokenData.scale);
 
-                SendTCPDataToAll(_tokenData.clientWithToken, packet);
+                SendUDPDataToAll(_tokenData.clientWithToken, packet);
             }
         }
 
@@ -323,7 +323,7 @@ namespace BelowZeroServer
             {
                 packet.Write(_tokenData.tokenGuid);
 
-                SendTCPDataToAll(_tokenData.clientWithToken, packet);
+                SendTCPDataToAll(packet);
             }
         }
 

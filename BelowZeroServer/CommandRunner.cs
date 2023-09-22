@@ -83,6 +83,10 @@ namespace BelowZeroServer
                 {
                     PrintCommandList();
                 }
+                else if (_cmd == "ticks")
+                {
+                    Logger.Log($"Current Ticks: {DateTime.Now.Ticks}");
+                }
                 else
                 {
                     Logger.Log($"Invalid Command: {_cmd}");

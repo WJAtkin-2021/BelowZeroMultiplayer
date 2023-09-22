@@ -77,7 +77,11 @@
     <Compile Include="Server.cs" />
     <Compile Include="Netcode\TCP.cs" />
     <Compile Include="Netcode\UDP.cs" />
+    <Compile Include="ServerNode.cs" />
+    <Compile Include="ServerToken.cs" />
+    <Compile Include="Space.cs" />
     <Compile Include="TokenExchange.cs" />
+    <Compile Include="UnityTransform.cs" />
     <Compile Include="UnlockManager.cs" />
   </ItemGroup>
   <ItemGroup>

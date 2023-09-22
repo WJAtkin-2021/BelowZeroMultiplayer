@@ -329,12 +329,12 @@ namespace BelowZeroServer
 
         public static void DestroyToken(int _toClient, string _tokenGuid)
         {
-            using (Packet packet = new Packet(ServerPackets.DestroyToken))
-            {
-                packet.Write(_tokenGuid);
-
-                SendTCPData(_toClient, packet);
-            }
+            //using (Packet packet = new Packet(ServerPackets.DestroyToken))
+            //{
+            //    packet.Write(_tokenGuid);
+            //
+            //    SendTCPData(_toClient, packet);
+            //}
         }
 
         #region SendImplementations

@@ -28,7 +28,9 @@
         PlayerUpdatedTokenData = 21,
         PlayerAcquiredToken = 22,
         PlayerDestroyedToken = 23,
-        DestroyToken = 24,
+        NodeCreated = 24,
+        NodeUpdated = 25,
+        NodeDestroyed = 26,
     }
 
     /// <summary>
@@ -50,5 +52,8 @@
         PlayedUpdateTokenData = 15,
         PlayerAcquireToken = 16,
         PlayerDestroyToken = 17,
+        AddNodeToSpace = 18,
+        NodeUpdate = 19,
+        DestroyNode = 20,
     }
 }

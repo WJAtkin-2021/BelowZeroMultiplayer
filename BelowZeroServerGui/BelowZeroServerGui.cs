@@ -73,6 +73,9 @@ namespace BelowZeroServerGui
             m_prevCommandFetchIndex = Math.Min(m_prevCommandFetchIndex, CommandRunner.NumOfPrevCommands());
 
             CommandTextBox.Text = CommandRunner.FetchPrevCommand(m_prevCommandFetchIndex);
+            CommandTextBox.Select(CommandTextBox.Text.Length, 0);
+            CommandTextBox.Focus();
+            CommandTextBox.ScrollToCaret();
         }
 
         private async void RunServerProgram()

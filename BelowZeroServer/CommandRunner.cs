@@ -79,6 +79,10 @@ namespace BelowZeroServer
                 {
                     RunRemoveTokenTest(_cmd);
                 }
+                else if (_cmd == "help" || _cmd.StartsWith("command"))
+                {
+                    PrintCommandList();
+                }
                 else
                 {
                     Logger.Log($"Invalid Command: {_cmd}");
@@ -199,6 +203,16 @@ namespace BelowZeroServer
                 NetSend.MessageBroadcast(messageToClients);
             }
             Logger.SilentLog($"Sending message: {messageToClients}");
+        }
+
+        private static void PrintCommandList()
+        {
+            Logger.Log("stop - Disconnects all the clients, stops the server and saves the data");
+            Logger.Log("clear - Clear all the text in the server console");
+            Logger.Log("send - Broadcast a message to all connected players");            
+            Logger.Log("giveitem - Used to give an item to a player. Type giveitem for more info");
+            Logger.Log("unlock - Unlocks a given tech by the techtype ID");
+            Logger.Log("help - Does what it says on the tin");
         }
 
         #endregion

@@ -51,7 +51,7 @@ namespace BelowZeroServer
                 {
                     DestroyTestPlayer();
                 }
-                else if (_cmd.Contains("send "))
+                else if (_cmd.StartsWith("send"))
                 {
                     BroadcastMessage(_cmd);
                 }
@@ -201,12 +201,20 @@ namespace BelowZeroServer
 
         private static void BroadcastMessage(string _cmd)
         {
-            string messageToClients = _cmd.Substring(5);
-            if (messageToClients.Length > 0)
+            if (_cmd.Length < 5)
             {
-                NetSend.MessageBroadcast(messageToClients);
+                Logger.Log($"Formatting error when calling 'send' Usage:");
+                Logger.Log($"send -messageText");
             }
-            Logger.SilentLog($"Sending message: {messageToClients}");
+            else
+            {
+                string messageToClients = _cmd.Substring(5);
+                if (messageToClients.Length > 0)
+                {
+                    NetSend.MessageBroadcast(messageToClients);
+                }
+                Logger.SilentLog($"Sending message: {messageToClients}");
+            }
         }
 
         private static void PrintCommandList()

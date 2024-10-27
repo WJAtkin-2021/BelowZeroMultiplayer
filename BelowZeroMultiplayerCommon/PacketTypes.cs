@@ -23,6 +23,12 @@
         SyncPlayerInventory = 16,
         AddInventoryItem = 17,
         ForceTechUnlock = 18,
+        PlayerCreatedNewToken = 19,
+        PlayerUpdatedToken = 20,
+        PlayerUpdatedTokenData = 21,
+        PlayerAcquiredToken = 22,
+        PlayerDestroyedToken = 23,
+        DestroyToken = 24,
     }
 
     /// <summary>
@@ -41,6 +47,8 @@
         PlayerInventoryUpdated = 12,
         PlayerCreateToken = 13,
         PlayerUpdateToken = 14,
-        PlayerDestroyToken = 15,
+        PlayedUpdateTokenData = 15,
+        PlayerAcquireToken = 16,
+        PlayerDestroyToken = 17,
     }
 }

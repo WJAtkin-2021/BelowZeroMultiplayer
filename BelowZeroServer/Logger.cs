@@ -6,13 +6,15 @@ namespace BelowZeroServer
 {
     public class Logger
     {
+        public static Action<string> OnLogAdded;
+        public static Action OnClearLogs;
         public static List<string> m_logs = new List<string>();
 
         public static void Log(string msg)
         {
-            Console.WriteLine(msg);
             msg = AppendDateTime(msg);
             m_logs.Add(msg);
+            OnLogAdded?.Invoke(msg);
         }
 
         public static void SilentLog(string msg)

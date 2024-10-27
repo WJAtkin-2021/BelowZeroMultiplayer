@@ -1,8 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.Linq;
 using System.Text;
-using System.Threading.Tasks;
+using BelowZeroMultiplayerCommon;
 
 namespace BelowZeroServer
 {
@@ -33,6 +32,18 @@ namespace BelowZeroServer
             m_readPos = 0;
 
             Write(_id);
+        }
+
+        /// <summary>
+        /// Creates a new packet with the enum. Used for sending data.
+        /// </summary>
+        /// <param name="_id"></param>
+        public Packet(ServerPackets _type)
+        {
+            m_buffer = new List<byte>();
+            m_readPos = 0;
+
+            Write((int)_type);
         }
 
         /// <summary>
@@ -223,6 +234,24 @@ namespace BelowZeroServer
             Write(_value.y);
             Write(_value.z);
             Write(_value.w);
+        }
+
+        /// <summary>
+        /// Writes a TokenExchangePolicy to the packet
+        /// </summary>
+        /// <param name="_value"></param>
+        public void Write(TokenExchangePolicy _value)
+        {
+            Write((int)_value);
+        }
+
+        /// <summary>
+        /// Writes a NetworkedEntityType to the packet
+        /// </summary>
+        /// <param name="_value"></param>
+        public void Write(NetworkedEntityType _value)
+        {
+            Write((int)_value);
         }
 
         #endregion
@@ -471,9 +500,29 @@ namespace BelowZeroServer
         /// </summary>
         /// <param name="_moveReadPos"></param>
         /// <returns></returns>
-        public Quaternion ReadQuaternoin(bool _moveReadPos = true)
+        public Quaternion ReadQuaternion(bool _moveReadPos = true)
         {
             return new Quaternion(ReadFloat(_moveReadPos), ReadFloat(_moveReadPos), ReadFloat(_moveReadPos), ReadFloat(_moveReadPos));
+        }
+
+        /// <summary>
+        /// Reads a TokenExchangePolicy from a packet
+        /// </summary>
+        /// <param name="_moveReadPos"></param>
+        /// <returns></returns>
+        public TokenExchangePolicy ReadTokenExchangePolicy(bool _moveReadPos = true)
+        {
+            return (TokenExchangePolicy)ReadInt();
+        }
+
+        /// <summary>
+        /// Reads a NetworkedEntityType from a packet
+        /// </summary>
+        /// <param name="_moveReadPos"></param>
+        /// <returns></returns>
+        public NetworkedEntityType ReadNetworkedEntityType(bool _moveReadPos = true)
+        {
+            return (NetworkedEntityType)ReadInt();
         }
 
         #endregion

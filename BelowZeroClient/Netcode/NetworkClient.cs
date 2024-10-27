@@ -183,6 +183,12 @@ namespace BelowZeroClient
                 { (int)ServerPackets.SyncPlayerInventory, NetReceive.SyncPlayerInventory },
                 { (int)ServerPackets.AddInventoryItem, NetReceive.HandleAddInventoryItem },
                 { (int)ServerPackets.ForceTechUnlock, NetReceive.HandleForceTechUnlock },
+                { (int)ServerPackets.PlayerCreatedNewToken, NetReceive.HandlePlayerCreatedNewToken },
+                { (int)ServerPackets.PlayerUpdatedToken, NetReceive.HandlePlayerUpdatedToken },
+                { (int)ServerPackets.PlayerUpdatedTokenData, NetReceive.HandlePlayerUpdatedTokenData },
+                { (int)ServerPackets.PlayerAcquiredToken, NetReceive.HandlePlayerAcquiredToken },
+                { (int)ServerPackets.PlayerDestroyedToken, NetReceive.HandlePlayerDestroyedToken },
+                { (int)ServerPackets.DestroyToken, NetReceive.HandleDestroyToken },
             };
         }
 

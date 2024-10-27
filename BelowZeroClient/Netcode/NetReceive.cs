@@ -53,7 +53,7 @@ namespace BelowZeroClient
             int newClientId = _packet.ReadInt();
             string newClientName = _packet.ReadString();
             Vector3 newClientPos = _packet.ReadVector3();
-            Quaternion newClientRot = _packet.ReadQuaternoin();
+            Quaternion newClientRot = _packet.ReadQuaternion();
             bool newClientIsInside = _packet.ReadBool();
 
             if (newClientId != NetworkClient.m_instance.m_clientId)
@@ -87,7 +87,7 @@ namespace BelowZeroClient
         {
             int clientId = _packet.ReadInt();
             Vector3 pos = _packet.ReadVector3();
-            Quaternion rot = _packet.ReadQuaternoin();
+            Quaternion rot = _packet.ReadQuaternion();
 
             if (NetworkClient.m_instance.m_remotePlayers.ContainsKey(clientId))
             {
@@ -167,25 +167,26 @@ namespace BelowZeroClient
             CoroutineHost.StartCoroutine(CreateTechType.CreateNetworkedTechTypeAsyc(techType, pos, token, null));
         }
 
+        [Obsolete("Done automatically by token")]
         public static void HandlePlayerPickedUpItem(Packet _packet)
         {
-            string token = _packet.ReadString();
-
-            // TODO: Refactor this so that we store all networked pickupables in a list
-            NetToken[] tokens = GameObject.FindObjectsOfType<NetToken>();
-            foreach (NetToken tok in tokens)
-            {
-                if (tok.guid == token)
-                {
-                    UnityEngine.Object.Destroy(tok.gameObject);
-                    return;
-                }
-            }
+            //string token = _packet.ReadString();
+            //
+            //// TODO: Refactor this so that we store all networked pickupables in a list
+            //NetToken[] tokens = GameObject.FindObjectsOfType<NetToken>();
+            //foreach (NetToken tok in tokens)
+            //{
+            //    if (tok.guid == token)
+            //    {
+            //        UnityEngine.Object.Destroy(tok.gameObject);
+            //        return;
+            //    }
+            //}
         }
 
         public static void HandlePlayerUnlockedTechKnowledge(Packet _packet)
         {
-            TechType techType = (TechType)_packet.ReadInt();
+            TechType techType = _packet.ReadTechType();
             bool unlockEncyclopedia = _packet.ReadBool();
             bool verbose = _packet.ReadBool();
 
@@ -199,13 +200,13 @@ namespace BelowZeroClient
         public static void HandlePlayerUnlockedPDAEncyclopedia(Packet _packet)
         {
             string key = _packet.ReadString();
-            TechType techType = (TechType)_packet.ReadInt();
+            TechType techType = _packet.ReadTechType();
             PDAUnlockQueue.m_instance.UnlockDelayed(key, techType);
         }
 
         public static void HandlePlayerUpdatedFragmentProgress(Packet _packet)
         {
-            TechType techType = (TechType)_packet.ReadInt();
+            TechType techType = _packet.ReadTechType();
             int currentFragments = _packet.ReadInt();
 
             PDAScanner.EntryData entryData = PDAScanner.GetEntryData(techType);
@@ -253,11 +254,11 @@ namespace BelowZeroClient
         public static void HandleSyncUnlocks(Packet _packet)
         {
             // Extract the techs
-            List<int> techs = new List<int>();
+            List<TechType> techs = new List<TechType>();
             int totalTechs = _packet.ReadInt();
             for (int i = 0; i < totalTechs; i++)
             {
-                techs.Add(_packet.ReadInt());
+                techs.Add(_packet.ReadTechType());
             }
 
             // Extract the PDA entries
@@ -266,7 +267,7 @@ namespace BelowZeroClient
             for (int i = 0; i < totalPdaEntries; i++)
             {
                 string key = _packet.ReadString();
-                TechType techType = (TechType)_packet.ReadInt();
+                TechType techType = _packet.ReadTechType();
                 PDAKeyTechTypePair entry = new PDAKeyTechTypePair(key, techType);
 
                 pdaEntries.Add(entry);
@@ -277,7 +278,7 @@ namespace BelowZeroClient
             int totalFragments = _packet.ReadInt();
             for (int i = 0; i < totalFragments; i++)
             {
-                TechType fragKey = (TechType)_packet.ReadInt();
+                TechType fragKey = _packet.ReadTechType();
                 int fragCount = _packet.ReadInt();
                 fragments.Add(fragKey, fragCount); 
             }
@@ -285,7 +286,7 @@ namespace BelowZeroClient
             // Handle the tech unlocks
             for (int i = 0; i < techs.Count; i++)
             {
-                TechType techType = (TechType)techs[i];
+                TechType techType = techs[i];
                 KnownTech.Add(techType, false, false);
             }
 
@@ -353,7 +354,7 @@ namespace BelowZeroClient
         public static void HandleAddInventoryItem(Packet _packet)
         {
             // Read the packet data
-            TechType techType = (TechType)_packet.ReadInt();
+            TechType techType = _packet.ReadTechType();
             int qty = _packet.ReadInt();
 
             // Call the factory function for creating items
@@ -363,9 +364,56 @@ namespace BelowZeroClient
         public static void HandleForceTechUnlock(Packet _packet)
         {
             // Read the data
-            TechType techType = (TechType)_packet.ReadInt();
+            TechType techType = _packet.ReadTechType();
 
             KnownTech.Add(techType, false, true);
+        }
+
+        public static void HandlePlayerCreatedNewToken(Packet _packet)
+        {
+            TokenDescriptor descriptor = new TokenDescriptor();
+            descriptor.guid = _packet.ReadString();
+            descriptor.clientWithToken = _packet.ReadInt();
+            descriptor.tokenExchangePolicy = (TokenExchangePolicy)_packet.ReadInt();
+            descriptor.associatedTechType = (TechType)_packet.ReadInt();
+            descriptor.networkedEntityType = (NetworkedEntityType)_packet.ReadInt();
+            descriptor.tickRate = _packet.ReadFloat();
+            descriptor.position = _packet.ReadVector3();
+            descriptor.rotation = _packet.ReadQuaternion();
+            descriptor.scale = _packet.ReadVector3();
+            TokenManager.m_instance.HandleTokenCreation(descriptor);
+        }
+
+        public static void HandlePlayerUpdatedToken(Packet _packet)
+        {
+            string guid = _packet.ReadString();
+            Vector3 position = _packet.ReadVector3();
+            Quaternion rotation = _packet.ReadQuaternion();
+            Vector3 scale = _packet.ReadVector3();
+
+            TokenManager.m_instance.HandleTokenUpdate(guid, position, rotation, scale);
+        }
+
+        public static void HandlePlayerUpdatedTokenData(Packet _packet)
+        {
+
+        }
+
+        public static void HandlePlayerAcquiredToken(Packet _packet)
+        {
+
+        }
+
+        public static void HandlePlayerDestroyedToken(Packet _packet)
+        {
+            string guid = _packet.ReadString();
+            TokenManager.m_instance.HandleTokenDestroyed(guid);
+        }
+
+        public static void HandleDestroyToken(Packet _packet)
+        {
+            string tokenGuid = _packet.ReadString();
+            TokenManager.m_instance.HandleServerRequestedTokenDestruction(tokenGuid);
         }
     }
 }

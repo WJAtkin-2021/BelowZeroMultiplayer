@@ -1,4 +1,5 @@
-﻿using HarmonyLib;
+﻿using BelowZeroMultiplayerCommon;
+using HarmonyLib;
 
 namespace BelowZeroClient
 {
@@ -9,12 +10,14 @@ namespace BelowZeroClient
         static void Postfix(Pickupable pickupable)
         {
             // Generate a GUID for this item so we can keep track of it
-            pickupable.gameObject.AddComponent<NetToken>();
-            string token = System.Guid.NewGuid().ToString();
-            pickupable.gameObject.GetComponent<NetToken>().guid = token;
+            NetToken nt = pickupable.gameObject.AddComponent<NetToken>();
+            nt.GenerateNewToken(TokenExchangePolicy.AutomaticHandover, pickupable.GetTechType(), NetworkedEntityType.Pickupable, 1.0f);
+            TokenManager.m_instance.AddToken(nt);
+
+            //ErrorMessage.AddMessage($"POS: {pickupable.gameObject.transform.position}");
 
             // Tell the server we dropped it
-            NetSend.DroppedItem(pickupable, token);
+            //NetSend.DroppedItem(pickupable, token);
 
             ReplicateInventory.m_instance.MarkInventoryAsDirty();
         }
@@ -28,9 +31,10 @@ namespace BelowZeroClient
         {
             // If this was a networked item we need to tell the server that we got it and
             // that it need to remove it
-            if (pickupable.gameObject.GetComponent<NetToken>() != null)
+            NetToken token = pickupable.gameObject.GetComponent<NetToken>();
+            if (token != null)
             {
-                NetSend.PickupItem(pickupable.gameObject.GetComponent<NetToken>().guid);
+                NetSend.PickupItem(token.guid);
             }
 
             ReplicateInventory.m_instance.MarkInventoryAsDirty();

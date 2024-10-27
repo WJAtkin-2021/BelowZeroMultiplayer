@@ -5,10 +5,10 @@
   <PropertyGroup>
     <Configuration Condition=" '$(Configuration)' == '' ">Debug</Configuration>
     <Platform Condition=" '$(Platform)' == '' ">AnyCPU</Platform>
-    <ProjectGuid>{82D9FE67-5C12-44D4-AB38-612EA3B91940}</ProjectGuid>
-    <OutputType>Library</OutputType>
-    <RootNamespace>BelowZeroServer</RootNamespace>
-    <AssemblyName>BelowZeroServer</AssemblyName>
+    <ProjectGuid>{F49574BD-CD83-48F1-BA3F-BD829DAD140A}</ProjectGuid>
+    <OutputType>WinExe</OutputType>
+    <RootNamespace>BelowZeroServerGui</RootNamespace>
+    <AssemblyName>BelowZeroServerGui</AssemblyName>
     <TargetFrameworkVersion>v4.7.2</TargetFrameworkVersion>
     <FileAlignment>512</FileAlignment>
     <AutoGenerateBindingRedirects>true</AutoGenerateBindingRedirects>
@@ -35,9 +35,6 @@
     <ErrorReport>prompt</ErrorReport>
     <WarningLevel>4</WarningLevel>
   </PropertyGroup>
-  <PropertyGroup>
-    <StartupObject />
-  </PropertyGroup>
   <ItemGroup>
     <Reference Include="EntityFramework, Version=6.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089, processorArchitecture=MSIL">
       <HintPath>..\packages\EntityFramework.6.4.4\lib\net45\EntityFramework.dll</HintPath>
@@ -61,40 +58,54 @@
     <Reference Include="System.Data.DataSetExtensions" />
     <Reference Include="Microsoft.CSharp" />
     <Reference Include="System.Data" />
+    <Reference Include="System.Deployment" />
+    <Reference Include="System.Drawing" />
     <Reference Include="System.Net.Http" />
+    <Reference Include="System.Windows.Forms" />
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
-    <Compile Include="CommandRunner.cs" />
-    <Compile Include="Netcode\ClientConnection.cs" />
-    <Compile Include="Logger.cs" />
-    <Compile Include="Maths.cs" />
-    <Compile Include="Netcode\NetReceive.cs" />
-    <Compile Include="Netcode\NetSend.cs" />
-    <Compile Include="Netcode\Packet.cs" />
-    <Compile Include="DataSaving\DataStore.cs" />
+    <Compile Include="BelowZeroServerGui.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="BelowZeroServerGui.Designer.cs">
+      <DependentUpon>BelowZeroServerGui.cs</DependentUpon>
+    </Compile>
+    <Compile Include="Program.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
-    <Compile Include="Server.cs" />
-    <Compile Include="Netcode\TCP.cs" />
-    <Compile Include="Netcode\UDP.cs" />
-    <Compile Include="TokenExchange.cs" />
-    <Compile Include="UnlockManager.cs" />
+    <EmbeddedResource Include="BelowZeroServerGui.resx">
+      <DependentUpon>BelowZeroServerGui.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Properties\Resources.resx">
+      <Generator>ResXFileCodeGenerator</Generator>
+      <LastGenOutput>Resources.Designer.cs</LastGenOutput>
+      <SubType>Designer</SubType>
+    </EmbeddedResource>
+    <Compile Include="Properties\Resources.Designer.cs">
+      <AutoGen>True</AutoGen>
+      <DependentUpon>Resources.resx</DependentUpon>
+    </Compile>
+    <None Include="packages.config" />
+    <None Include="Properties\Settings.settings">
+      <Generator>SettingsSingleFileGenerator</Generator>
+      <LastGenOutput>Settings.Designer.cs</LastGenOutput>
+    </None>
+    <Compile Include="Properties\Settings.Designer.cs">
+      <AutoGen>True</AutoGen>
+      <DependentUpon>Settings.settings</DependentUpon>
+      <DesignTimeSharedInput>True</DesignTimeSharedInput>
+    </Compile>
   </ItemGroup>
   <ItemGroup>
     <None Include="App.config" />
-    <None Include="packages.config" />
   </ItemGroup>
   <ItemGroup>
-    <ProjectReference Include="..\BelowZeroMultiplayerCommon\BelowZeroMultiplayerCommon.csproj">
-      <Project>{dae25969-3e6c-4a5f-9484-465277638a5c}</Project>
-      <Name>BelowZeroMultiplayerCommon</Name>
+    <ProjectReference Include="..\BelowZeroServer\BelowZeroServer.csproj">
+      <Project>{82d9fe67-5c12-44d4-ab38-612ea3b91940}</Project>
+      <Name>BelowZeroServer</Name>
     </ProjectReference>
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
-  <PropertyGroup>
-    <PostBuildEvent>
-    </PostBuildEvent>
-  </PropertyGroup>
   <Target Name="EnsureNuGetPackageBuildImports" BeforeTargets="PrepareForBuild">
     <PropertyGroup>
       <ErrorText>This project references NuGet package(s) that are missing on this computer. Use NuGet Package Restore to download them.  For more information, see http://go.microsoft.com/fwlink/?LinkID=322105. The missing file is {0}.</ErrorText>
@@ -105,4 +116,9 @@
   </Target>
   <Import Project="..\packages\EntityFramework.6.4.4\build\EntityFramework.targets" Condition="Exists('..\packages\EntityFramework.6.4.4\build\EntityFramework.targets')" />
   <Import Project="..\packages\Stub.System.Data.SQLite.Core.NetFramework.1.0.118.0\build\net46\Stub.System.Data.SQLite.Core.NetFramework.targets" Condition="Exists('..\packages\Stub.System.Data.SQLite.Core.NetFramework.1.0.118.0\build\net46\Stub.System.Data.SQLite.Core.NetFramework.targets')" />
+  <PropertyGroup>
+    <PostBuildEvent>copy /Y "$(SolutionDir)Configs\Server\config.json" "$(SolutionDir)BelowZeroServerGui\$(OutDir)config.json"
+copy /Y "$(SolutionDir)Configs\Server\TestMap.zip" "$(SolutionDir)BelowZeroServerGui\$(OutDir)TestMap.zip"
+copy /Y "$(SolutionDir)Configs\Server\BaseBuildTest.zip" "$(SolutionDir)BelowZeroServerGui\$(OutDir)BaseBuildTest.zip"</PostBuildEvent>
+  </PropertyGroup>
 </Project>

@@ -9,7 +9,7 @@ namespace BelowZeroClient
     {
         public static void ConnectedReceived(string _serverGuid)
         {
-            using (Packet packet = new Packet((int)ClientPackets.ConnectedReceived))
+            using (Packet packet = new Packet(ClientPackets.ConnectedReceived))
             {
                 packet.Write(NetworkClient.m_instance.m_clientId);
                 packet.Write(NetworkClient.m_instance.m_playerName);
@@ -21,7 +21,7 @@ namespace BelowZeroClient
 
         public static void SpawnMe()
         {
-            using (Packet packet = new Packet((int)ClientPackets.SpawnMe))
+            using (Packet packet = new Packet(ClientPackets.SpawnMe))
             {
                 packet.Write(NetworkClient.m_instance.m_clientId);
                 packet.Write(NetworkClient.m_instance.m_playerName);
@@ -32,7 +32,7 @@ namespace BelowZeroClient
 
         public static void TranformUpdate(Vector3 _pos, Quaternion _rot, bool _isInside)
         {
-            using (Packet packet = new Packet((int)ClientPackets.TransformUpdate))
+            using (Packet packet = new Packet(ClientPackets.TransformUpdate))
             {
                 packet.Write(NetworkClient.m_instance.m_clientId);
                 packet.Write(_pos);
@@ -43,21 +43,22 @@ namespace BelowZeroClient
             }
         }
 
+        [Obsolete("Obsolete, now done automatically by token")]
         public static void DroppedItem(Pickupable dropable, string token)
         {
-            using (Packet packet = new Packet((int)ClientPackets.DroppedItem))
-            {
-                packet.Write(dropable.GetTechName());
-                packet.Write(dropable.gameObject.transform.position);
-                packet.Write(token);
-
-                SendTCPData(packet);
-            }
+            //using (Packet packet = new Packet((int)ClientPackets.DroppedItem))
+            //{
+            //    packet.Write(dropable.GetTechName());
+            //    packet.Write(dropable.gameObject.transform.position);
+            //    packet.Write(token);
+            //
+            //    SendTCPData(packet);
+            //}
         }
 
         public static void PickupItem(string token)
         {
-            using (Packet packet = new Packet((int)ClientPackets.PickupItem))
+            using (Packet packet = new Packet(ClientPackets.PickupItem))
             {
                 packet.Write(token);
 
@@ -67,9 +68,9 @@ namespace BelowZeroClient
 
         public static void TechKnowledgeAdded(TechType _techType, bool _unlockEncyclopedia, bool _verbose)
         {
-            using (Packet packet = new Packet((int)ClientPackets.TechKnowledgeAdded))
+            using (Packet packet = new Packet(ClientPackets.TechKnowledgeAdded))
             {
-                packet.Write((int)_techType);
+                packet.Write(_techType);
                 packet.Write(_unlockEncyclopedia);
                 packet.Write(_verbose);
 
@@ -79,10 +80,10 @@ namespace BelowZeroClient
 
         public static void AddedPDAEncyclopedia(PDAScanner.EntryData entryData)
         {
-            using (Packet packet = new Packet((int)ClientPackets.AddedPDAEncyclopedia))
+            using (Packet packet = new Packet(ClientPackets.AddedPDAEncyclopedia))
             {
                 packet.Write(entryData.encyclopedia);
-                packet.Write((int)entryData.key);
+                packet.Write(entryData.key);
 
                 SendTCPData(packet);
             }
@@ -90,17 +91,13 @@ namespace BelowZeroClient
 
         public static void FragmentProgressUpdated(PDAScanner.Entry entry)
         {
-            using (Packet packet = new Packet((int)ClientPackets.FragmentProgressUpdated))
+            using (Packet packet = new Packet(ClientPackets.FragmentProgressUpdated))
             {
                 PDAScanner.EntryData entryData = PDAScanner.GetEntryData(entry.techType);
 
-                int techType = (int)entry.techType;
-                int currentFragments = entry.unlocked;
-                int totalFragments = entryData.totalFragments;
-
-                packet.Write(techType);
-                packet.Write(currentFragments);
-                packet.Write(totalFragments);
+                packet.Write(entry.techType);
+                packet.Write(entry.unlocked);
+                packet.Write(entryData.totalFragments);
 
                 SendTCPData(packet);
             }
@@ -108,7 +105,7 @@ namespace BelowZeroClient
 
         public static void PlayerInventoryUpdated(InventoryData _data)
         {
-            using (Packet packet = new Packet((int)ClientPackets.PlayerInventoryUpdated))
+            using (Packet packet = new Packet(ClientPackets.PlayerInventoryUpdated))
             {
                 packet.Write(_data.serializedStorage.Length);
                 packet.Write(_data.serializedStorage);
@@ -132,33 +129,63 @@ namespace BelowZeroClient
             }
         }
 
-        public static void PlayerCreateToken(string _tokenGuid, Vector3 _initialTokenPos)
+        public static void PlayerCreateToken(NetToken _token)
         {
-            using (Packet packet = new Packet((int)ClientPackets.PlayerCreateToken))
+            using (Packet packet = new Packet(ClientPackets.PlayerCreateToken))
             {
-                packet.Write(_tokenGuid);
-                packet.Write(_initialTokenPos);
+                packet.Write(_token.guid);
+                packet.Write(_token.tokenExchangePolicy);
+                packet.Write(_token.associatedTechType);
+                packet.Write(_token.networkedEntityType);
+                packet.Write(_token.tickRate);
+                packet.Write(_token.transform.position);
+                packet.Write(_token.transform.rotation);
+                packet.Write(_token.transform.localScale);
 
                 SendTCPData(packet);
             }
         }
 
-        public static void PlayerUpdateToken(string _tokenGuid, Vector3 _tokenPos)
+        public static void PlayerUpdateToken(NetToken _token)
         {
-            using (Packet packet = new Packet((int)ClientPackets.PlayerUpdateToken))
+            using (Packet packet = new Packet(ClientPackets.PlayerUpdateToken))
             {
-                packet.Write(_tokenGuid);
-                packet.Write(_tokenPos);
+                packet.Write(_token.guid);
+                packet.Write(_token.transform.position);
+                packet.Write(_token.transform.rotation);
+                packet.Write(_token.transform.localScale);
 
                 SendTCPData(packet);
             }
         }
 
-        public static void PlayerDestroyToken(string _tokenGuid)
+        public static void PlayerUpdatedTokenData(NetToken _token)
         {
-            using (Packet packet = new Packet((int)ClientPackets.PlayerDestroyToken))
+            using (Packet packet = new Packet(ClientPackets.PlayedUpdateTokenData))
             {
-                packet.Write(_tokenGuid);
+                packet.Write(_token.guid);
+                packet.Write(_token.tokenExchangePolicy);
+                packet.Write(_token.tickRate);
+
+                SendTCPData(packet);
+            }
+        }
+
+        public static void TryAcquireToken(NetToken _token)
+        {
+            using (Packet packet = new Packet(ClientPackets.PlayerAcquireToken))
+            {
+                packet.Write(_token.guid);
+
+                SendTCPData(packet);
+            }
+        }
+
+        public static void PlayerDestroyToken(NetToken _token)
+        {
+            using (Packet packet = new Packet(ClientPackets.PlayerDestroyToken))
+            {
+                packet.Write(_token.guid);
 
                 SendTCPData(packet);
             }
